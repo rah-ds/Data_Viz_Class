@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this repository or its materials, please cite it as below."
+type: software
+title: "SARC 5400 - Data Visualization Repository"
+abstract: "A structured repository for data visualization projects and assignments following best practices for reproducible research. Part of SARC 5400 Data Visualization course at the University of Virginia."
+authors:
+  - family-names: "Student"
+    given-names: "Your Name"
+    # orcid: "https://orcid.org/0000-0000-0000-0000"  # Add your ORCID if you have one
+repository-code: "https://github.com/rah-ds/Data_Viz_Class"
+url: "https://github.com/rah-ds/Data_Viz_Class"
+keywords:
+  - data visualization
+  - reproducible research
+  - data science
+  - education
+  - research template
+license: MIT
+# version: 1.0.0
+# date-released: 2026-01-05
+references:
+  - type: webpage
+    title: "SARC 5400 - Data Visualization Syllabus"
+    url: "https://web.arch.virginia.edu/arch547/syllabus.html"
