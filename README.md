@@ -20,7 +20,7 @@ This repository is designed to:
 
 ## Repository Structure
 
-```
+```bash
 .
 ├── data/               # Data files
 │   ├── raw/           # Original, immutable data
