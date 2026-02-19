@@ -1,0 +1,4957 @@
+{
+  "cases": [
+    {
+      "name": "-Ril-",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 0
+    },
+    {
+      "name": "168.209.97.34",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 1
+    },
+    {
+      "name": "172",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 2
+    },
+    {
+      "name": "172 2",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 3
+    },
+    {
+      "name": "194x144x90x118",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 4
+    },
+    {
+      "name": "8bitJake",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 5
+    },
+    {
+      "name": "A Man In Black",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 6
+    },
+    {
+      "name": "A Nobody",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 7
+    },
+    {
+      "name": "ADHD",
+      "category": "Science & Medicine",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 1
+    },
+    {
+      "name": "AI",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 13
+    },
+    {
+      "name": "Abd and JzG",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 8
+    },
+    {
+      "name": "Abortion",
+      "category": "Social & Cultural",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 0
+    },
+    {
+      "name": "Abtract-Collectonian",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 9
+    },
+    {
+      "name": "Abu badali",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 10
+    },
+    {
+      "name": "Ackoz",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 11
+    },
+    {
+      "name": "Acupuncture",
+      "category": "Science & Medicine",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 0
+    },
+    {
+      "name": "Agapetos angel",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 12
+    },
+    {
+      "name": "Aitias",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 14
+    },
+    {
+      "name": "Alberuni",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 15
+    },
+    {
+      "name": "Alex Shih",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 16
+    },
+    {
+      "name": "Alfrem",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 17
+    },
+    {
+      "name": "Alienus",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 18
+    },
+    {
+      "name": "AlisonW",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 19
+    },
+    {
+      "name": "Alkivar",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 20
+    },
+    {
+      "name": "Allegations of apartheid",
+      "category": "Social & Cultural",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 1
+    },
+    {
+      "name": "American politics",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 0
+    },
+    {
+      "name": "American politics 2",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 1
+    },
+    {
+      "name": "Andrevan",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 21
+    },
+    {
+      "name": "AndriyK",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 22
+    },
+    {
+      "name": "Anonimu",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 23
+    },
+    {
+      "name": "Anthony DiPierro 2",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 24
+    },
+    {
+      "name": "Antifinnugor",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 25
+    },
+    {
+      "name": "Antisemitism in Poland",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 2
+    },
+    {
+      "name": "Appeal of VeryVerily",
+      "category": "Editor Conduct",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 0
+    },
+    {
+      "name": "Arbitration Enforcement sanction handling",
+      "category": "Editor Conduct",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 3
+    },
+    {
+      "name": "Arbitration enforcement",
+      "category": "Editor Conduct",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 1
+    },
+    {
+      "name": "Arbitration enforcement 2",
+      "category": "Editor Conduct",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 2
+    },
+    {
+      "name": "Argyrosargyrou",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 26
+    },
+    {
+      "name": "ArmchairVexillologistDon",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 27
+    },
+    {
+      "name": "Armenia-Azerbaijan 2",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 3
+    },
+    {
+      "name": "Armenia-Azerbaijan 3",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Complex",
+      "recurrence": 3,
+      "is_recurring": true,
+      "index_in_category": 4
+    },
+    {
+      "name": "Arminius",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 28
+    },
+    {
+      "name": "Artaxerex",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 29
+    },
+    {
+      "name": "Arthur Rubin",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 30
+    },
+    {
+      "name": "Article titles and capitalisation",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 0
+    },
+    {
+      "name": "Article titles and capitalisation 2",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 1
+    },
+    {
+      "name": "Asgardian",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 31
+    },
+    {
+      "name": "Asgardian-Tenebrae",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 32
+    },
+    {
+      "name": "Asmahan",
+      "category": "Social & Cultural",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 2
+    },
+    {
+      "name": "Attachment Therapy",
+      "category": "Religion",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 0
+    },
+    {
+      "name": "Attack sites",
+      "category": "Editor Conduct",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 4
+    },
+    {
+      "name": "Aucaman",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 33
+    },
+    {
+      "name": "Austrian economics",
+      "category": "Science & Medicine",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 2
+    },
+    {
+      "name": "Avala",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 34
+    },
+    {
+      "name": "Ayn Rand",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 2
+    },
+    {
+      "name": "A\u00f1oranza",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 35
+    },
+    {
+      "name": "BJAODN",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 3
+    },
+    {
+      "name": "BLP issues on British politics articles",
+      "category": "Social & Cultural",
+      "dispute_type": "Content",
+      "complexity": "Very Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 3
+    },
+    {
+      "name": "Baku Ibne, et al.",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Very Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 5
+    },
+    {
+      "name": "Banning Policy",
+      "category": "Editor Conduct",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 5
+    },
+    {
+      "name": "Betacommand",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 36
+    },
+    {
+      "name": "Betacommand 3",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 3,
+      "is_recurring": true,
+      "index_in_category": 37
+    },
+    {
+      "name": "BigDaddy777",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 38
+    },
+    {
+      "name": "Blu Aardvark",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 39
+    },
+    {
+      "name": "Boothy443",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 40
+    },
+    {
+      "name": "Boris Stomakhin",
+      "category": "Social & Cultural",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 4
+    },
+    {
+      "name": "Bowling for Columbine",
+      "category": "Social & Cultural",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 5
+    },
+    {
+      "name": "C68-FM-SV",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 41
+    },
+    {
+      "name": "CAMERA lobbying",
+      "category": "Procedural",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 0
+    },
+    {
+      "name": "COFS",
+      "category": "Procedural",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 1
+    },
+    {
+      "name": "COVID-19",
+      "category": "Science & Medicine",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 7
+    },
+    {
+      "name": "Canadian politics",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 6
+    },
+    {
+      "name": "Cantus",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 42
+    },
+    {
+      "name": "Cantus 3",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 3,
+      "is_recurring": true,
+      "index_in_category": 43
+    },
+    {
+      "name": "Cantus vs. Guanaco",
+      "category": "Editor Conduct",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 6
+    },
+    {
+      "name": "Carl Hewitt",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 4
+    },
+    {
+      "name": "Carlossuarez46",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 44
+    },
+    {
+      "name": "Catalonia",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 7
+    },
+    {
+      "name": "Catflap08 and Hijiri88",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 45
+    },
+    {
+      "name": "Certified.Gangsta-Ideogram",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 46
+    },
+    {
+      "name": "Cesar Tort and Ombudsman vs others",
+      "category": "Editor Conduct",
+      "dispute_type": "Conduct",
+      "complexity": "Very Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 7
+    },
+    {
+      "name": "Chabad movement",
+      "category": "Religion",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 1
+    },
+    {
+      "name": "Charles Darwin-Lincoln dispute",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 47
+    },
+    {
+      "name": "CheeseDreams",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 48
+    },
+    {
+      "name": "CheeseDreams 2",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 49
+    },
+    {
+      "name": "ChildofMidnight",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 50
+    },
+    {
+      "name": "ChrisO and Levzur",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 51
+    },
+    {
+      "name": "Christianity and Sexuality",
+      "category": "Religion",
+      "dispute_type": "Content",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 2
+    },
+    {
+      "name": "Chuck F",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 52
+    },
+    {
+      "name": "Cirt and Jayen466",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 53
+    },
+    {
+      "name": "Civility enforcement",
+      "category": "Editor Conduct",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 8
+    },
+    {
+      "name": "Civility in infobox discussions",
+      "category": "Editor Conduct",
+      "dispute_type": "Hybrid",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 9
+    },
+    {
+      "name": "Ciz",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 54
+    },
+    {
+      "name": "Climate change",
+      "category": "Science & Medicine",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 3
+    },
+    {
+      "name": "Climate change dispute",
+      "category": "Science & Medicine",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 4
+    },
+    {
+      "name": "Climate change dispute 2",
+      "category": "Science & Medicine",
+      "dispute_type": "Content",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 5
+    },
+    {
+      "name": "Cold fusion 2",
+      "category": "Science & Medicine",
+      "dispute_type": "Content",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 6
+    },
+    {
+      "name": "Collect and others",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Very Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 55
+    },
+    {
+      "name": "Commodore Sloat-Biophys",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 56
+    },
+    {
+      "name": "Conduct in deletion-related editing",
+      "category": "Editor Conduct",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 10
+    },
+    {
+      "name": "Conduct of Mister Wiki editors",
+      "category": "Editor Conduct",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 11
+    },
+    {
+      "name": "Conflict of interest management",
+      "category": "Procedural",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 2
+    },
+    {
+      "name": "CoolKatt number 99999",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 99999,
+      "is_recurring": true,
+      "index_in_category": 58
+    },
+    {
+      "name": "Coolcat, Davenbelle and Stereotek",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 57
+    },
+    {
+      "name": "Copperchair",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 59
+    },
+    {
+      "name": "Dalmatia",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 8
+    },
+    {
+      "name": "DangerousPanda",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 60
+    },
+    {
+      "name": "DarrenRay and 2006BC",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 61
+    },
+    {
+      "name": "Date delinking",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 5
+    },
+    {
+      "name": "Deathrocker",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 62
+    },
+    {
+      "name": "Deeceevoice",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 63
+    },
+    {
+      "name": "Deir Yassin massacre",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 9
+    },
+    {
+      "name": "Depleted uranium",
+      "category": "Science & Medicine",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 8
+    },
+    {
+      "name": "Dionyseus",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 64
+    },
+    {
+      "name": "DotSix",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 65
+    },
+    {
+      "name": "Dr Zen",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 66
+    },
+    {
+      "name": "DreamGuy",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 67
+    },
+    {
+      "name": "DreamGuy 2",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 68
+    },
+    {
+      "name": "Durova",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 69
+    },
+    {
+      "name": "Dyslexic Agnostic",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 70
+    },
+    {
+      "name": "E104421-Tajik",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 71
+    },
+    {
+      "name": "Eastern Europe",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 10
+    },
+    {
+      "name": "Eastern European disputes",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 11
+    },
+    {
+      "name": "Eastern European mailing list",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 12
+    },
+    {
+      "name": "Ebionites",
+      "category": "Religion",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 3
+    },
+    {
+      "name": "Ebionites 3",
+      "category": "Religion",
+      "dispute_type": "Content",
+      "complexity": "Complex",
+      "recurrence": 3,
+      "is_recurring": true,
+      "index_in_category": 4
+    },
+    {
+      "name": "Ed Poor",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 72
+    },
+    {
+      "name": "Ed Poor 2",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 73
+    },
+    {
+      "name": "Editing of Biographies of Living Persons",
+      "category": "Social & Cultural",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 6
+    },
+    {
+      "name": "Editor conduct in e-cigs articles",
+      "category": "Editor Conduct",
+      "dispute_type": "Hybrid",
+      "complexity": "Very Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 12
+    },
+    {
+      "name": "EffK",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 74
+    },
+    {
+      "name": "Ehud Lesar",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 75
+    },
+    {
+      "name": "Election",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 6
+    },
+    {
+      "name": "Emico",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 76
+    },
+    {
+      "name": "Enigmaman",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 77
+    },
+    {
+      "name": "Episodes and characters 2",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 7
+    },
+    {
+      "name": "Ericsaindon2",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 78
+    },
+    {
+      "name": "Eternal Equinox",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 79
+    },
+    {
+      "name": "Everyking",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 80
+    },
+    {
+      "name": "Everyking 2",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 81
+    },
+    {
+      "name": "Everyking 3",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 3,
+      "is_recurring": true,
+      "index_in_category": 82
+    },
+    {
+      "name": "Eyrian",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 83
+    },
+    {
+      "name": "Falun Gong",
+      "category": "Religion",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 5
+    },
+    {
+      "name": "Falun Gong 2",
+      "category": "Religion",
+      "dispute_type": "Content",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 6
+    },
+    {
+      "name": "Ferrylodge",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 84
+    },
+    {
+      "name": "FourthAve",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 85
+    },
+    {
+      "name": "Fram",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 86
+    },
+    {
+      "name": "Francis Schuckardt",
+      "category": "Religion",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 7
+    },
+    {
+      "name": "Franco-Mongol alliance",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 13
+    },
+    {
+      "name": "Fred Bauder",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 87
+    },
+    {
+      "name": "Freedom skies",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 88
+    },
+    {
+      "name": "Freestylefrappe",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 89
+    },
+    {
+      "name": "Fringe science",
+      "category": "Science & Medicine",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 9
+    },
+    {
+      "name": "FuelWagon v. Ed Poor",
+      "category": "Editor Conduct",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 13
+    },
+    {
+      "name": "F\u00e6",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 90
+    },
+    {
+      "name": "G.-M. Cupertino",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 91
+    },
+    {
+      "name": "GRider",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 101
+    },
+    {
+      "name": "Gabrielsimon",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 92
+    },
+    {
+      "name": "Gamaliel and others",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Very Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 93
+    },
+    {
+      "name": "GamerGate",
+      "category": "Social & Cultural",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 7
+    },
+    {
+      "name": "Gender and sexuality",
+      "category": "Social & Cultural",
+      "dispute_type": "Content",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 8
+    },
+    {
+      "name": "Gene Poole vs. Samboy",
+      "category": "Editor Conduct",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 14
+    },
+    {
+      "name": "Genetically modified organisms",
+      "category": "Science & Medicine",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 10
+    },
+    {
+      "name": "German war effort",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 14
+    },
+    {
+      "name": "Geschichte",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 94
+    },
+    {
+      "name": "Giano",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 95
+    },
+    {
+      "name": "GiantSnowman",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 96
+    },
+    {
+      "name": "Gibraltar",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 15
+    },
+    {
+      "name": "Gibraltarian",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 16
+    },
+    {
+      "name": "Giovanni33",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 97
+    },
+    {
+      "name": "Giovanni33-John Smith's",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 98
+    },
+    {
+      "name": "GoodDay",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 99
+    },
+    {
+      "name": "Great Irish Famine",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 8
+    },
+    {
+      "name": "GreekWarrior",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 100
+    },
+    {
+      "name": "Guanaco, MarkSweep, et al",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Very Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 102
+    },
+    {
+      "name": "Gun control",
+      "category": "Social & Cultural",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 9
+    },
+    {
+      "name": "Gundagai editors",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 103
+    },
+    {
+      "name": "Gzornenplatz",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 104
+    },
+    {
+      "name": "Gzornenplatz, Kevin Baas, Shorne, VeryVerily",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 105
+    },
+    {
+      "name": "Henri Coanda",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 9
+    },
+    {
+      "name": "Henrygb",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 106
+    },
+    {
+      "name": "Heqong",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 107
+    },
+    {
+      "name": "Highways",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 10
+    },
+    {
+      "name": "Highways 2",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 11
+    },
+    {
+      "name": "His excellency",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 108
+    },
+    {
+      "name": "Historical elections",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 17
+    },
+    {
+      "name": "Historicity of Jesus",
+      "category": "Religion",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 8
+    },
+    {
+      "name": "HistoryBuffEr and Jayjg",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 109
+    },
+    {
+      "name": "Hkelkar 2",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 110
+    },
+    {
+      "name": "Honda S2000",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 12
+    },
+    {
+      "name": "Horn of Africa",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 18
+    },
+    {
+      "name": "Hunger",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 13
+    },
+    {
+      "name": "IRC",
+      "category": "Procedural",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 3
+    },
+    {
+      "name": "IZAK",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 125
+    },
+    {
+      "name": "Iloveminun",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 111
+    },
+    {
+      "name": "India-Pakistan",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 19
+    },
+    {
+      "name": "Indian military history",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 112
+    },
+    {
+      "name": "Industrial agriculture",
+      "category": "Science & Medicine",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 11
+    },
+    {
+      "name": "Infinity0",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 113
+    },
+    {
+      "name": "Infoboxes",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 14
+    },
+    {
+      "name": "Infoboxes/Review",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 15
+    },
+    {
+      "name": "Instantnood 2",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 114
+    },
+    {
+      "name": "Instantnood 3",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 3,
+      "is_recurring": true,
+      "index_in_category": 115
+    },
+    {
+      "name": "Instantnood, et al.",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Very Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 116
+    },
+    {
+      "name": "Intangible",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 117
+    },
+    {
+      "name": "Interactions at GGTF",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 118
+    },
+    {
+      "name": "International Churches of Christ",
+      "category": "Religion",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 9
+    },
+    {
+      "name": "Iranian politics",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 20
+    },
+    {
+      "name": "Irate",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 119
+    },
+    {
+      "name": "Irishpunktom",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 120
+    },
+    {
+      "name": "Irismeister",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 121
+    },
+    {
+      "name": "Irismeister 2",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 122
+    },
+    {
+      "name": "Irismeister 3",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 3,
+      "is_recurring": true,
+      "index_in_category": 123
+    },
+    {
+      "name": "IronDuke and Gnetwerker",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 124
+    },
+    {
+      "name": "Israel-Lebanon",
+      "category": "Geopolitics",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 21
+    },
+    {
+      "name": "Israeli apartheid",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 22
+    },
+    {
+      "name": "JRR Trollkien",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 142
+    },
+    {
+      "name": "Jacrosse",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 126
+    },
+    {
+      "name": "JarlaxleArtemis",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 127
+    },
+    {
+      "name": "JarlaxleArtemis 2",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 128
+    },
+    {
+      "name": "Jeffrey O. Gustafson",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 129
+    },
+    {
+      "name": "Jeffrey Vernon Merkey",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 130
+    },
+    {
+      "name": "Jguk",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 131
+    },
+    {
+      "name": "Jim62sch",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 133
+    },
+    {
+      "name": "Jimmyvanthach",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 134
+    },
+    {
+      "name": "Jmfangio-Chrisjnelson",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 135
+    },
+    {
+      "name": "Joefromrandb and others",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Very Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 136
+    },
+    {
+      "name": "John Buscema",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 16
+    },
+    {
+      "name": "John Gohde",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 137
+    },
+    {
+      "name": "John Gohde 2",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 138
+    },
+    {
+      "name": "Johnski",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 139
+    },
+    {
+      "name": "JonGwynne",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 141
+    },
+    {
+      "name": "Jonathunder",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 140
+    },
+    {
+      "name": "Jytdog",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 143
+    },
+    {
+      "name": "K1",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 144
+    },
+    {
+      "name": "KDRGibby",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 148
+    },
+    {
+      "name": "KJV",
+      "category": "Religion",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 10
+    },
+    {
+      "name": "Kafziel",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 145
+    },
+    {
+      "name": "KaintheScion et al.",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Very Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 146
+    },
+    {
+      "name": "Karmafist",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 147
+    },
+    {
+      "name": "Keetoowah",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 149
+    },
+    {
+      "name": "Kehrli",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 150
+    },
+    {
+      "name": "Kehrli 2",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 151
+    },
+    {
+      "name": "Kenneth Alan",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 152
+    },
+    {
+      "name": "Kevin Gorman",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 153
+    },
+    {
+      "name": "Kiefer.Wolfowitz and Ironholds",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 154
+    },
+    {
+      "name": "Koavf",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 155
+    },
+    {
+      "name": "Kosovo",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 23
+    },
+    {
+      "name": "Kuban kazak",
+      "category": "Editor Conduct",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 15
+    },
+    {
+      "name": "Kudpung",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 156
+    },
+    {
+      "name": "Kurds and Kurdistan",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 24
+    },
+    {
+      "name": "Kven",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 157
+    },
+    {
+      "name": "Kww and The Rambling Man",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 158
+    },
+    {
+      "name": "Lance6wins",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 159
+    },
+    {
+      "name": "Landmark Worldwide",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 160
+    },
+    {
+      "name": "Lapsed Pacifist",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 161
+    },
+    {
+      "name": "Lapsed Pacifist 2",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 162
+    },
+    {
+      "name": "LevelCheck",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 163
+    },
+    {
+      "name": "Leyasu",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 164
+    },
+    {
+      "name": "Liancourt Rocks",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 25
+    },
+    {
+      "name": "Libertas",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 165
+    },
+    {
+      "name": "Licorne",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 166
+    },
+    {
+      "name": "Lightbreather",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 167
+    },
+    {
+      "name": "Lightbringer",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 168
+    },
+    {
+      "name": "Lir",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 169
+    },
+    {
+      "name": "List of Republics",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 17
+    },
+    {
+      "name": "Locke Cole",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 170
+    },
+    {
+      "name": "Longevity",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 18
+    },
+    {
+      "name": "Louis Epstein",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 171
+    },
+    {
+      "name": "Lyndon LaRouche",
+      "category": "Social & Cultural",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 10
+    },
+    {
+      "name": "Lyndon LaRouche 2",
+      "category": "Social & Cultural",
+      "dispute_type": "Content",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 11
+    },
+    {
+      "name": "MONGO",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 186
+    },
+    {
+      "name": "MZMcBride",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 191
+    },
+    {
+      "name": "MZMcBride 2",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 192
+    },
+    {
+      "name": "Macedonia 2",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 172
+    },
+    {
+      "name": "Magioladitis",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 173
+    },
+    {
+      "name": "Magioladitis 2",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 174
+    },
+    {
+      "name": "Manipulation of BLPs",
+      "category": "Social & Cultural",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 12
+    },
+    {
+      "name": "Manning naming dispute",
+      "category": "Social & Cultural",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 13
+    },
+    {
+      "name": "Mantanmoreland",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 175
+    },
+    {
+      "name": "Maoririder",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 176
+    },
+    {
+      "name": "Marcosantezana",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 177
+    },
+    {
+      "name": "Martinphi-ScienceApologist",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 178
+    },
+    {
+      "name": "Marudubshinki",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 179
+    },
+    {
+      "name": "Mattisse",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 180
+    },
+    {
+      "name": "Mav v. 168",
+      "category": "Editor Conduct",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 168,
+      "is_recurring": true,
+      "index_in_category": 16
+    },
+    {
+      "name": "Media Viewer RfC",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 19
+    },
+    {
+      "name": "Medicine",
+      "category": "Science & Medicine",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 12
+    },
+    {
+      "name": "Messhermit",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 181
+    },
+    {
+      "name": "Michael Hardy",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 182
+    },
+    {
+      "name": "MickMacNee",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 183
+    },
+    {
+      "name": "Miskin",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 184
+    },
+    {
+      "name": "Mlorrey",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 185
+    },
+    {
+      "name": "Moby Dick",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 20
+    },
+    {
+      "name": "Monicasdude",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 187
+    },
+    {
+      "name": "Monty Hall problem",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 21
+    },
+    {
+      "name": "Motorsports",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 22
+    },
+    {
+      "name": "Mr-Natural-Health",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 188
+    },
+    {
+      "name": "Mudaliar-Venki123",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 189
+    },
+    {
+      "name": "Muhammad images",
+      "category": "Religion",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 11
+    },
+    {
+      "name": "Mzajac",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 190
+    },
+    {
+      "name": "NYScholar",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 201
+    },
+    {
+      "name": "Neelix",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 193
+    },
+    {
+      "name": "Netoholic",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 194
+    },
+    {
+      "name": "Netoholic 2",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 195
+    },
+    {
+      "name": "Neuro-linguistic programming",
+      "category": "Science & Medicine",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 13
+    },
+    {
+      "name": "New World Translation",
+      "category": "Religion",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 12
+    },
+    {
+      "name": "Nightscream",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 196
+    },
+    {
+      "name": "Njyoder",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 197
+    },
+    {
+      "name": "Nobs01 and others",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Very Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 198
+    },
+    {
+      "name": "Noleander",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 199
+    },
+    {
+      "name": "Noloop",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 200
+    },
+    {
+      "name": "Obama articles",
+      "category": "Social & Cultural",
+      "dispute_type": "Content",
+      "complexity": "Very Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 14
+    },
+    {
+      "name": "OccultZone and others",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Very Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 202
+    },
+    {
+      "name": "OldRight",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 203
+    },
+    {
+      "name": "Onefortyone",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 204
+    },
+    {
+      "name": "Orthogonal",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 205
+    },
+    {
+      "name": "Ottava Rima restrictions",
+      "category": "Editor Conduct",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 17
+    },
+    {
+      "name": "Ottoman Empire\u2013Turkey naming dispute",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 26
+    },
+    {
+      "name": "PHG",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 211
+    },
+    {
+      "name": "PSYCH",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 217
+    },
+    {
+      "name": "Palestine-Israel articles 3",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Very Complex",
+      "recurrence": 3,
+      "is_recurring": true,
+      "index_in_category": 27
+    },
+    {
+      "name": "Palestine-Israel articles 4",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Very Complex",
+      "recurrence": 4,
+      "is_recurring": true,
+      "index_in_category": 28
+    },
+    {
+      "name": "Palestine-Israel articles 5",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Very Complex",
+      "recurrence": 5,
+      "is_recurring": true,
+      "index_in_category": 29
+    },
+    {
+      "name": "PalestineRemembered",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 30
+    },
+    {
+      "name": "Paranormal",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 206
+    },
+    {
+      "name": "Pat8722",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 207
+    },
+    {
+      "name": "Paul Vogel",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 208
+    },
+    {
+      "name": "Pbsouthwood",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 209
+    },
+    {
+      "name": "Pedophilia userbox wheel war",
+      "category": "Editor Conduct",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 18
+    },
+    {
+      "name": "Perth",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 210
+    },
+    {
+      "name": "Physchim62",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 212
+    },
+    {
+      "name": "Pigsonthewing",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 213
+    },
+    {
+      "name": "Pigsonthewing 2",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 214
+    },
+    {
+      "name": "Piotrus",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 215
+    },
+    {
+      "name": "Plautus satire vs Raul654",
+      "category": "Editor Conduct",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 19
+    },
+    {
+      "name": "PoolGuy",
+      "category": "Procedural",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 4
+    },
+    {
+      "name": "Portals",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 23
+    },
+    {
+      "name": "Prem Rawat",
+      "category": "Religion",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 13
+    },
+    {
+      "name": "Prem Rawat 2",
+      "category": "Religion",
+      "dispute_type": "Content",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 14
+    },
+    {
+      "name": "Privatemusings",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 216
+    },
+    {
+      "name": "Pseudoscience",
+      "category": "Science & Medicine",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 14
+    },
+    {
+      "name": "Pudgenet",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 218
+    },
+    {
+      "name": "R. fiend",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 219
+    },
+    {
+      "name": "REX",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 230
+    },
+    {
+      "name": "RJII",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 238
+    },
+    {
+      "name": "RJII v. Firebug",
+      "category": "Editor Conduct",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 23
+    },
+    {
+      "name": "RK",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 239
+    },
+    {
+      "name": "RK 2",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 240
+    },
+    {
+      "name": "Race and intelligence",
+      "category": "Social & Cultural",
+      "dispute_type": "Content",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 15
+    },
+    {
+      "name": "Race and politics",
+      "category": "Social & Cultural",
+      "dispute_type": "Content",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 16
+    },
+    {
+      "name": "Racepacket",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 220
+    },
+    {
+      "name": "Railpage Australia",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 221
+    },
+    {
+      "name": "Rainbowwarrior1977",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 222
+    },
+    {
+      "name": "Rajput",
+      "category": "Social & Cultural",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 17
+    },
+    {
+      "name": "Rama",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 223
+    },
+    {
+      "name": "Rangerdude",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 224
+    },
+    {
+      "name": "Raphael1",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 225
+    },
+    {
+      "name": "Reddi 2",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 226
+    },
+    {
+      "name": "Regarding Ted Kennedy",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 227
+    },
+    {
+      "name": "Regarding The Bogdanov Affair",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 228
+    },
+    {
+      "name": "Reithy",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 229
+    },
+    {
+      "name": "Reversal and reinstatement of Athaenara's block",
+      "category": "Editor Conduct",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 20
+    },
+    {
+      "name": "Reversion of office actions",
+      "category": "Editor Conduct",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 21
+    },
+    {
+      "name": "Rex071404",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 231
+    },
+    {
+      "name": "Rex071404 2",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 232
+    },
+    {
+      "name": "Rex071404 3",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 3,
+      "is_recurring": true,
+      "index_in_category": 233
+    },
+    {
+      "name": "Rex071404 4",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Very Complex",
+      "recurrence": 4,
+      "is_recurring": true,
+      "index_in_category": 234
+    },
+    {
+      "name": "RexxS",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 235
+    },
+    {
+      "name": "Richard Arthur Norton (1958- )",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 236
+    },
+    {
+      "name": "RickK vs. Guanaco",
+      "category": "Editor Conduct",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 22
+    },
+    {
+      "name": "Rienzo",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 237
+    },
+    {
+      "name": "Rktect",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 241
+    },
+    {
+      "name": "Robert Blair",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 242
+    },
+    {
+      "name": "Robert I",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 24
+    },
+    {
+      "name": "Robert the Bruce",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 25
+    },
+    {
+      "name": "RodentofDeath",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 243
+    },
+    {
+      "name": "Rodhullandemu",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 244
+    },
+    {
+      "name": "Russavia-Biophys",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 245
+    },
+    {
+      "name": "Ruy Lopez",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 246
+    },
+    {
+      "name": "Ryulong",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 247
+    },
+    {
+      "name": "Sadi Carnot",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 248
+    },
+    {
+      "name": "Saladin1970 appeal",
+      "category": "Editor Conduct",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 24
+    },
+    {
+      "name": "Sam Spade",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 249
+    },
+    {
+      "name": "Sarah Palin protection wheel war",
+      "category": "Social & Cultural",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 18
+    },
+    {
+      "name": "Sathya Sai Baba",
+      "category": "Religion",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 15
+    },
+    {
+      "name": "SchuminWeb",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 250
+    },
+    {
+      "name": "Scientology",
+      "category": "Religion",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 16
+    },
+    {
+      "name": "Scottywong",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 251
+    },
+    {
+      "name": "Seeyou",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 252
+    },
+    {
+      "name": "SemBubenny",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 253
+    },
+    {
+      "name": "Senkaku Islands",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 31
+    },
+    {
+      "name": "SevenOfDiamonds",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 254
+    },
+    {
+      "name": "Sexology",
+      "category": "Social & Cultural",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 19
+    },
+    {
+      "name": "Shakespeare authorship question",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 26
+    },
+    {
+      "name": "Shiloh",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 255
+    },
+    {
+      "name": "Shorne and Fred Bauder",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 256
+    },
+    {
+      "name": "Silverback",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 257
+    },
+    {
+      "name": "Skepticism and coordinated editing",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 258
+    },
+    {
+      "name": "Skyring",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 259
+    },
+    {
+      "name": "SlimVirgin-Lar",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 260
+    },
+    {
+      "name": "SmallCat dispute",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 261
+    },
+    {
+      "name": "Snowspinner vs. Lir",
+      "category": "Editor Conduct",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 25
+    },
+    {
+      "name": "Socionics",
+      "category": "Science & Medicine",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 15
+    },
+    {
+      "name": "Sockpuppet investigation block",
+      "category": "Editor Conduct",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 26
+    },
+    {
+      "name": "Sortan",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 262
+    },
+    {
+      "name": "Speed of light",
+      "category": "Science & Medicine",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 16
+    },
+    {
+      "name": "SqueakBox and Zapatancas",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 263
+    },
+    {
+      "name": "St Christopher",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 264
+    },
+    {
+      "name": "Stefanomencarelli",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 265
+    },
+    {
+      "name": "Stephen",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 266
+    },
+    {
+      "name": "Stevertigo",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 267
+    },
+    {
+      "name": "Stevertigo 2",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 268
+    },
+    {
+      "name": "Strider12",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 269
+    },
+    {
+      "name": "Tang Dynasty",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 32
+    },
+    {
+      "name": "Tango",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 270
+    },
+    {
+      "name": "Tea Party movement",
+      "category": "Social & Cultural",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 20
+    },
+    {
+      "name": "Technical 13",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 13,
+      "is_recurring": true,
+      "index_in_category": 271
+    },
+    {
+      "name": "Template",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 27
+    },
+    {
+      "name": "Terryeo",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 272
+    },
+    {
+      "name": "The Rambling Man",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 273
+    },
+    {
+      "name": "Theodore7",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 274
+    },
+    {
+      "name": "Theresa knott vs. Mr-Natural-Health",
+      "category": "Editor Conduct",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 27
+    },
+    {
+      "name": "TimidGuy ban appeal",
+      "category": "Editor Conduct",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 28
+    },
+    {
+      "name": "TingMing",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 275
+    },
+    {
+      "name": "Tkorrovi and Paul Beardsell",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 276
+    },
+    {
+      "name": "Tobias Conradi",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 277
+    },
+    {
+      "name": "Toddst1",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 278
+    },
+    {
+      "name": "Tommstein",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 279
+    },
+    {
+      "name": "Tothwolf",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 280
+    },
+    {
+      "name": "Transcendental Meditation movement",
+      "category": "Religion",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 17
+    },
+    {
+      "name": "Transgender healthcare and people",
+      "category": "Social & Cultural",
+      "dispute_type": "Content",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 21
+    },
+    {
+      "name": "Transnistria",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 33
+    },
+    {
+      "name": "Tree shaping",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 28
+    },
+    {
+      "name": "Trey Stone Appeal",
+      "category": "Editor Conduct",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 29
+    },
+    {
+      "name": "Trey Stone and Davenbelle",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 281
+    },
+    {
+      "name": "Turrican and VeryVerily",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 282
+    },
+    {
+      "name": "Ulritz",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 283
+    },
+    {
+      "name": "Ultramarine",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 284
+    },
+    {
+      "name": "User:66.20.28.21 and other accounts",
+      "category": "Procedural",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 5
+    },
+    {
+      "name": "User:Guanaco versus User:Lir",
+      "category": "Procedural",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 6
+    },
+    {
+      "name": "User:PolishPoliticians",
+      "category": "Procedural",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 7
+    },
+    {
+      "name": "Venezuelan politics",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 34
+    },
+    {
+      "name": "VeryVerily",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 285
+    },
+    {
+      "name": "Vision Thing",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 286
+    },
+    {
+      "name": "Vivaldi",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 29
+    },
+    {
+      "name": "WHEELER",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 289
+    },
+    {
+      "name": "Waldorf education",
+      "category": "Religion",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 18
+    },
+    {
+      "name": "War of the Pacific",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 35
+    },
+    {
+      "name": "Wareware",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 287
+    },
+    {
+      "name": "Warren Kinsella",
+      "category": "Social & Cultural",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 22
+    },
+    {
+      "name": "Waterboarding",
+      "category": "Social & Cultural",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 23
+    },
+    {
+      "name": "WebEx and Min Zhu",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 288
+    },
+    {
+      "name": "Webcomics",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 30
+    },
+    {
+      "name": "West Bank - Judea and Samaria",
+      "category": "Geopolitics",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 36
+    },
+    {
+      "name": "Wifione",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 290
+    },
+    {
+      "name": "Wik",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 291
+    },
+    {
+      "name": "Wik2",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 292
+    },
+    {
+      "name": "WikiProject Tropical Cyclones",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 31
+    },
+    {
+      "name": "WikiUser",
+      "category": "Procedural",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 9
+    },
+    {
+      "name": "Wikicology",
+      "category": "Procedural",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 8
+    },
+    {
+      "name": "Wilkes, Wyss and Onefortyone",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 293
+    },
+    {
+      "name": "Winhunter",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 294
+    },
+    {
+      "name": "Winter Soldier",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 295
+    },
+    {
+      "name": "Winter Soldier 2",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 296
+    },
+    {
+      "name": "World War II",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 32
+    },
+    {
+      "name": "World War II and the history of Jews in Poland",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "complexity": "Complex",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 33
+    },
+    {
+      "name": "Xed",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 297
+    },
+    {
+      "name": "Xed 2",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 298
+    },
+    {
+      "name": "Yasuke",
+      "category": "Social & Cultural",
+      "dispute_type": "Content",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 24
+    },
+    {
+      "name": "Yorkshirian",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 299
+    },
+    {
+      "name": "Yuber",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 300
+    },
+    {
+      "name": "ZAROVE",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 302
+    },
+    {
+      "name": "Zacheus-jkb",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 301
+    },
+    {
+      "name": "Zen-master",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 303
+    },
+    {
+      "name": "Zephram Stark",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 304
+    },
+    {
+      "name": "Zeq",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 305
+    },
+    {
+      "name": "Zeq-Zero0000",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 306
+    },
+    {
+      "name": "Zer0faults",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 307
+    },
+    {
+      "name": "Zivinbudas",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Simple",
+      "recurrence": 1,
+      "is_recurring": false,
+      "index_in_category": 308
+    },
+    {
+      "name": "jguk 2",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "complexity": "Complex",
+      "recurrence": 2,
+      "is_recurring": true,
+      "index_in_category": 132
+    }
+  ],
+  "summary": {
+    "total_cases": 481,
+    "categories": {
+      "Editor Disputes": 309,
+      "Science & Medicine": 17,
+      "Social & Cultural": 25,
+      "Geopolitics": 37,
+      "Editor Conduct": 30,
+      "Content & Policy": 34,
+      "Religion": 19,
+      "Procedural": 10
+    },
+    "dispute_types": {
+      "Conduct": 350,
+      "Content": 129,
+      "Hybrid": 2
+    },
+    "complexity": {
+      "Simple": 389,
+      "Complex": 75,
+      "Very Complex": 17
+    },
+    "recurring_cases": 51,
+    "crosstab": {
+      "Editor Disputes": {
+        "Content": 0,
+        "Conduct": 309,
+        "Hybrid": 0
+      },
+      "Science & Medicine": {
+        "Content": 17,
+        "Conduct": 0,
+        "Hybrid": 0
+      },
+      "Social & Cultural": {
+        "Content": 24,
+        "Conduct": 1,
+        "Hybrid": 0
+      },
+      "Geopolitics": {
+        "Content": 35,
+        "Conduct": 2,
+        "Hybrid": 0
+      },
+      "Editor Conduct": {
+        "Content": 0,
+        "Conduct": 28,
+        "Hybrid": 2
+      },
+      "Content & Policy": {
+        "Content": 34,
+        "Conduct": 0,
+        "Hybrid": 0
+      },
+      "Religion": {
+        "Content": 19,
+        "Conduct": 0,
+        "Hybrid": 0
+      },
+      "Procedural": {
+        "Content": 0,
+        "Conduct": 10,
+        "Hybrid": 0
+      }
+    }
+  },
+  "lifecycle": {
+    "stages": [
+      {
+        "id": "talk",
+        "label": "Talk Page",
+        "order": 0,
+        "description": "Informal discussion between editors on article talk pages"
+      },
+      {
+        "id": "3o",
+        "label": "Third Opinion",
+        "order": 1,
+        "description": "Request for uninvolved third editor (2-party disputes only)"
+      },
+      {
+        "id": "rfc",
+        "label": "Request for Comment",
+        "order": 1,
+        "description": "Broader community input solicited for multi-party disputes"
+      },
+      {
+        "id": "drn",
+        "label": "Dispute Resolution Noticeboard",
+        "order": 2,
+        "description": "Structured mediation by trained volunteers"
+      },
+      {
+        "id": "ani",
+        "label": "Administrators' Noticeboard",
+        "order": 3,
+        "description": "Admin intervention for conduct violations"
+      },
+      {
+        "id": "arbcom",
+        "label": "Arbitration Committee",
+        "order": 4,
+        "description": "Binding decisions by elected committee\u2014court of last resort"
+      },
+      {
+        "id": "resolved",
+        "label": "Resolved",
+        "order": 5,
+        "description": "Dispute concluded via consensus, sanctions, or binding ruling"
+      }
+    ],
+    "transitions": [
+      {
+        "source": "talk",
+        "target": "3o",
+        "type": "content",
+        "value": 35
+      },
+      {
+        "source": "talk",
+        "target": "rfc",
+        "type": "content",
+        "value": 45
+      },
+      {
+        "source": "talk",
+        "target": "ani",
+        "type": "conduct",
+        "value": 30
+      },
+      {
+        "source": "talk",
+        "target": "resolved",
+        "type": "consensus",
+        "value": 60
+      },
+      {
+        "source": "3o",
+        "target": "drn",
+        "type": "escalation",
+        "value": 15
+      },
+      {
+        "source": "3o",
+        "target": "resolved",
+        "type": "consensus",
+        "value": 20
+      },
+      {
+        "source": "rfc",
+        "target": "drn",
+        "type": "escalation",
+        "value": 20
+      },
+      {
+        "source": "rfc",
+        "target": "ani",
+        "type": "escalation",
+        "value": 10
+      },
+      {
+        "source": "rfc",
+        "target": "resolved",
+        "type": "consensus",
+        "value": 25
+      },
+      {
+        "source": "drn",
+        "target": "ani",
+        "type": "escalation",
+        "value": 18
+      },
+      {
+        "source": "drn",
+        "target": "arbcom",
+        "type": "escalation",
+        "value": 8
+      },
+      {
+        "source": "drn",
+        "target": "resolved",
+        "type": "mediated",
+        "value": 22
+      },
+      {
+        "source": "ani",
+        "target": "arbcom",
+        "type": "escalation",
+        "value": 25
+      },
+      {
+        "source": "ani",
+        "target": "resolved",
+        "type": "sanctioned",
+        "value": 33
+      },
+      {
+        "source": "arbcom",
+        "target": "resolved",
+        "type": "binding",
+        "value": 33
+      }
+    ]
+  },
+  "network": [
+    {
+      "source": "Geopolitics",
+      "target": "Editor Conduct",
+      "strength": 45,
+      "reason": "Edit wars on geopolitical articles trigger conduct cases"
+    },
+    {
+      "source": "Science & Medicine",
+      "target": "Editor Conduct",
+      "strength": 30,
+      "reason": "Climate/COVID disputes lead to editor sanctions"
+    },
+    {
+      "source": "Religion",
+      "target": "Social & Cultural",
+      "strength": 20,
+      "reason": "Religious topics intersect social issues"
+    },
+    {
+      "source": "Religion",
+      "target": "Editor Conduct",
+      "strength": 25,
+      "reason": "Religious article edit wars"
+    },
+    {
+      "source": "Social & Cultural",
+      "target": "Editor Conduct",
+      "strength": 35,
+      "reason": "BLP and social issue disputes escalate"
+    },
+    {
+      "source": "Content & Policy",
+      "target": "Procedural",
+      "strength": 15,
+      "reason": "Policy disputes generate procedural cases"
+    },
+    {
+      "source": "Geopolitics",
+      "target": "Social & Cultural",
+      "strength": 18,
+      "reason": "Geopolitical topics intersect social issues"
+    },
+    {
+      "source": "Science & Medicine",
+      "target": "Content & Policy",
+      "strength": 12,
+      "reason": "Scientific sourcing disputes"
+    }
+  ],
+  "recurring_families": [
+    {
+      "base_name": "Rex071404",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "count": 4,
+      "max_recurrence": 4,
+      "cases": [
+        "Rex071404",
+        "Rex071404 2",
+        "Rex071404 3",
+        "Rex071404 4"
+      ]
+    },
+    {
+      "base_name": "Everyking",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "count": 3,
+      "max_recurrence": 3,
+      "cases": [
+        "Everyking",
+        "Everyking 2",
+        "Everyking 3"
+      ]
+    },
+    {
+      "base_name": "Irismeister",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "count": 3,
+      "max_recurrence": 3,
+      "cases": [
+        "Irismeister",
+        "Irismeister 2",
+        "Irismeister 3"
+      ]
+    },
+    {
+      "base_name": "Palestine-Israel articles",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "count": 3,
+      "max_recurrence": 5,
+      "cases": [
+        "Palestine-Israel articles 3",
+        "Palestine-Israel articles 4",
+        "Palestine-Israel articles 5"
+      ]
+    },
+    {
+      "base_name": "172",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "count": 2,
+      "max_recurrence": 2,
+      "cases": [
+        "172",
+        "172 2"
+      ]
+    },
+    {
+      "base_name": "American politics",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "count": 2,
+      "max_recurrence": 2,
+      "cases": [
+        "American politics",
+        "American politics 2"
+      ]
+    },
+    {
+      "base_name": "Arbitration enforcement",
+      "category": "Editor Conduct",
+      "dispute_type": "Conduct",
+      "count": 2,
+      "max_recurrence": 2,
+      "cases": [
+        "Arbitration enforcement",
+        "Arbitration enforcement 2"
+      ]
+    },
+    {
+      "base_name": "Armenia-Azerbaijan",
+      "category": "Geopolitics",
+      "dispute_type": "Content",
+      "count": 2,
+      "max_recurrence": 3,
+      "cases": [
+        "Armenia-Azerbaijan 2",
+        "Armenia-Azerbaijan 3"
+      ]
+    },
+    {
+      "base_name": "Article titles and capitalisation",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "count": 2,
+      "max_recurrence": 2,
+      "cases": [
+        "Article titles and capitalisation",
+        "Article titles and capitalisation 2"
+      ]
+    },
+    {
+      "base_name": "Betacommand",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "count": 2,
+      "max_recurrence": 3,
+      "cases": [
+        "Betacommand",
+        "Betacommand 3"
+      ]
+    },
+    {
+      "base_name": "Cantus",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "count": 2,
+      "max_recurrence": 3,
+      "cases": [
+        "Cantus",
+        "Cantus 3"
+      ]
+    },
+    {
+      "base_name": "CheeseDreams",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "count": 2,
+      "max_recurrence": 2,
+      "cases": [
+        "CheeseDreams",
+        "CheeseDreams 2"
+      ]
+    },
+    {
+      "base_name": "Climate change dispute",
+      "category": "Science & Medicine",
+      "dispute_type": "Content",
+      "count": 2,
+      "max_recurrence": 2,
+      "cases": [
+        "Climate change dispute",
+        "Climate change dispute 2"
+      ]
+    },
+    {
+      "base_name": "DreamGuy",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "count": 2,
+      "max_recurrence": 2,
+      "cases": [
+        "DreamGuy",
+        "DreamGuy 2"
+      ]
+    },
+    {
+      "base_name": "Ebionites",
+      "category": "Religion",
+      "dispute_type": "Content",
+      "count": 2,
+      "max_recurrence": 3,
+      "cases": [
+        "Ebionites",
+        "Ebionites 3"
+      ]
+    },
+    {
+      "base_name": "Ed Poor",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "count": 2,
+      "max_recurrence": 2,
+      "cases": [
+        "Ed Poor",
+        "Ed Poor 2"
+      ]
+    },
+    {
+      "base_name": "Falun Gong",
+      "category": "Religion",
+      "dispute_type": "Content",
+      "count": 2,
+      "max_recurrence": 2,
+      "cases": [
+        "Falun Gong",
+        "Falun Gong 2"
+      ]
+    },
+    {
+      "base_name": "Highways",
+      "category": "Content & Policy",
+      "dispute_type": "Content",
+      "count": 2,
+      "max_recurrence": 2,
+      "cases": [
+        "Highways",
+        "Highways 2"
+      ]
+    },
+    {
+      "base_name": "Instantnood",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "count": 2,
+      "max_recurrence": 3,
+      "cases": [
+        "Instantnood 2",
+        "Instantnood 3"
+      ]
+    },
+    {
+      "base_name": "JarlaxleArtemis",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "count": 2,
+      "max_recurrence": 2,
+      "cases": [
+        "JarlaxleArtemis",
+        "JarlaxleArtemis 2"
+      ]
+    },
+    {
+      "base_name": "John Gohde",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "count": 2,
+      "max_recurrence": 2,
+      "cases": [
+        "John Gohde",
+        "John Gohde 2"
+      ]
+    },
+    {
+      "base_name": "Kehrli",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "count": 2,
+      "max_recurrence": 2,
+      "cases": [
+        "Kehrli",
+        "Kehrli 2"
+      ]
+    },
+    {
+      "base_name": "Lapsed Pacifist",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "count": 2,
+      "max_recurrence": 2,
+      "cases": [
+        "Lapsed Pacifist",
+        "Lapsed Pacifist 2"
+      ]
+    },
+    {
+      "base_name": "Lyndon LaRouche",
+      "category": "Social & Cultural",
+      "dispute_type": "Content",
+      "count": 2,
+      "max_recurrence": 2,
+      "cases": [
+        "Lyndon LaRouche",
+        "Lyndon LaRouche 2"
+      ]
+    },
+    {
+      "base_name": "MZMcBride",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "count": 2,
+      "max_recurrence": 2,
+      "cases": [
+        "MZMcBride",
+        "MZMcBride 2"
+      ]
+    },
+    {
+      "base_name": "Magioladitis",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "count": 2,
+      "max_recurrence": 2,
+      "cases": [
+        "Magioladitis",
+        "Magioladitis 2"
+      ]
+    },
+    {
+      "base_name": "Netoholic",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "count": 2,
+      "max_recurrence": 2,
+      "cases": [
+        "Netoholic",
+        "Netoholic 2"
+      ]
+    },
+    {
+      "base_name": "Pigsonthewing",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "count": 2,
+      "max_recurrence": 2,
+      "cases": [
+        "Pigsonthewing",
+        "Pigsonthewing 2"
+      ]
+    },
+    {
+      "base_name": "Prem Rawat",
+      "category": "Religion",
+      "dispute_type": "Content",
+      "count": 2,
+      "max_recurrence": 2,
+      "cases": [
+        "Prem Rawat",
+        "Prem Rawat 2"
+      ]
+    },
+    {
+      "base_name": "RK",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "count": 2,
+      "max_recurrence": 2,
+      "cases": [
+        "RK",
+        "RK 2"
+      ]
+    },
+    {
+      "base_name": "Stevertigo",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "count": 2,
+      "max_recurrence": 2,
+      "cases": [
+        "Stevertigo",
+        "Stevertigo 2"
+      ]
+    },
+    {
+      "base_name": "Winter Soldier",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "count": 2,
+      "max_recurrence": 2,
+      "cases": [
+        "Winter Soldier",
+        "Winter Soldier 2"
+      ]
+    },
+    {
+      "base_name": "Xed",
+      "category": "Editor Disputes",
+      "dispute_type": "Conduct",
+      "count": 2,
+      "max_recurrence": 2,
+      "cases": [
+        "Xed",
+        "Xed 2"
+      ]
+    }
+  ]
+}

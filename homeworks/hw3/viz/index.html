@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wikipedia Arbitration: Three Visual Analyses</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&family=Source+Serif+4:wght@400;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: #fafafa;
+    color: #222;
+    line-height: 1.6;
+  }
+
+  header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    color: #f0f0f0;
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+
+  header h1 {
+    font-family: 'Source Serif 4', serif;
+    font-size: 2.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  header p {
+    font-size: 1.05rem;
+    font-weight: 300;
+    opacity: 0.85;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .viz-section {
+    max-width: 1100px;
+    margin: 3rem auto;
+    padding: 0 1.5rem;
+  }
+
+  .viz-section h2 {
+    font-family: 'Source Serif 4', serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin-bottom: 0.3rem;
+    border-bottom: 2px solid #0f3460;
+    padding-bottom: 0.4rem;
+  }
+
+  .viz-section .subtitle {
+    font-size: 0.95rem;
+    color: #666;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+  }
+
+  .viz-container {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  .viz-container svg {
+    display: block;
+    margin: 0 auto;
+  }
+
+  /* Tooltip */
+  .tooltip {
+    position: absolute;
+    background: rgba(20, 20, 40, 0.92);
+    color: #f0f0f0;
+    padding: 10px 14px;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    max-width: 300px;
+    line-height: 1.4;
+    z-index: 100;
+  }
+
+  .tooltip .tt-title {
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-size: 0.9rem;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1rem;
+    font-size: 0.82rem;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .legend-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+  }
+
+  /* Sankey */
+  .sankey-link {
+    fill: none;
+    stroke-opacity: 0.35;
+    transition: stroke-opacity 0.2s;
+  }
+  .sankey-link:hover {
+    stroke-opacity: 0.7;
+  }
+  .sankey-node rect {
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .sankey-node text {
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* Treemap */
+  .treemap-cell {
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .treemap-cell:hover {
+    opacity: 0.85;
+  }
+  .treemap-label {
+    font-size: 11px;
+    fill: #fff;
+    pointer-events: none;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  }
+  .treemap-sublabel {
+    font-size: 9px;
+    fill: rgba(255,255,255,0.8);
+    pointer-events: none;
+  }
+
+  /* Heatmap */
+  .heatmap-cell {
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .heatmap-cell:hover {
+    stroke: #222;
+    stroke-width: 2px;
+  }
+  .axis text {
+    font-size: 12px;
+  }
+  .axis-label {
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  /* Section annotations */
+  .annotation {
+    font-size: 0.88rem;
+    color: #555;
+    max-width: 800px;
+    margin: 0.8rem auto 0;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  .nav-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 0;
+  }
+
+  .nav-tab {
+    padding: 0.6rem 1.2rem;
+    background: #e8e8e8;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #555;
+    border-radius: 6px 6px 0 0;
+    transition: all 0.2s;
+  }
+
+  .nav-tab.active {
+    background: #fff;
+    color: #0f3460;
+    border-color: #e0e0e0;
+  }
+
+  .nav-tab:hover:not(.active) {
+    background: #f0f0f0;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>What Drives Wikipedia to Its Court of Last Resort?</h1>
+  <p>A visual analysis of 481 Wikipedia Arbitration Committee cases — examining the categories, dispute types, and escalation pathways that lead to binding arbitration on the world's largest encyclopedia.</p>
+  <div style="margin-top:1rem;display:flex;gap:1.5rem;justify-content:center;">
+    <a href="extended.html" style="color:#8ecae6;text-decoration:none;font-size:0.9rem;">Extended visualizations (DAG, Beeswarm, Radial) →</a>
+    <a href="experimental.html" style="color:#8ecae6;text-decoration:none;font-size:0.9rem;">Experimental visualizations (Parallel, Unit, Sunburst) →</a>
+  </div>
+</header>
+
+<!-- VIZ 1: Sankey Diagram — Dispute Resolution Lifecycle Flow -->
+<section class="viz-section" id="viz1">
+  <h2>Visualization 1: The Escalation Funnel</h2>
+  <p class="subtitle">A Sankey diagram mapping dispute flow through Wikipedia's graduated resolution system</p>
+  <div class="viz-container" id="sankey-container"></div>
+  <p class="annotation">
+    Flow width encodes the volume of disputes moving between stages. The leftward funnel of Talk Page → Resolved shows that most disputes never escalate — but those that do travel increasingly narrow, higher-authority channels. Conduct disputes (warm colors) skip content-focused stages and go directly to admin intervention.
+  </p>
+</section>
+
+<!-- VIZ 2: Treemap — Case Categories & Dispute Types -->
+<section class="viz-section" id="viz2">
+  <h2>Visualization 2: The Anatomy of Arbitration</h2>
+  <p class="subtitle">A nested treemap showing case categories subdivided by dispute type — area encodes case count</p>
+  <div class="viz-container" id="treemap-container"></div>
+  <p class="annotation">
+    Area maps directly to the number of cases. The overwhelming dominance of the "Editor Disputes" rectangle reveals that ArbCom functions primarily as a behavioral court — most cases bear an individual editor's name rather than a topic. Within topic-driven categories, geopolitics and social/cultural issues dominate.
+  </p>
+</section>
+
+<!-- VIZ 3: Heatmap — Category × Complexity × Recurrence -->
+<section class="viz-section" id="viz3">
+  <h2>Visualization 3: Which Disputes Come Back?</h2>
+  <p class="subtitle">A heatmap of category × complexity, with color saturation encoding the proportion of recurring cases</p>
+  <div class="viz-container" id="heatmap-container"></div>
+  <p class="annotation">
+    Color intensity encodes the proportion of recurring cases (cases with numbered sequels like "Arbitration enforcement 2"). Darker cells indicate dispute categories and complexity levels that resist resolution even after a prior ArbCom ruling. Cell annotations show count / recurrence rate.
+  </p>
+</section>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+// ============================================================
+// Load data and render all three visualizations
+// ============================================================
+
+d3.json("../data/arb_cases_classified.json").then(data => {
+  renderSankey(data);
+  renderTreemap(data);
+  renderHeatmap(data);
+});
+
+// Color palettes
+const categoryColors = {
+  "Geopolitics": "#e63946",
+  "Science & Medicine": "#457b9d",
+  "Religion": "#e9c46a",
+  "Social & Cultural": "#f4a261",
+  "Editor Conduct": "#2a9d8f",
+  "Content & Policy": "#264653",
+  "Procedural": "#8ecae6",
+  "Editor Disputes": "#6c757d",
+};
+
+const stageColors = {
+  "talk": "#a8dadc",
+  "3o": "#90be6d",
+  "rfc": "#577590",
+  "drn": "#f9c74f",
+  "ani": "#f8961e",
+  "arbcom": "#e63946",
+  "resolved": "#43aa8b",
+};
+
+const typeColors = {
+  "Content": "#457b9d",
+  "Conduct": "#e63946",
+  "Hybrid": "#f4a261",
+};
+
+const tooltip = d3.select("#tooltip");
+
+function showTooltip(event, html) {
+  tooltip
+    .html(html)
+    .style("opacity", 1)
+    .style("left", (event.pageX + 14) + "px")
+    .style("top", (event.pageY - 10) + "px");
+}
+
+function hideTooltip() {
+  tooltip.style("opacity", 0);
+}
+
+// ============================================================
+// VIZ 1: SANKEY DIAGRAM
+// ============================================================
+function renderSankey(data) {
+  const width = 1000;
+  const height = 520;
+  const margin = { top: 20, right: 180, bottom: 20, left: 20 };
+
+  const svg = d3.select("#sankey-container")
+    .append("svg")
+    .attr("viewBox", `0 0 ${width} ${height}`)
+    .attr("preserveAspectRatio", "xMidYMid meet")
+    .style("max-width", "100%");
+
+  const { stages, transitions } = data.lifecycle;
+
+  // Build nodes and links for sankey
+  const nodeNames = stages.map(s => s.label);
+  const nodes = stages.map((s, i) => ({ name: s.label, id: s.id, description: s.description }));
+
+  const links = transitions.map(t => ({
+    source: stages.findIndex(s => s.id === t.source),
+    target: stages.findIndex(s => s.id === t.target),
+    value: t.value,
+    type: t.type,
+  }));
+
+  const sankey = d3.sankey()
+    .nodeWidth(22)
+    .nodePadding(18)
+    .nodeAlign(d3.sankeyLeft)
+    .extent([[margin.left, margin.top], [width - margin.right, height - margin.bottom]]);
+
+  const graph = sankey({
+    nodes: nodes.map(d => Object.assign({}, d)),
+    links: links.map(d => Object.assign({}, d)),
+  });
+
+  // Links
+  const linkGroup = svg.append("g")
+    .selectAll(".sankey-link")
+    .data(graph.links)
+    .join("path")
+    .attr("class", "sankey-link")
+    .attr("d", d3.sankeyLinkHorizontal())
+    .attr("stroke-width", d => Math.max(1, d.width))
+    .attr("stroke", d => {
+      const srcId = stages[d.source.index]?.id || d.source.id;
+      return stageColors[srcId] || "#999";
+    })
+    .on("mouseover", (event, d) => {
+      showTooltip(event,
+        `<div class="tt-title">${d.source.name} → ${d.target.name}</div>
+         <div>Volume: <strong>${d.value}</strong> disputes</div>
+         <div>Pathway: ${d.type}</div>`);
+    })
+    .on("mousemove", (event) => {
+      tooltip.style("left", (event.pageX + 14) + "px").style("top", (event.pageY - 10) + "px");
+    })
+    .on("mouseout", hideTooltip);
+
+  // Nodes
+  const node = svg.append("g")
+    .selectAll(".sankey-node")
+    .data(graph.nodes)
+    .join("g")
+    .attr("class", "sankey-node");
+
+  node.append("rect")
+    .attr("x", d => d.x0)
+    .attr("y", d => d.y0)
+    .attr("height", d => d.y1 - d.y0)
+    .attr("width", d => d.x1 - d.x0)
+    .attr("fill", d => stageColors[d.id] || "#999")
+    .attr("stroke", "#333")
+    .attr("stroke-width", 0.5)
+    .attr("rx", 3)
+    .on("mouseover", (event, d) => {
+      showTooltip(event,
+        `<div class="tt-title">${d.name}</div>
+         <div>${d.description}</div>
+         <div style="margin-top:4px;">Inflow: ${d.value || '—'}</div>`);
+    })
+    .on("mousemove", (event) => {
+      tooltip.style("left", (event.pageX + 14) + "px").style("top", (event.pageY - 10) + "px");
+    })
+    .on("mouseout", hideTooltip);
+
+  node.append("text")
+    .attr("x", d => d.x1 + 8)
+    .attr("y", d => (d.y0 + d.y1) / 2)
+    .attr("dy", "0.35em")
+    .attr("text-anchor", "start")
+    .text(d => d.name)
+    .style("font-size", "13px")
+    .style("font-weight", "600")
+    .style("fill", "#222");
+
+  // Annotations
+  svg.append("text")
+    .attr("x", width - margin.right + 8)
+    .attr("y", height - 10)
+    .attr("text-anchor", "end")
+    .style("font-size", "10px")
+    .style("fill", "#999")
+    .text("Flow width ∝ dispute volume");
+}
+
+// ============================================================
+// VIZ 2: TREEMAP
+// ============================================================
+function renderTreemap(data) {
+  const width = 1050;
+  const height = 600;
+
+  const svg = d3.select("#treemap-container")
+    .append("svg")
+    .attr("viewBox", `0 0 ${width} ${height}`)
+    .attr("preserveAspectRatio", "xMidYMid meet")
+    .style("max-width", "100%");
+
+  // Build hierarchy: root → category → dispute_type
+  const crosstab = data.summary.crosstab;
+  const children = Object.entries(crosstab).map(([cat, types]) => ({
+    name: cat,
+    children: Object.entries(types)
+      .filter(([, v]) => v > 0)
+      .map(([type, count]) => ({
+        name: type,
+        value: count,
+        category: cat,
+      })),
+  }));
+
+  const root = d3.hierarchy({ name: "All ArbCom Cases", children })
+    .sum(d => d.value)
+    .sort((a, b) => b.value - a.value);
+
+  d3.treemap()
+    .size([width, height])
+    .padding(3)
+    .paddingTop(22)
+    .round(true)(root);
+
+  // Category group labels
+  const categories = svg.selectAll(".cat-group")
+    .data(root.children)
+    .join("g")
+    .attr("class", "cat-group");
+
+  // Category background
+  categories.append("rect")
+    .attr("x", d => d.x0)
+    .attr("y", d => d.y0)
+    .attr("width", d => d.x1 - d.x0)
+    .attr("height", d => d.y1 - d.y0)
+    .attr("fill", "none")
+    .attr("stroke", "#999")
+    .attr("stroke-width", 1.5)
+    .attr("rx", 4);
+
+  // Category title
+  categories.append("text")
+    .attr("x", d => d.x0 + 6)
+    .attr("y", d => d.y0 + 15)
+    .text(d => `${d.data.name} (${d.value})`)
+    .style("font-size", "12px")
+    .style("font-weight", "700")
+    .style("fill", "#333");
+
+  // Individual cells
+  const leaves = svg.selectAll(".treemap-cell")
+    .data(root.leaves())
+    .join("rect")
+    .attr("class", "treemap-cell")
+    .attr("x", d => d.x0)
+    .attr("y", d => d.y0)
+    .attr("width", d => d.x1 - d.x0)
+    .attr("height", d => d.y1 - d.y0)
+    .attr("fill", d => {
+      const base = categoryColors[d.parent.data.name] || "#999";
+      // Modify saturation by type
+      if (d.data.name === "Content") return d3.color(base).brighter(0.3);
+      if (d.data.name === "Hybrid") return d3.color(base).brighter(0.8);
+      return base;
+    })
+    .attr("rx", 3)
+    .attr("stroke", "#fff")
+    .attr("stroke-width", 1)
+    .on("mouseover", (event, d) => {
+      showTooltip(event,
+        `<div class="tt-title">${d.parent.data.name}</div>
+         <div>Dispute Type: <strong>${d.data.name}</strong></div>
+         <div>Cases: <strong>${d.data.value}</strong></div>
+         <div>Share of category: ${(100 * d.data.value / d.parent.value).toFixed(0)}%</div>`);
+    })
+    .on("mousemove", (event) => {
+      tooltip.style("left", (event.pageX + 14) + "px").style("top", (event.pageY - 10) + "px");
+    })
+    .on("mouseout", hideTooltip);
+
+  // Cell labels
+  svg.selectAll(".treemap-label")
+    .data(root.leaves().filter(d => (d.x1 - d.x0) > 40 && (d.y1 - d.y0) > 25))
+    .join("text")
+    .attr("class", "treemap-label")
+    .attr("x", d => d.x0 + (d.x1 - d.x0) / 2)
+    .attr("y", d => d.y0 + (d.y1 - d.y0) / 2 - 4)
+    .attr("text-anchor", "middle")
+    .text(d => d.data.name);
+
+  svg.selectAll(".treemap-sublabel")
+    .data(root.leaves().filter(d => (d.x1 - d.x0) > 40 && (d.y1 - d.y0) > 35))
+    .join("text")
+    .attr("class", "treemap-sublabel")
+    .attr("x", d => d.x0 + (d.x1 - d.x0) / 2)
+    .attr("y", d => d.y0 + (d.y1 - d.y0) / 2 + 10)
+    .attr("text-anchor", "middle")
+    .text(d => `${d.data.value} cases`);
+
+  // Legend
+  const legendDiv = d3.select("#treemap-container")
+    .append("div").attr("class", "legend");
+
+  Object.entries(typeColors).forEach(([type, color]) => {
+    const item = legendDiv.append("span").attr("class", "legend-item");
+    item.append("span").attr("class", "legend-swatch").style("background", color);
+    item.append("span").text(type);
+  });
+}
+
+// ============================================================
+// VIZ 3: HEATMAP
+// ============================================================
+function renderHeatmap(data) {
+  const width = 900;
+  const height = 500;
+  const margin = { top: 60, right: 120, bottom: 80, left: 180 };
+  const innerW = width - margin.left - margin.right;
+  const innerH = height - margin.top - margin.bottom;
+
+  const svg = d3.select("#heatmap-container")
+    .append("svg")
+    .attr("viewBox", `0 0 ${width} ${height}`)
+    .attr("preserveAspectRatio", "xMidYMid meet")
+    .style("max-width", "100%");
+
+  const g = svg.append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+  // Compute category × complexity with recurrence rates
+  const cases = data.cases;
+  const categories = [...new Set(cases.map(c => c.category))].sort((a, b) => {
+    const order = ["Editor Disputes", "Geopolitics", "Content & Policy",
+                   "Editor Conduct", "Social & Cultural", "Religion",
+                   "Science & Medicine", "Procedural"];
+    return order.indexOf(a) - order.indexOf(b);
+  });
+  const complexities = ["Simple", "Complex", "Very Complex"];
+
+  // Build matrix
+  const matrix = [];
+  categories.forEach(cat => {
+    complexities.forEach(comp => {
+      const subset = cases.filter(c => c.category === cat && c.complexity === comp);
+      const total = subset.length;
+      const recurring = subset.filter(c => c.is_recurring).length;
+      const rate = total > 0 ? recurring / total : 0;
+      matrix.push({ category: cat, complexity: comp, count: total, recurring, rate });
+    });
+  });
+
+  const x = d3.scaleBand()
+    .domain(complexities)
+    .range([0, innerW])
+    .padding(0.08);
+
+  const y = d3.scaleBand()
+    .domain(categories)
+    .range([0, innerH])
+    .padding(0.08);
+
+  const maxCount = d3.max(matrix, d => d.count);
+
+  // Size scale for cell opacity / intensity
+  const colorScale = d3.scaleSequential()
+    .domain([0, d3.max(matrix.filter(d => d.count > 0), d => d.rate)])
+    .interpolator(d3.interpolateYlOrRd);
+
+  const sizeScale = d3.scaleSqrt()
+    .domain([0, maxCount])
+    .range([0, 1]);
+
+  // X axis
+  g.append("g")
+    .attr("class", "axis")
+    .attr("transform", `translate(0, -8)`)
+    .selectAll("text")
+    .data(complexities)
+    .join("text")
+    .attr("x", d => x(d) + x.bandwidth() / 2)
+    .attr("y", 0)
+    .attr("text-anchor", "middle")
+    .text(d => d)
+    .style("font-weight", "600");
+
+  // Y axis
+  g.append("g")
+    .attr("class", "axis")
+    .selectAll("text")
+    .data(categories)
+    .join("text")
+    .attr("x", -10)
+    .attr("y", d => y(d) + y.bandwidth() / 2)
+    .attr("dy", "0.35em")
+    .attr("text-anchor", "end")
+    .text(d => d)
+    .style("font-weight", "500");
+
+  // Axis labels
+  svg.append("text")
+    .attr("class", "axis-label")
+    .attr("x", margin.left + innerW / 2)
+    .attr("y", 28)
+    .attr("text-anchor", "middle")
+    .text("Case Complexity");
+
+  svg.append("text")
+    .attr("class", "axis-label")
+    .attr("transform", `rotate(-90)`)
+    .attr("x", -(margin.top + innerH / 2))
+    .attr("y", 18)
+    .attr("text-anchor", "middle")
+    .text("Topic Category");
+
+  // Cells
+  g.selectAll(".heatmap-cell")
+    .data(matrix.filter(d => d.count > 0))
+    .join("rect")
+    .attr("class", "heatmap-cell")
+    .attr("x", d => x(d.complexity))
+    .attr("y", d => y(d.category))
+    .attr("width", x.bandwidth())
+    .attr("height", y.bandwidth())
+    .attr("fill", d => d.rate > 0 ? colorScale(d.rate) : "#f0f0f0")
+    .attr("rx", 4)
+    .attr("stroke", "#ddd")
+    .attr("stroke-width", 1)
+    .on("mouseover", (event, d) => {
+      showTooltip(event,
+        `<div class="tt-title">${d.category} — ${d.complexity}</div>
+         <div>Total cases: <strong>${d.count}</strong></div>
+         <div>Recurring cases: <strong>${d.recurring}</strong></div>
+         <div>Recurrence rate: <strong>${(d.rate * 100).toFixed(0)}%</strong></div>`);
+    })
+    .on("mousemove", (event) => {
+      tooltip.style("left", (event.pageX + 14) + "px").style("top", (event.pageY - 10) + "px");
+    })
+    .on("mouseout", hideTooltip);
+
+  // Cell annotations
+  g.selectAll(".cell-text-count")
+    .data(matrix.filter(d => d.count > 0))
+    .join("text")
+    .attr("x", d => x(d.complexity) + x.bandwidth() / 2)
+    .attr("y", d => y(d.category) + y.bandwidth() / 2 - 6)
+    .attr("text-anchor", "middle")
+    .style("font-size", d => d.count > 20 ? "14px" : "12px")
+    .style("font-weight", "700")
+    .style("fill", d => d.rate > 0.2 ? "#fff" : "#333")
+    .text(d => d.count);
+
+  g.selectAll(".cell-text-rate")
+    .data(matrix.filter(d => d.count > 0))
+    .join("text")
+    .attr("x", d => x(d.complexity) + x.bandwidth() / 2)
+    .attr("y", d => y(d.category) + y.bandwidth() / 2 + 10)
+    .attr("text-anchor", "middle")
+    .style("font-size", "10px")
+    .style("fill", d => d.rate > 0.2 ? "rgba(255,255,255,0.8)" : "#888")
+    .text(d => d.recurring > 0 ? `${d.recurring} recurring (${(d.rate * 100).toFixed(0)}%)` : "no repeats");
+
+  // Color legend
+  const legendW = 16;
+  const legendH = innerH * 0.6;
+  const legendX = innerW + 30;
+  const legendY = (innerH - legendH) / 2;
+
+  const legendScale = d3.scaleLinear()
+    .domain([0, d3.max(matrix.filter(d => d.count > 0), d => d.rate)])
+    .range([legendH, 0]);
+
+  const legendAxis = d3.axisRight(legendScale)
+    .ticks(5)
+    .tickFormat(d => `${(d * 100).toFixed(0)}%`);
+
+  const defs = svg.append("defs");
+  const gradient = defs.append("linearGradient")
+    .attr("id", "heatmap-gradient")
+    .attr("x1", "0%").attr("y1", "100%")
+    .attr("x2", "0%").attr("y2", "0%");
+
+  const steps = 10;
+  const maxRate = d3.max(matrix.filter(d => d.count > 0), d => d.rate);
+  for (let i = 0; i <= steps; i++) {
+    gradient.append("stop")
+      .attr("offset", `${(i / steps) * 100}%`)
+      .attr("stop-color", colorScale((i / steps) * maxRate));
+  }
+
+  g.append("rect")
+    .attr("x", legendX)
+    .attr("y", legendY)
+    .attr("width", legendW)
+    .attr("height", legendH)
+    .attr("fill", "url(#heatmap-gradient)")
+    .attr("rx", 2)
+    .attr("stroke", "#ccc");
+
+  g.append("g")
+    .attr("transform", `translate(${legendX + legendW}, ${legendY})`)
+    .call(legendAxis)
+    .selectAll("text")
+    .style("font-size", "10px");
+
+  g.append("text")
+    .attr("x", legendX + legendW / 2)
+    .attr("y", legendY - 10)
+    .attr("text-anchor", "middle")
+    .style("font-size", "10px")
+    .style("font-weight", "600")
+    .text("Recurrence Rate");
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wikipedia Arbitration: Experimental Visualizations</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&family=Source+Serif+4:wght@400;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: #fafafa;
+    color: #222;
+    line-height: 1.6;
+  }
+
+  header {
+    background: linear-gradient(135deg, #264653 0%, #2a9d8f 50%, #264653 100%);
+    color: #f0f0f0;
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+
+  header h1 {
+    font-family: 'Source Serif 4', serif;
+    font-size: 2.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  header p {
+    font-size: 1.05rem;
+    font-weight: 300;
+    opacity: 0.85;
+    max-width: 740px;
+    margin: 0 auto;
+  }
+
+  header .nav-links {
+    margin-top: 1rem;
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+  }
+  header .nav-links a {
+    color: #a8dadc;
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+  header .nav-links a:hover { text-decoration: underline; }
+
+  .viz-section {
+    max-width: 1200px;
+    margin: 3rem auto;
+    padding: 0 1.5rem;
+  }
+
+  .viz-section h2 {
+    font-family: 'Source Serif 4', serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin-bottom: 0.3rem;
+    border-bottom: 2px solid #2a9d8f;
+    padding-bottom: 0.4rem;
+  }
+
+  .viz-section .subtitle {
+    font-size: 0.95rem;
+    color: #666;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+  }
+
+  .viz-container {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    overflow: hidden;
+  }
+
+  .viz-container svg {
+    display: block;
+    margin: 0 auto;
+  }
+
+  .annotation {
+    font-size: 0.88rem;
+    color: #555;
+    max-width: 820px;
+    margin: 0.8rem auto 0;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  /* Tooltip */
+  .tooltip {
+    position: absolute;
+    background: rgba(20, 20, 40, 0.94);
+    color: #f0f0f0;
+    padding: 10px 14px;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    max-width: 340px;
+    line-height: 1.45;
+    z-index: 100;
+  }
+  .tooltip .tt-title { font-weight: 600; margin-bottom: 4px; font-size: 0.92rem; }
+  .tooltip .tt-dim { opacity: 0.7; font-size: 0.8rem; }
+
+  /* ===== Parallel Coordinates ===== */
+  .pc-line {
+    fill: none;
+    stroke-width: 1.2;
+    stroke-opacity: 0.25;
+    transition: stroke-opacity 0.15s, stroke-width 0.15s;
+    cursor: pointer;
+  }
+  .pc-line:hover, .pc-line.highlighted {
+    stroke-opacity: 0.9;
+    stroke-width: 2.5;
+  }
+  .pc-axis-label {
+    font-size: 13px;
+    font-weight: 700;
+    fill: #333;
+    text-anchor: middle;
+  }
+  .pc-tick {
+    font-size: 11px;
+    fill: #666;
+  }
+  .pc-brush rect.selection {
+    fill: rgba(42, 157, 143, 0.25);
+    stroke: #2a9d8f;
+    stroke-width: 1.5;
+  }
+
+  /* ===== Waffle / Unit Chart ===== */
+  .waffle-cell {
+    cursor: pointer;
+    transition: opacity 0.12s;
+  }
+  .waffle-cell:hover {
+    stroke: #222;
+    stroke-width: 1.5;
+    opacity: 1 !important;
+  }
+  .waffle-group-label {
+    font-size: 13px;
+    font-weight: 700;
+    fill: #333;
+  }
+  .waffle-count-label {
+    font-size: 11px;
+    fill: #888;
+  }
+
+  /* ===== Sunburst ===== */
+  .sunburst-arc {
+    cursor: pointer;
+    stroke: #fff;
+    stroke-width: 1;
+    transition: opacity 0.2s;
+  }
+  .sunburst-arc:hover {
+    opacity: 0.85;
+  }
+  .sunburst-label {
+    font-size: 10px;
+    fill: #333;
+    pointer-events: none;
+    font-weight: 500;
+  }
+  .sunburst-center-text {
+    font-size: 14px;
+    font-weight: 700;
+    fill: #1a1a2e;
+    text-anchor: middle;
+  }
+  .sunburst-center-sub {
+    font-size: 11px;
+    fill: #888;
+    text-anchor: middle;
+  }
+  .breadcrumb {
+    font-size: 0.85rem;
+    color: #555;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    min-height: 1.4em;
+  }
+  .breadcrumb strong { color: #2a9d8f; }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1rem;
+    font-size: 0.82rem;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .legend-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Wikipedia Arbitration — Experimental Visualizations</h1>
+  <p>Three more techniques — parallel coordinates, unit chart, and sunburst — applied to the same 481 ArbCom cases. Each uses a fundamentally different spatial logic.</p>
+  <div class="nav-links">
+    <a href="index.html">← Original three (Sankey, Treemap, Heatmap)</a>
+    <a href="extended.html">← Extended three (DAG, Beeswarm, Radial)</a>
+  </div>
+</header>
+
+<!-- ============================================================ -->
+<!-- VIZ 7: Parallel Coordinates                                   -->
+<!-- ============================================================ -->
+<section class="viz-section" id="viz7">
+  <h2>Visualization 7: Multivariate Threads</h2>
+  <p class="subtitle">A parallel coordinates plot — each of 481 cases is a polyline threading through four attribute axes, revealing which attribute combinations cluster together</p>
+  <div class="viz-container" id="pc-container"></div>
+  <p class="annotation">
+    Every line is one ArbCom case, threading from Category → Dispute Type → Complexity → Recurrence. Thick bundles of lines between axis values reveal dominant <em>attribute pathways</em>. The near-total dominance of the <strong>Editor Disputes → Conduct → Simple → 1</strong> bundle is immediately visible — but so are the thinner, more interesting threads like <strong>Geopolitics → Content → Very Complex → 5</strong>. Brush any axis to filter. This is the only technique that shows four dimensions simultaneously without aggregation.
+  </p>
+</section>
+
+<!-- ============================================================ -->
+<!-- VIZ 8: Unit / Waffle Chart                                    -->
+<!-- ============================================================ -->
+<section class="viz-section" id="viz8">
+  <h2>Visualization 8: Counting Every Case</h2>
+  <p class="subtitle">A unit chart — one small square per case, grouped by category and colored by dispute type. No aggregation, no abstraction: 481 squares = 481 cases.</p>
+  <div class="viz-container" id="waffle-container"></div>
+  <p class="annotation">
+    This is the most Tufte-esque visualization in the set: maximum data-ink ratio, zero chartjunk, no aggregation. Each square is a case. The <strong>309 orange squares</strong> in the Editor Disputes block dwarf the other categories in a way that no bar chart or percentage could match — you <em>see</em> the imbalance by counting. Recurring cases are marked with a dot. Hover for case names.
+  </p>
+</section>
+
+<!-- ============================================================ -->
+<!-- VIZ 9: Sunburst / Radial Partition                            -->
+<!-- ============================================================ -->
+<section class="viz-section" id="viz9">
+  <h2>Visualization 9: Drilling Into the Hierarchy</h2>
+  <p class="subtitle">A sunburst diagram — three concentric rings mapping Category → Dispute Type → Complexity, with arc length proportional to case count. Click to zoom.</p>
+  <div class="breadcrumb" id="sunburst-breadcrumb">Click a ring segment to zoom in</div>
+  <div class="viz-container" id="sunburst-container"></div>
+  <p class="annotation">
+    The sunburst combines the treemap's part-to-whole encoding with a radial layout that naturally suggests hierarchy — inner rings are higher-level groupings, outer rings are finer detail. Clicking a segment zooms in, re-proportioning the arcs so that small categories become readable. This is the only visualization that lets you smoothly transition between overview and detail without losing spatial context.
+  </p>
+</section>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+// ============================================================
+// Shared
+// ============================================================
+
+const categoryColors = {
+  "Editor Disputes": "#6c757d",
+  "Geopolitics": "#e63946",
+  "Content & Policy": "#264653",
+  "Editor Conduct": "#2a9d8f",
+  "Social & Cultural": "#f4a261",
+  "Religion": "#e9c46a",
+  "Science & Medicine": "#457b9d",
+  "Procedural": "#8ecae6",
+};
+
+const typeColors = {
+  "Content": "#457b9d",
+  "Conduct": "#e76f51",
+  "Hybrid": "#f4a261",
+};
+
+const tooltip = d3.select("#tooltip");
+function showTooltip(event, html) {
+  tooltip.html(html).style("opacity", 1)
+    .style("left", (event.pageX + 14) + "px")
+    .style("top",  (event.pageY - 10) + "px");
+}
+function moveTooltip(event) {
+  tooltip.style("left", (event.pageX + 14) + "px")
+         .style("top",  (event.pageY - 10) + "px");
+}
+function hideTooltip() { tooltip.style("opacity", 0); }
+
+// ============================================================
+// Load and render
+// ============================================================
+
+d3.json("../data/arb_cases_classified.json").then(data => {
+  renderParallelCoordinates(data);
+  renderWaffle(data);
+  renderSunburst(data);
+});
+
+// ============================================================
+// VIZ 7: PARALLEL COORDINATES
+// ============================================================
+function renderParallelCoordinates(data) {
+  const cases = data.cases;
+  const width = 1100;
+  const height = 560;
+  const margin = { top: 50, right: 60, bottom: 30, left: 60 };
+
+  const svg = d3.select("#pc-container")
+    .append("svg")
+    .attr("viewBox", `0 0 ${width} ${height}`)
+    .attr("preserveAspectRatio", "xMidYMid meet")
+    .style("max-width", "100%");
+
+  // Dimensions (axes)
+  const dims = [
+    {
+      key: "category",
+      label: "Category",
+      domain: ["Editor Disputes", "Geopolitics", "Content & Policy",
+               "Editor Conduct", "Social & Cultural", "Religion",
+               "Science & Medicine", "Procedural"],
+    },
+    {
+      key: "dispute_type",
+      label: "Dispute Type",
+      domain: ["Conduct", "Content", "Hybrid"],
+    },
+    {
+      key: "complexity",
+      label: "Complexity",
+      domain: ["Simple", "Complex", "Very Complex"],
+    },
+    {
+      key: "recurrence",
+      label: "Recurrence",
+      domain: [1, 2, 3, 4, 5],
+    },
+  ];
+
+  const innerW = width - margin.left - margin.right;
+  const innerH = height - margin.top - margin.bottom;
+
+  // X scale — one position per dimension
+  const x = d3.scalePoint()
+    .domain(dims.map(d => d.key))
+    .range([margin.left, width - margin.right])
+    .padding(0.1);
+
+  // Y scales per dimension
+  const yScales = {};
+  dims.forEach(dim => {
+    yScales[dim.key] = d3.scalePoint()
+      .domain(dim.domain)
+      .range([margin.top, height - margin.bottom])
+      .padding(0.15);
+  });
+
+  // Add jitter to avoid perfect overlap
+  const jitterStrength = 6;
+  const jitter = () => (Math.random() - 0.5) * jitterStrength;
+
+  // Line generator
+  const lineGen = d3.line().curve(d3.curveMonotoneX);
+
+  // Draw lines
+  const lines = svg.append("g")
+    .selectAll(".pc-line")
+    .data(cases)
+    .join("path")
+    .attr("class", "pc-line")
+    .attr("d", d => {
+      const pts = dims.map(dim => {
+        const yVal = yScales[dim.key](d[dim.key]);
+        return [x(dim.key), yVal + jitter()];
+      });
+      return lineGen(pts);
+    })
+    .attr("stroke", d => categoryColors[d.category])
+    .on("mouseover", function(event, d) {
+      d3.select(this).raise().classed("highlighted", true);
+      showTooltip(event,
+        `<div class="tt-title">${d.name}</div>
+         <div>Category: <strong>${d.category}</strong></div>
+         <div>Type: <strong>${d.dispute_type}</strong></div>
+         <div>Complexity: <strong>${d.complexity}</strong></div>
+         <div>Recurrence: <strong>${d.recurrence}×</strong></div>`);
+    })
+    .on("mousemove", moveTooltip)
+    .on("mouseout", function() {
+      d3.select(this).classed("highlighted", false);
+      hideTooltip();
+    });
+
+  // Draw axes
+  dims.forEach(dim => {
+    const xPos = x(dim.key);
+    const scale = yScales[dim.key];
+
+    // Axis line
+    svg.append("line")
+      .attr("x1", xPos).attr("y1", margin.top - 5)
+      .attr("x2", xPos).attr("y2", height - margin.bottom + 5)
+      .attr("stroke", "#ccc")
+      .attr("stroke-width", 1.5);
+
+    // Axis label
+    svg.append("text")
+      .attr("class", "pc-axis-label")
+      .attr("x", xPos)
+      .attr("y", margin.top - 22)
+      .text(dim.label);
+
+    // Tick labels
+    dim.domain.forEach(val => {
+      const yPos = scale(val);
+      const label = dim.key === "recurrence" ? `${val}×` : val;
+
+      // Count for this value
+      const count = cases.filter(c => c[dim.key] === val).length;
+
+      svg.append("text")
+        .attr("class", "pc-tick")
+        .attr("x", xPos - 12)
+        .attr("y", yPos)
+        .attr("dy", "0.35em")
+        .attr("text-anchor", "end")
+        .text(label);
+
+      // Count badge
+      svg.append("text")
+        .attr("x", xPos + 12)
+        .attr("y", yPos)
+        .attr("dy", "0.35em")
+        .attr("text-anchor", "start")
+        .style("font-size", "9px")
+        .style("fill", "#bbb")
+        .text(`(${count})`);
+
+      // Small tick mark
+      svg.append("line")
+        .attr("x1", xPos - 4).attr("y1", yPos)
+        .attr("x2", xPos + 4).attr("y2", yPos)
+        .attr("stroke", "#999")
+        .attr("stroke-width", 1);
+    });
+
+    // Brushing
+    const brushHeight = scale.range()[1] - scale.range()[0];
+    const brush = d3.brushY()
+      .extent([[xPos - 20, margin.top - 10], [xPos + 20, height - margin.bottom + 10]])
+      .on("brush end", function(event) {
+        if (!event.selection) {
+          lines.attr("stroke-opacity", 0.25).attr("stroke-width", 1.2);
+          return;
+        }
+        const [y0, y1] = event.selection;
+        const selected = dim.domain.filter(val => {
+          const yPos = scale(val);
+          return yPos >= y0 && yPos <= y1;
+        });
+        lines
+          .attr("stroke-opacity", d => selected.includes(d[dim.key]) ? 0.7 : 0.04)
+          .attr("stroke-width", d => selected.includes(d[dim.key]) ? 2 : 0.8);
+      });
+
+    svg.append("g")
+      .attr("class", "pc-brush")
+      .call(brush);
+  });
+
+  // Legend
+  const legendDiv = d3.select("#pc-container").append("div").attr("class", "legend");
+  Object.entries(categoryColors).forEach(([cat, color]) => {
+    const item = legendDiv.append("span").attr("class", "legend-item");
+    item.append("span").attr("class", "legend-swatch").style("background", color);
+    item.append("span").text(cat);
+  });
+}
+
+// ============================================================
+// VIZ 8: UNIT / WAFFLE CHART
+// ============================================================
+function renderWaffle(data) {
+  const cases = data.cases;
+
+  // Sort: group by category, then by dispute_type, then by recurrence desc
+  const catOrder = ["Editor Disputes", "Geopolitics", "Content & Policy",
+                    "Editor Conduct", "Social & Cultural", "Religion",
+                    "Science & Medicine", "Procedural"];
+
+  const sorted = [...cases].sort((a, b) => {
+    const ci = catOrder.indexOf(a.category) - catOrder.indexOf(b.category);
+    if (ci !== 0) return ci;
+    const ti = a.dispute_type.localeCompare(b.dispute_type);
+    if (ti !== 0) return ti;
+    return b.recurrence - a.recurrence;
+  });
+
+  // Layout parameters
+  const cellSize = 11;
+  const cellGap = 2;
+  const step = cellSize + cellGap;
+  const groupGap = 28;
+  const labelWidth = 180;
+  const colsPerRow = 50;
+
+  // Compute group positions
+  let currentY = 20;
+  const groups = [];
+
+  catOrder.forEach(cat => {
+    const catCases = sorted.filter(c => c.category === cat);
+    if (catCases.length === 0) return;
+    const rows = Math.ceil(catCases.length / colsPerRow);
+    groups.push({
+      category: cat,
+      cases: catCases,
+      y: currentY,
+      rows,
+      count: catCases.length,
+    });
+    currentY += rows * step + groupGap;
+  });
+
+  const width = labelWidth + colsPerRow * step + 40;
+  const height = currentY + 20;
+
+  const svg = d3.select("#waffle-container")
+    .append("svg")
+    .attr("viewBox", `0 0 ${width} ${height}`)
+    .attr("preserveAspectRatio", "xMidYMid meet")
+    .style("max-width", "100%");
+
+  groups.forEach(group => {
+    const g = svg.append("g");
+
+    // Category label
+    g.append("text")
+      .attr("class", "waffle-group-label")
+      .attr("x", labelWidth - 14)
+      .attr("y", group.y + step / 2 + 1)
+      .attr("text-anchor", "end")
+      .attr("dy", "0.3em")
+      .text(group.category);
+
+    // Count label
+    g.append("text")
+      .attr("class", "waffle-count-label")
+      .attr("x", labelWidth - 14)
+      .attr("y", group.y + step / 2 + 15)
+      .attr("text-anchor", "end")
+      .text(`${group.count} cases`);
+
+    // Draw cells
+    group.cases.forEach((c, i) => {
+      const col = i % colsPerRow;
+      const row = Math.floor(i / colsPerRow);
+      const cx = labelWidth + col * step;
+      const cy = group.y + row * step;
+
+      // Cell
+      g.append("rect")
+        .attr("class", "waffle-cell")
+        .attr("x", cx)
+        .attr("y", cy)
+        .attr("width", cellSize)
+        .attr("height", cellSize)
+        .attr("rx", 1.5)
+        .attr("fill", typeColors[c.dispute_type])
+        .attr("opacity", c.is_recurring ? 1 : 0.7)
+        .on("mouseover", (event) => {
+          showTooltip(event,
+            `<div class="tt-title">${c.name}</div>
+             <div>Category: ${c.category}</div>
+             <div>Type: <strong>${c.dispute_type}</strong></div>
+             <div>Complexity: ${c.complexity}</div>
+             ${c.is_recurring ? `<div style="color:#f4a261;">⟳ Recurrence #${c.recurrence}</div>` : ''}`);
+        })
+        .on("mousemove", moveTooltip)
+        .on("mouseout", hideTooltip);
+
+      // Recurrence dot
+      if (c.is_recurring) {
+        g.append("circle")
+          .attr("cx", cx + cellSize / 2)
+          .attr("cy", cy + cellSize / 2)
+          .attr("r", 2)
+          .attr("fill", "#fff")
+          .attr("pointer-events", "none");
+      }
+    });
+  });
+
+  // Legend
+  const legendDiv = d3.select("#waffle-container").append("div").attr("class", "legend");
+
+  Object.entries(typeColors).forEach(([type, color]) => {
+    const item = legendDiv.append("span").attr("class", "legend-item");
+    item.append("span").attr("class", "legend-swatch").style("background", color);
+    item.append("span").text(type);
+  });
+
+  const recurItem = legendDiv.append("span").attr("class", "legend-item");
+  recurItem.append("span").attr("class", "legend-swatch")
+    .style("background", "#e76f51")
+    .style("position", "relative")
+    .style("display", "flex")
+    .style("align-items", "center")
+    .style("justify-content", "center")
+    .html('<span style="width:5px;height:5px;border-radius:50%;background:#fff;display:block;"></span>');
+  recurItem.append("span").text("Recurring case");
+}
+
+// ============================================================
+// VIZ 9: SUNBURST
+// ============================================================
+function renderSunburst(data) {
+  const cases = data.cases;
+  const width = 820;
+  const height = 820;
+  const radius = width / 2;
+
+  // Build hierarchy: Root → Category → Dispute Type → Complexity
+  const nested = {};
+  cases.forEach(c => {
+    if (!nested[c.category]) nested[c.category] = {};
+    if (!nested[c.category][c.dispute_type]) nested[c.category][c.dispute_type] = {};
+    if (!nested[c.category][c.dispute_type][c.complexity]) nested[c.category][c.dispute_type][c.complexity] = [];
+    nested[c.category][c.dispute_type][c.complexity].push(c.name);
+  });
+
+  const hierarchyData = {
+    name: "All Cases",
+    children: Object.entries(nested).map(([cat, types]) => ({
+      name: cat,
+      children: Object.entries(types).map(([type, complexities]) => ({
+        name: type,
+        parent_cat: cat,
+        children: Object.entries(complexities).map(([comp, names]) => ({
+          name: comp,
+          parent_cat: cat,
+          parent_type: type,
+          value: names.length,
+          case_names: names,
+        })),
+      })),
+    })),
+  };
+
+  const root = d3.hierarchy(hierarchyData)
+    .sum(d => d.value)
+    .sort((a, b) => b.value - a.value);
+
+  const partition = d3.partition()
+    .size([2 * Math.PI, radius]);
+
+  partition(root);
+
+  const arc = d3.arc()
+    .startAngle(d => d.x0)
+    .endAngle(d => d.x1)
+    .padAngle(d => Math.min((d.x1 - d.x0) / 2, 0.005))
+    .padRadius(radius / 2)
+    .innerRadius(d => d.y0)
+    .outerRadius(d => d.y1 - 1);
+
+  const svg = d3.select("#sunburst-container")
+    .append("svg")
+    .attr("viewBox", `${-width/2} ${-height/2} ${width} ${height}`)
+    .attr("preserveAspectRatio", "xMidYMid meet")
+    .style("max-width", "100%");
+
+  // Color function
+  function getColor(d) {
+    if (d.depth === 0) return "#fff";
+    if (d.depth === 1) return categoryColors[d.data.name] || "#999";
+    // Inherit from category ancestor
+    let ancestor = d;
+    while (ancestor.depth > 1) ancestor = ancestor.parent;
+    const base = d3.color(categoryColors[ancestor.data.name] || "#999");
+    if (d.depth === 2) return base.brighter(0.4);
+    if (d.depth === 3) return base.brighter(0.8);
+    return base;
+  }
+
+  // Track current focus for zoom
+  let currentFocus = root;
+
+  // Draw arcs
+  const paths = svg.selectAll(".sunburst-arc")
+    .data(root.descendants().filter(d => d.depth > 0))
+    .join("path")
+    .attr("class", "sunburst-arc")
+    .attr("d", arc)
+    .attr("fill", d => getColor(d))
+    .on("mouseover", (event, d) => {
+      // Build breadcrumb
+      const chain = d.ancestors().reverse().slice(1).map(a => a.data.name);
+      d3.select("#sunburst-breadcrumb").html(chain.map(c => `<strong>${c}</strong>`).join(" → ") + ` — ${d.value} cases`);
+
+      let details = `<div class="tt-title">${d.data.name}</div>
+                      <div>Level: ${["Root","Category","Dispute Type","Complexity"][d.depth]}</div>
+                      <div>Cases: <strong>${d.value}</strong></div>`;
+      if (d.data.case_names) {
+        const shown = d.data.case_names.slice(0, 8);
+        details += `<div class="tt-dim" style="margin-top:4px;">${shown.join(", ")}${d.data.case_names.length > 8 ? ", ..." : ""}</div>`;
+      }
+      showTooltip(event, details);
+    })
+    .on("mousemove", moveTooltip)
+    .on("mouseout", (event, d) => {
+      hideTooltip();
+    })
+    .on("click", (event, d) => {
+      // Zoom on click
+      if (currentFocus === d) {
+        // Click same = zoom out
+        zoomTo(d.parent || root);
+      } else {
+        zoomTo(d);
+      }
+    });
+
+  // Labels for large-enough arcs
+  const labels = svg.selectAll(".sunburst-label")
+    .data(root.descendants().filter(d => d.depth > 0 && (d.x1 - d.x0) > 0.06))
+    .join("text")
+    .attr("class", "sunburst-label")
+    .attr("transform", d => {
+      const angle = (d.x0 + d.x1) / 2 * 180 / Math.PI;
+      const r = (d.y0 + d.y1) / 2;
+      const rotate = angle < 180 ? angle - 90 : angle + 90;
+      return `rotate(${rotate}) translate(${r}, 0) rotate(${angle < 180 ? 0 : 180})`;
+    })
+    .attr("text-anchor", "middle")
+    .attr("dy", "0.35em")
+    .text(d => {
+      const maxLen = Math.floor((d.y1 - d.y0) / 6);
+      const name = d.data.name;
+      return name.length > maxLen ? name.slice(0, maxLen - 1) + "…" : name;
+    });
+
+  // Center text
+  const centerText = svg.append("text")
+    .attr("class", "sunburst-center-text")
+    .attr("dy", "-0.2em")
+    .text("481");
+
+  const centerSub = svg.append("text")
+    .attr("class", "sunburst-center-sub")
+    .attr("dy", "1.2em")
+    .text("ArbCom Cases");
+
+  // Zoom function
+  function zoomTo(node) {
+    currentFocus = node;
+
+    const transition = svg.transition().duration(650);
+
+    // Remap arcs to fill the full circle from this node's perspective
+    const x0 = node.x0;
+    const x1 = node.x1;
+    const xScale = d3.scaleLinear().domain([x0, x1]).range([0, 2 * Math.PI]);
+    const yScale = d3.scaleLinear().domain([node.y0, radius]).range([node.y0, radius]);
+
+    paths.transition(transition)
+      .attrTween("d", d => {
+        const i_x0 = d3.interpolate(d._current_x0 || d.x0, Math.max(0, Math.min(2 * Math.PI, xScale(d.x0))));
+        const i_x1 = d3.interpolate(d._current_x1 || d.x1, Math.max(0, Math.min(2 * Math.PI, xScale(d.x1))));
+        const i_y0 = d3.interpolate(d._current_y0 || d.y0, Math.max(0, yScale(d.y0)));
+        const i_y1 = d3.interpolate(d._current_y1 || d.y1, Math.max(0, yScale(d.y1)));
+        return t => {
+          d._current_x0 = i_x0(t);
+          d._current_x1 = i_x1(t);
+          d._current_y0 = i_y0(t);
+          d._current_y1 = i_y1(t);
+          return arc({x0: d._current_x0, x1: d._current_x1, y0: d._current_y0, y1: d._current_y1});
+        };
+      })
+      .attr("opacity", d => {
+        // Hide arcs outside the zoomed node
+        if (d.x0 >= x1 || d.x1 <= x0) return 0;
+        return 1;
+      });
+
+    // Update labels
+    labels.transition(transition)
+      .attr("opacity", d => {
+        const newX0 = xScale(d.x0);
+        const newX1 = xScale(d.x1);
+        return (newX1 - newX0 > 0.08 && d.x0 >= x0 && d.x1 <= x1) ? 1 : 0;
+      })
+      .attr("transform", d => {
+        const newX0 = Math.max(0, Math.min(2 * Math.PI, xScale(d.x0)));
+        const newX1 = Math.max(0, Math.min(2 * Math.PI, xScale(d.x1)));
+        const newY0 = yScale(d.y0);
+        const newY1 = yScale(d.y1);
+        const angle = (newX0 + newX1) / 2 * 180 / Math.PI;
+        const r = (newY0 + newY1) / 2;
+        const rotate = angle < 180 ? angle - 90 : angle + 90;
+        return `rotate(${rotate}) translate(${r}, 0) rotate(${angle < 180 ? 0 : 180})`;
+      });
+
+    // Update center
+    centerText.text(node.value);
+    centerSub.text(node.depth === 0 ? "ArbCom Cases" : node.data.name);
+
+    // Update breadcrumb
+    const chain = node.ancestors().reverse().slice(1).map(a => a.data.name);
+    if (chain.length === 0) {
+      d3.select("#sunburst-breadcrumb").html("Click a ring segment to zoom in");
+    } else {
+      d3.select("#sunburst-breadcrumb").html(chain.map(c => `<strong>${c}</strong>`).join(" → ") + ` — ${node.value} cases · <em>click center to zoom out</em>`);
+    }
+  }
+
+  // Click center to zoom out
+  svg.append("circle")
+    .attr("r", root.y1 * 0.18)
+    .attr("fill", "transparent")
+    .attr("cursor", "pointer")
+    .on("click", () => {
+      if (currentFocus.parent) {
+        zoomTo(currentFocus.parent);
+      } else {
+        zoomTo(root);
+      }
+    });
+}
+
+</script>
+</body>
+</html>
