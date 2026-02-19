@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wikipedia Arbitration: Extended Visual Analyses</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&family=Source+Serif+4:wght@400;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: #fafafa;
+    color: #222;
+    line-height: 1.6;
+  }
+
+  header {
+    background: linear-gradient(135deg, #0f3460 0%, #16213e 40%, #1a1a2e 100%);
+    color: #f0f0f0;
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+
+  header h1 {
+    font-family: 'Source Serif 4', serif;
+    font-size: 2.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  header p {
+    font-size: 1.05rem;
+    font-weight: 300;
+    opacity: 0.85;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  header .nav-link {
+    display: inline-block;
+    margin-top: 1rem;
+    color: #8ecae6;
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+  header .nav-link:hover { text-decoration: underline; }
+
+  .viz-section {
+    max-width: 1200px;
+    margin: 3rem auto;
+    padding: 0 1.5rem;
+  }
+
+  .viz-section h2 {
+    font-family: 'Source Serif 4', serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin-bottom: 0.3rem;
+    border-bottom: 2px solid #0f3460;
+    padding-bottom: 0.4rem;
+  }
+
+  .viz-section .subtitle {
+    font-size: 0.95rem;
+    color: #666;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+  }
+
+  .viz-container {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    overflow: hidden;
+  }
+
+  .viz-container svg {
+    display: block;
+    margin: 0 auto;
+  }
+
+  /* Tooltip */
+  .tooltip {
+    position: absolute;
+    background: rgba(20, 20, 40, 0.94);
+    color: #f0f0f0;
+    padding: 10px 14px;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    max-width: 340px;
+    line-height: 1.45;
+    z-index: 100;
+  }
+  .tooltip .tt-title {
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-size: 0.92rem;
+  }
+  .tooltip .tt-dim { opacity: 0.7; font-size: 0.8rem; }
+
+  /* Annotation */
+  .annotation {
+    font-size: 0.88rem;
+    color: #555;
+    max-width: 820px;
+    margin: 0.8rem auto 0;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  /* DAG styles */
+  .dag-link {
+    fill: none;
+    stroke-opacity: 0.5;
+    transition: stroke-opacity 0.25s;
+  }
+  .dag-link:hover {
+    stroke-opacity: 0.85;
+  }
+  .dag-node circle {
+    stroke: #fff;
+    stroke-width: 2.5;
+    cursor: pointer;
+    transition: filter 0.2s;
+  }
+  .dag-node circle:hover {
+    filter: brightness(1.15) drop-shadow(0 0 6px rgba(0,0,0,0.3));
+  }
+  .dag-node text {
+    font-size: 12px;
+    font-weight: 600;
+    pointer-events: none;
+  }
+  .dag-badge {
+    font-size: 10px;
+    fill: #fff;
+    font-weight: 700;
+    text-anchor: middle;
+    pointer-events: none;
+  }
+  .dag-arrow {
+    fill: #888;
+  }
+
+  /* Beeswarm */
+  .bee-dot {
+    stroke: rgba(255,255,255,0.7);
+    stroke-width: 0.5;
+    cursor: pointer;
+    transition: opacity 0.15s, r 0.2s;
+  }
+  .bee-dot:hover {
+    stroke: #222;
+    stroke-width: 1.5;
+  }
+  .bee-label {
+    font-size: 11px;
+    font-weight: 600;
+    fill: #333;
+  }
+  .bee-count {
+    font-size: 10px;
+    fill: #999;
+  }
+
+  /* Radial */
+  .radial-spoke {
+    stroke-linecap: round;
+    transition: opacity 0.2s;
+  }
+  .radial-dot {
+    cursor: pointer;
+    transition: r 0.2s;
+  }
+  .radial-dot:hover {
+    filter: brightness(1.2);
+  }
+  .radial-label {
+    font-size: 10px;
+    fill: #444;
+    pointer-events: none;
+  }
+  .radial-center-label {
+    font-size: 11px;
+    fill: #222;
+    font-weight: 600;
+    pointer-events: none;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1rem;
+    font-size: 0.82rem;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .legend-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Wikipedia Arbitration — Extended Visual Analyses</h1>
+  <p>Three additional visualization techniques applied to the same 481 ArbCom case dataset: a directed acyclic graph, a beeswarm census, and a radial recurrence chart.</p>
+  <div style="display:flex;gap:1.5rem;justify-content:center;margin-top:1rem;">
+    <a class="nav-link" href="index.html" style="margin:0;">← Original three (Sankey, Treemap, Heatmap)</a>
+    <a class="nav-link" href="experimental.html" style="margin:0;">Experimental three (Parallel, Unit, Sunburst) →</a>
+  </div>
+</header>
+
+<!-- ============================================================ -->
+<!-- VIZ 4: DAG — Dispute Resolution Lifecycle                     -->
+<!-- ============================================================ -->
+<section class="viz-section" id="viz4">
+  <h2>Visualization 4: The Dispute Resolution DAG</h2>
+  <p class="subtitle">A directed acyclic graph showing every valid escalation pathway, with node size encoding throughput and edge thickness encoding flow volume</p>
+  <div class="viz-container" id="dag-container"></div>
+  <p class="annotation">
+    Unlike the Sankey (which compresses the system into horizontal bands), the DAG preserves the <em>network topology</em> — you can see that Third Opinion and Request for Comment sit at the same authority level, that DRN can feed both ANI and ArbCom, and that Talk Page can short-circuit directly to ANI for conduct violations. Edge arrows show directionality; node radius encodes total throughput. Hover for stage descriptions.
+  </p>
+</section>
+
+<!-- ============================================================ -->
+<!-- VIZ 5: Beeswarm — Every Case as a Dot                        -->
+<!-- ============================================================ -->
+<section class="viz-section" id="viz5">
+  <h2>Visualization 5: A Census of Every Case</h2>
+  <p class="subtitle">Each of 481 ArbCom cases rendered as an individual dot — organized by category, colored by dispute type, sized by recurrence depth</p>
+  <div class="viz-container" id="beeswarm-container"></div>
+  <p class="annotation">
+    This is the only visualization in our set that shows <em>every individual case</em>. The treemap and heatmap aggregated; the beeswarm disaggregates. Larger dots are repeat offenders (cases that returned to ArbCom multiple times). The sheer number of gray dots in "Editor Disputes" gives visceral weight to the finding that ArbCom is a conduct court. Hover any dot for the case name.
+  </p>
+</section>
+
+<!-- ============================================================ -->
+<!-- VIZ 6: Radial Recurrence — Dispute Families                   -->
+<!-- ============================================================ -->
+<section class="viz-section" id="viz6">
+  <h2>Visualization 6: The Disputes That Won't Die</h2>
+  <p class="subtitle">A radial burst showing the 33 recurring case families — disputes that returned to ArbCom for a sequel — arranged by category with spoke length encoding recurrence depth</p>
+  <div class="viz-container" id="radial-container"></div>
+  <p class="annotation">
+    Each spoke radiates from a central hub, representing one case family (e.g., "Rex071404" → 4 ArbCom hearings). Spoke length encodes the number of sequels; dots along each spoke mark individual hearings. The radial layout groups families by category sector, revealing that <strong>Editor Disputes</strong> dominate recurrence but <strong>Geopolitics</strong> produces the most deeply recurrent topic-level disputes (Palestine-Israel articles reached case #5). These are the failures of finality — where even ArbCom's binding authority could not permanently resolve the conflict.
+  </p>
+</section>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+// ============================================================
+// Shared
+// ============================================================
+
+const categoryColors = {
+  "Geopolitics": "#e63946",
+  "Science & Medicine": "#457b9d",
+  "Religion": "#e9c46a",
+  "Social & Cultural": "#f4a261",
+  "Editor Conduct": "#2a9d8f",
+  "Content & Policy": "#264653",
+  "Procedural": "#8ecae6",
+  "Editor Disputes": "#6c757d",
+};
+
+const typeColors = {
+  "Content": "#457b9d",
+  "Conduct": "#e76f51",
+  "Hybrid": "#f4a261",
+};
+
+const stageColors = {
+  "talk":     "#78c6d6",
+  "3o":       "#90be6d",
+  "rfc":      "#577590",
+  "drn":      "#f9c74f",
+  "ani":      "#f8961e",
+  "arbcom":   "#e63946",
+  "resolved": "#43aa8b",
+};
+
+const tooltip = d3.select("#tooltip");
+
+function showTooltip(event, html) {
+  tooltip.html(html).style("opacity", 1)
+    .style("left", (event.pageX + 14) + "px")
+    .style("top",  (event.pageY - 10) + "px");
+}
+function moveTooltip(event) {
+  tooltip.style("left", (event.pageX + 14) + "px")
+         .style("top",  (event.pageY - 10) + "px");
+}
+function hideTooltip() { tooltip.style("opacity", 0); }
+
+// ============================================================
+// Load and render
+// ============================================================
+
+d3.json("../data/arb_cases_classified.json").then(data => {
+  renderDAG(data);
+  renderBeeswarm(data);
+  renderRadial(data);
+});
+
+// ============================================================
+// VIZ 4: DIRECTED ACYCLIC GRAPH
+// ============================================================
+function renderDAG(data) {
+  const width  = 1100;
+  const height = 620;
+
+  const svg = d3.select("#dag-container")
+    .append("svg")
+    .attr("viewBox", `0 0 ${width} ${height}`)
+    .attr("preserveAspectRatio", "xMidYMid meet")
+    .style("max-width", "100%");
+
+  // Define arrowhead marker
+  svg.append("defs").append("marker")
+    .attr("id", "arrowhead")
+    .attr("viewBox", "0 -5 10 10")
+    .attr("refX", 28)
+    .attr("refY", 0)
+    .attr("markerWidth", 7)
+    .attr("markerHeight", 7)
+    .attr("orient", "auto")
+    .append("path")
+    .attr("d", "M0,-4L10,0L0,4")
+    .attr("class", "dag-arrow");
+
+  const { stages, transitions } = data.lifecycle;
+
+  // Manually position nodes in a DAG layout
+  // X encodes authority level (order), Y separates parallel nodes
+  const positions = {
+    "talk":     { x: 100,  y: 310 },
+    "3o":       { x: 330,  y: 180 },
+    "rfc":      { x: 330,  y: 440 },
+    "drn":      { x: 560,  y: 310 },
+    "ani":      { x: 750,  y: 200 },
+    "arbcom":   { x: 900,  y: 360 },
+    "resolved": { x: 1020, y: 200 },
+  };
+
+  // Compute throughput for each node (sum of outgoing + incoming flows)
+  const throughput = {};
+  stages.forEach(s => throughput[s.id] = 0);
+  transitions.forEach(t => {
+    throughput[t.source] += t.value;
+    throughput[t.target] += t.value;
+  });
+  // Deduplicate: use max of in/out
+  const nodeVolume = {};
+  stages.forEach(s => {
+    const inFlow = transitions.filter(t => t.target === s.id).reduce((a, t) => a + t.value, 0);
+    const outFlow = transitions.filter(t => t.source === s.id).reduce((a, t) => a + t.value, 0);
+    nodeVolume[s.id] = Math.max(inFlow, outFlow);
+  });
+
+  const radiusScale = d3.scaleSqrt()
+    .domain([0, d3.max(Object.values(nodeVolume))])
+    .range([18, 48]);
+
+  const edgeWidthScale = d3.scaleLinear()
+    .domain([0, d3.max(transitions, t => t.value)])
+    .range([1.5, 12]);
+
+  // Authority level labels
+  const levels = [
+    { x: 100, label: "Informal" },
+    { x: 330, label: "Community" },
+    { x: 560, label: "Mediation" },
+    { x: 750, label: "Admin" },
+    { x: 900, label: "Arbitration" },
+    { x: 1020, label: "Outcome" },
+  ];
+
+  // Background authority gradient bands
+  const bandWidth = 170;
+  levels.forEach((lev, i) => {
+    svg.append("rect")
+      .attr("x", lev.x - bandWidth / 2)
+      .attr("y", 45)
+      .attr("width", bandWidth)
+      .attr("height", height - 75)
+      .attr("fill", i % 2 === 0 ? "rgba(0,0,0,0.02)" : "rgba(0,0,0,0.0)")
+      .attr("rx", 6);
+  });
+
+  levels.forEach(lev => {
+    svg.append("text")
+      .attr("x", lev.x)
+      .attr("y", 32)
+      .attr("text-anchor", "middle")
+      .style("font-size", "11px")
+      .style("font-weight", "600")
+      .style("fill", "#999")
+      .style("text-transform", "uppercase")
+      .style("letter-spacing", "0.08em")
+      .text(lev.label);
+  });
+
+  // Draw edges (curved links)
+  const linkGen = d3.linkHorizontal()
+    .x(d => d.x)
+    .y(d => d.y);
+
+  svg.append("g").selectAll(".dag-link")
+    .data(transitions)
+    .join("path")
+    .attr("class", "dag-link")
+    .attr("d", d => {
+      const src = positions[d.source];
+      const tgt = positions[d.target];
+      return linkGen({ source: src, target: tgt });
+    })
+    .attr("stroke", d => stageColors[d.source])
+    .attr("stroke-width", d => edgeWidthScale(d.value))
+    .attr("marker-end", "url(#arrowhead)")
+    .on("mouseover", (event, d) => {
+      const srcLabel = stages.find(s => s.id === d.source).label;
+      const tgtLabel = stages.find(s => s.id === d.target).label;
+      showTooltip(event,
+        `<div class="tt-title">${srcLabel} → ${tgtLabel}</div>
+         <div>Flow: <strong>${d.value}</strong> disputes</div>
+         <div class="tt-dim">Pathway: ${d.type}</div>`);
+    })
+    .on("mousemove", moveTooltip)
+    .on("mouseout", hideTooltip);
+
+  // Draw nodes
+  const nodeGroup = svg.append("g").selectAll(".dag-node")
+    .data(stages)
+    .join("g")
+    .attr("class", "dag-node")
+    .attr("transform", d => `translate(${positions[d.id].x}, ${positions[d.id].y})`);
+
+  nodeGroup.append("circle")
+    .attr("r", d => radiusScale(nodeVolume[d.id]))
+    .attr("fill", d => stageColors[d.id])
+    .on("mouseover", (event, d) => {
+      showTooltip(event,
+        `<div class="tt-title">${d.label}</div>
+         <div>${d.description}</div>
+         <div style="margin-top:4px;">Throughput: <strong>${nodeVolume[d.id]}</strong></div>
+         <div class="tt-dim">Authority level: ${d.order}</div>`);
+    })
+    .on("mousemove", moveTooltip)
+    .on("mouseout", hideTooltip);
+
+  // Labels
+  nodeGroup.append("text")
+    .attr("dy", d => radiusScale(nodeVolume[d.id]) + 16)
+    .attr("text-anchor", "middle")
+    .style("font-size", "12px")
+    .style("font-weight", "600")
+    .style("fill", "#333")
+    .text(d => d.label);
+
+  // Volume badge inside node
+  nodeGroup.append("text")
+    .attr("class", "dag-badge")
+    .attr("dy", "0.35em")
+    .text(d => nodeVolume[d.id]);
+
+  // Legend: edge types
+  const edgeTypes = [
+    { type: "content", label: "Content path", color: stageColors["talk"] },
+    { type: "escalation", label: "Escalation", color: stageColors["drn"] },
+    { type: "conduct", label: "Conduct shortcut", color: stageColors["ani"] },
+    { type: "consensus", label: "Resolution", color: stageColors["resolved"] },
+  ];
+
+  const legend = svg.append("g").attr("transform", `translate(28, ${height - 80})`);
+  legend.append("text")
+    .attr("y", -8)
+    .style("font-size", "11px")
+    .style("font-weight", "700")
+    .style("fill", "#555")
+    .text("Edge types:");
+
+  edgeTypes.forEach((et, i) => {
+    const g = legend.append("g").attr("transform", `translate(${i * 150}, 10)`);
+    g.append("line")
+      .attr("x1", 0).attr("y1", 0)
+      .attr("x2", 24).attr("y2", 0)
+      .attr("stroke", et.color)
+      .attr("stroke-width", 3);
+    g.append("text")
+      .attr("x", 30)
+      .attr("dy", "0.35em")
+      .style("font-size", "11px")
+      .style("fill", "#555")
+      .text(et.label);
+  });
+
+  // "Node size ∝ throughput" annotation
+  svg.append("text")
+    .attr("x", width - 16)
+    .attr("y", height - 12)
+    .attr("text-anchor", "end")
+    .style("font-size", "10px")
+    .style("fill", "#aaa")
+    .text("Node radius ∝ throughput  ·  Edge width ∝ flow volume");
+}
+
+// ============================================================
+// VIZ 5: BEESWARM — Every Case as a Dot
+// ============================================================
+function renderBeeswarm(data) {
+  const cases = data.cases;
+
+  // Order categories by count descending
+  const catOrder = Object.entries(data.summary.categories)
+    .sort((a, b) => b[1] - a[1])
+    .map(d => d[0]);
+
+  const width  = 1140;
+  const margin = { top: 40, right: 30, bottom: 30, left: 195 };
+  const rowH   = 60;
+  const height = margin.top + catOrder.length * rowH + margin.bottom;
+
+  const svg = d3.select("#beeswarm-container")
+    .append("svg")
+    .attr("viewBox", `0 0 ${width} ${height}`)
+    .attr("preserveAspectRatio", "xMidYMid meet")
+    .style("max-width", "100%");
+
+  const innerW = width - margin.left - margin.right;
+
+  const y = d3.scaleBand()
+    .domain(catOrder)
+    .range([margin.top, height - margin.bottom])
+    .padding(0.25);
+
+  const recurrenceScale = d3.scaleSqrt()
+    .domain([1, 5])
+    .range([3.2, 10]);
+
+  // Draw rows
+  catOrder.forEach((cat, i) => {
+    // Alternate row shading
+    if (i % 2 === 0) {
+      svg.append("rect")
+        .attr("x", margin.left - 6)
+        .attr("y", y(cat))
+        .attr("width", innerW + 12)
+        .attr("height", y.bandwidth())
+        .attr("fill", "rgba(0,0,0,0.025)")
+        .attr("rx", 4);
+    }
+
+    // Category label
+    svg.append("text")
+      .attr("class", "bee-label")
+      .attr("x", margin.left - 14)
+      .attr("y", y(cat) + y.bandwidth() / 2)
+      .attr("dy", "0.35em")
+      .attr("text-anchor", "end")
+      .text(cat);
+
+    // Count
+    svg.append("text")
+      .attr("class", "bee-count")
+      .attr("x", margin.left - 14)
+      .attr("y", y(cat) + y.bandwidth() / 2 + 14)
+      .attr("text-anchor", "end")
+      .text(`${data.summary.categories[cat]} cases`);
+  });
+
+  // Place dots using force simulation per category
+  const simulation = d3.forceSimulation(cases)
+    .force("x", d3.forceX(d => {
+      // spread within row by index
+      const catCases = cases.filter(c => c.category === d.category);
+      const idx = catCases.indexOf(d);
+      const span = innerW - 20;
+      return margin.left + 10 + (span * idx / Math.max(catCases.length - 1, 1));
+    }).strength(1))
+    .force("y", d3.forceY(d => y(d.category) + y.bandwidth() / 2).strength(1.2))
+    .force("collide", d3.forceCollide(d => recurrenceScale(d.recurrence) + 0.8).strength(0.7))
+    .stop();
+
+  // Run simulation
+  for (let i = 0; i < 120; i++) simulation.tick();
+
+  // Clamp y values to stay within row bounds
+  cases.forEach(d => {
+    const top = y(d.category) + recurrenceScale(d.recurrence) + 2;
+    const bot = y(d.category) + y.bandwidth() - recurrenceScale(d.recurrence) - 2;
+    d.y = Math.max(top, Math.min(bot, d.y));
+    d.x = Math.max(margin.left + 4, Math.min(width - margin.right - 4, d.x));
+  });
+
+  // Draw dots
+  svg.append("g").selectAll(".bee-dot")
+    .data(cases)
+    .join("circle")
+    .attr("class", "bee-dot")
+    .attr("cx", d => d.x)
+    .attr("cy", d => d.y)
+    .attr("r",  d => recurrenceScale(d.recurrence))
+    .attr("fill", d => typeColors[d.dispute_type])
+    .attr("opacity", 0.8)
+    .on("mouseover", (event, d) => {
+      showTooltip(event,
+        `<div class="tt-title">${d.name}</div>
+         <div>Category: <strong>${d.category}</strong></div>
+         <div>Type: <strong>${d.dispute_type}</strong></div>
+         <div>Complexity: ${d.complexity}</div>
+         ${d.is_recurring ? `<div style="margin-top:3px; color:#f4a261;">⟳ Recurrence #${d.recurrence}</div>` : ''}`);
+    })
+    .on("mousemove", moveTooltip)
+    .on("mouseout", hideTooltip);
+
+  // Legend
+  const lg = svg.append("g").attr("transform", `translate(${margin.left}, ${height - 18})`);
+
+  // Type colors
+  Object.entries(typeColors).forEach(([type, color], i) => {
+    const g = lg.append("g").attr("transform", `translate(${i * 110}, 0)`);
+    g.append("circle").attr("r", 5).attr("fill", color).attr("cy", -1);
+    g.append("text").attr("x", 10).attr("dy", "0.3em").style("font-size", "11px").text(type);
+  });
+
+  // Size legend
+  const szLeg = lg.append("g").attr("transform", `translate(380, 0)`);
+  szLeg.append("text").attr("dy", "0.3em").style("font-size", "11px").style("fill", "#888").text("Dot size = recurrence depth:");
+
+  [1, 3, 5].forEach((r, i) => {
+    const g = szLeg.append("g").attr("transform", `translate(${200 + i * 55}, 0)`);
+    g.append("circle").attr("r", recurrenceScale(r)).attr("fill", "#aaa").attr("cy", -1);
+    g.append("text").attr("x", recurrenceScale(r) + 5).attr("dy", "0.3em").style("font-size", "10px").style("fill", "#888").text(`×${r}`);
+  });
+}
+
+// ============================================================
+// VIZ 6: RADIAL RECURRENCE BURST
+// ============================================================
+function renderRadial(data) {
+  const families = data.recurring_families;
+  if (!families || families.length === 0) return;
+
+  const width  = 900;
+  const height = 900;
+  const cx = width / 2;
+  const cy = height / 2;
+  const innerR  = 80;
+  const outerR  = 380;
+
+  const svg = d3.select("#radial-container")
+    .append("svg")
+    .attr("viewBox", `0 0 ${width} ${height}`)
+    .attr("preserveAspectRatio", "xMidYMid meet")
+    .style("max-width", "100%");
+
+  const g = svg.append("g").attr("transform", `translate(${cx}, ${cy})`);
+
+  // Group families by category
+  const byCat = {};
+  families.forEach(f => {
+    byCat[f.category] = byCat[f.category] || [];
+    byCat[f.category].push(f);
+  });
+
+  const catKeys = Object.keys(byCat).sort((a, b) => byCat[b].length - byCat[a].length);
+
+  // Assign angular sectors to each category
+  const totalFamilies = families.length;
+  const gapAngle = 0.06; // radians gap between sectors
+  const totalGap = gapAngle * catKeys.length;
+  const availableAngle = 2 * Math.PI - totalGap;
+
+  let currentAngle = -Math.PI / 2; // start at top
+  const sectorMap = {};
+
+  catKeys.forEach(cat => {
+    const count = byCat[cat].length;
+    const sweep = availableAngle * (count / totalFamilies);
+    sectorMap[cat] = { start: currentAngle, end: currentAngle + sweep, count };
+    currentAngle += sweep + gapAngle;
+  });
+
+  // Draw sector arcs (subtle background)
+  const arcGen = d3.arc().innerRadius(innerR - 10).outerRadius(outerR + 20);
+
+  catKeys.forEach(cat => {
+    const sec = sectorMap[cat];
+    g.append("path")
+      .attr("d", arcGen({ startAngle: sec.start + Math.PI / 2, endAngle: sec.end + Math.PI / 2 }))
+      .attr("fill", categoryColors[cat])
+      .attr("opacity", 0.06);
+  });
+
+  // Sector labels
+  catKeys.forEach(cat => {
+    const sec = sectorMap[cat];
+    const midAngle = (sec.start + sec.end) / 2;
+    const labelR = outerR + 42;
+    const lx = Math.cos(midAngle) * labelR;
+    const ly = Math.sin(midAngle) * labelR;
+    const rotate = (midAngle * 180 / Math.PI) + (Math.abs(midAngle) > Math.PI / 2 ? 180 : 0);
+
+    g.append("text")
+      .attr("x", lx)
+      .attr("y", ly)
+      .attr("text-anchor", Math.cos(midAngle) > 0.1 ? "start" : Math.cos(midAngle) < -0.1 ? "end" : "middle")
+      .attr("dy", "0.35em")
+      .style("font-size", "12px")
+      .style("font-weight", "600")
+      .style("fill", categoryColors[cat])
+      .text(cat);
+  });
+
+  // Radial scale for recurrence depth
+  const maxRecurrence = d3.max(families, f => f.max_recurrence);
+  const rScale = d3.scaleLinear()
+    .domain([0, maxRecurrence])
+    .range([innerR, outerR]);
+
+  // Concentric reference circles
+  [1, 2, 3, 4, 5].filter(v => v <= maxRecurrence).forEach(v => {
+    g.append("circle")
+      .attr("r", rScale(v))
+      .attr("fill", "none")
+      .attr("stroke", "#e0e0e0")
+      .attr("stroke-width", 0.5)
+      .attr("stroke-dasharray", "3,3");
+
+    g.append("text")
+      .attr("x", 4)
+      .attr("y", -rScale(v) + 4)
+      .style("font-size", "9px")
+      .style("fill", "#bbb")
+      .text(`${v}×`);
+  });
+
+  // Draw spokes
+  catKeys.forEach(cat => {
+    const sec = sectorMap[cat];
+    const famList = byCat[cat];
+    const angleStep = (sec.end - sec.start) / (famList.length + 1);
+
+    famList.forEach((fam, fi) => {
+      const angle = sec.start + angleStep * (fi + 1);
+      const spokeEnd = rScale(fam.max_recurrence);
+
+      const x1 = Math.cos(angle) * innerR;
+      const y1 = Math.sin(angle) * innerR;
+      const x2 = Math.cos(angle) * spokeEnd;
+      const y2 = Math.sin(angle) * spokeEnd;
+
+      // Spoke line
+      g.append("line")
+        .attr("class", "radial-spoke")
+        .attr("x1", x1).attr("y1", y1)
+        .attr("x2", x2).attr("y2", y2)
+        .attr("stroke", categoryColors[cat])
+        .attr("stroke-width", Math.max(1.5, fam.count * 0.8))
+        .attr("opacity", 0.45);
+
+      // Dots along spoke for each case
+      for (let ci = 1; ci <= fam.max_recurrence; ci++) {
+        const dotR = rScale(ci);
+        const dx = Math.cos(angle) * dotR;
+        const dy = Math.sin(angle) * dotR;
+        const isPresent = ci === 1 || fam.cases.some(c => {
+          const match = c.match(/\s(\d+)$/);
+          return match && parseInt(match[1]) === ci;
+        });
+
+        g.append("circle")
+          .attr("class", "radial-dot")
+          .attr("cx", dx)
+          .attr("cy", dy)
+          .attr("r", isPresent ? 5 : 2.5)
+          .attr("fill", isPresent ? categoryColors[cat] : "#ddd")
+          .attr("stroke", isPresent ? "#fff" : "none")
+          .attr("stroke-width", 1.5)
+          .on("mouseover", (event) => {
+            const caseName = isPresent
+              ? (ci === 1 ? fam.base_name : fam.cases.find(c => c.match(/\s(\d+)$/) && parseInt(c.match(/\s(\d+)$/)[1]) === ci) || `${fam.base_name} ${ci}`)
+              : `(no case #${ci})`;
+            showTooltip(event,
+              `<div class="tt-title">${fam.base_name}</div>
+               <div>Hearing: <strong>#${ci}</strong> — ${caseName}</div>
+               <div>Category: ${fam.category}</div>
+               <div>Family size: ${fam.count} total ArbCom cases</div>
+               <div class="tt-dim">${fam.cases.join(", ")}</div>`);
+          })
+          .on("mousemove", moveTooltip)
+          .on("mouseout", hideTooltip);
+      }
+
+      // Label at spoke tip
+      const labelR = spokeEnd + 10;
+      const lx = Math.cos(angle) * labelR;
+      const ly = Math.sin(angle) * labelR;
+      const angleDeg = angle * 180 / Math.PI;
+      const flip = angleDeg > 90 || angleDeg < -90;
+
+      if (fam.count >= 3 || fam.max_recurrence >= 3) {
+        g.append("text")
+          .attr("class", "radial-label")
+          .attr("x", lx)
+          .attr("y", ly)
+          .attr("text-anchor", flip ? "end" : "start")
+          .attr("transform", `rotate(${flip ? angleDeg + 180 : angleDeg}, ${lx}, ${ly})`)
+          .text(`${fam.base_name} (×${fam.max_recurrence})`);
+      }
+    });
+  });
+
+  // Center label
+  g.append("circle")
+    .attr("r", innerR - 12)
+    .attr("fill", "#1a1a2e")
+    .attr("opacity", 0.9);
+
+  g.append("text")
+    .attr("text-anchor", "middle")
+    .attr("dy", "-0.6em")
+    .style("font-size", "14px")
+    .style("font-weight", "700")
+    .style("fill", "#fff")
+    .text("33 Recurring");
+
+  g.append("text")
+    .attr("text-anchor", "middle")
+    .attr("dy", "0.8em")
+    .style("font-size", "14px")
+    .style("font-weight", "700")
+    .style("fill", "#fff")
+    .text("Case Families");
+
+  g.append("text")
+    .attr("text-anchor", "middle")
+    .attr("dy", "2.2em")
+    .style("font-size", "10px")
+    .style("fill", "rgba(255,255,255,0.6)")
+    .text("of 481 total");
+}
+
+</script>
+</body>
+</html>
