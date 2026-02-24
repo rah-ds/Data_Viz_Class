@@ -317,7 +317,7 @@ function hideTooltip() { tooltip.style("opacity", 0); }
 // Load and render
 // ============================================================
 
-d3.json("../data/arb_cases_classified.json").then(data => {
+d3.json("../../../../data/raw/03_visual_data_analysis/arb_cases_classified.json").then(data => {
   renderDAG(data);
   renderBeeswarm(data);
   renderRadial(data);

@@ -12,8 +12,9 @@ from collections import Counter
 
 # Paths
 ROOT = Path(__file__).resolve().parents[3]  # Data_Viz_Class root
-ARB_CASES_FILE = ROOT / "Wikipedia_Arbitration copy" / "artifacts" / "arb_cases.txt"
-OUTPUT_DIR = Path(__file__).resolve().parent.parent / "data"
+DATA_DIR = ROOT / "data" / "raw" / "03_visual_data_analysis"
+ARB_CASES_FILE = DATA_DIR / "arb_cases.txt"
+OUTPUT_DIR = DATA_DIR
 
 # ---------- Topic Classification Rules ----------
 # Each rule: (list_of_keywords, category)
