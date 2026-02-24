@@ -265,7 +265,7 @@
 // Load data and render all three visualizations
 // ============================================================
 
-d3.json("../data/arb_cases_classified.json").then(data => {
+d3.json("../../../../data/raw/03_visual_data_analysis/arb_cases_classified.json").then(data => {
   renderSankey(data);
   renderTreemap(data);
   renderHeatmap(data);

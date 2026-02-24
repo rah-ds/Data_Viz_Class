@@ -1,4 +1,4 @@
-Visual Data Analysis
+# Visual Data Analysis
 Snake Oil Supplements, Information is Beautiful
 
 Having surveyed information graphics (assignment 1) and then built one on your own (assignment 2) we will now start to more critically analyze data visualization for specific approach, technique, and effectiveness at analyzing a problem or question. We will also begin to use some existing visualization tools, and ask how they can be useful and what their limitations are.
@@ -7,8 +7,9 @@ For this assignment, choose a single dataset of your liking and produce three (3
 
 There are two foci for this assignment:
 
-    To explore and test out different approaches and techniques toward visual structure, differentiation, encoding, and analysis that are out there amidst available tools.  There are some novel approaches here.  Try them.
-    To use these techniques to critically analyze graphical, structural, organizational, and representational approaches for their strengths and weaknesses at gaining insight into information.
+    * To explore and test out different approaches and techniques toward visual structure, differentiation, encoding, and analysis that are out there amidst available tools.  There are some novel approaches here.  Try them.
+    
+    * To use these techniques to critically analyze graphical, structural, organizational, and representational approaches for their strengths and weaknesses at gaining insight into information.
 
 All three of your visuals should be built upon the same dataset, and each should take a very different visual or organizational approach.  Use the same or similar data fields across the three visuals for better comparison, though some visual approaches may work better with some variable types over others, and some strategies will allow for more (or constrain to fewer) variables to show.  Allow for this, use it, and critique it. 
 
