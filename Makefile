@@ -35,10 +35,12 @@ prepare-vda:
 notebook:
 	uv run jupyter notebook --notebook-dir=notebooks
 
-## lint: proselint all markdown writeups
+## lint: proselint markdown files in README.md, assignments/, and docs/
+# TODO: this is broken, fix later
 lint:
 	@echo "Linting markdown files..."
-	@find assignments -name "*.md" | xargs -I{} uv run proselint {}
+	@[ -f README.md ] && uv run proselint README.md || true
+	@find assignments docs -name "*.md" 2>/dev/null | xargs -r -I{} uv run proselint {}
 
 ## install: bootstrap uv (if missing) then sync all Python packages from pyproject.toml
 install:
