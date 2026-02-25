@@ -4,6 +4,7 @@ Three D3.js visualizations of the Wikipedia ArbCom case archive (481 cases), eac
 
 See [`write_up.md`](writeup/write_up.md) for the full analysis.
 
+The docx and pdf were made using pandoc on the write up md.
 ---
 
 ## Figures
