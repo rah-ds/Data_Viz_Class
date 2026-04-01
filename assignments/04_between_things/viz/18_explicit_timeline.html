@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>18 — Explicit Content Timeline</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+  h1 { font-size: 1.4rem; color: #58a6ff; margin-bottom: .2rem; }
+  p.sub { color: #8b949e; font-size: .85rem; margin-bottom: 1rem; max-width: 750px; text-align: center; }
+  svg { background: #161b22; border-radius: 8px; }
+  .tooltip { position: absolute; background: #1c2128; border: 1px solid #30363d; border-radius: 6px; padding: 8px 12px; font-size: .75rem; color: #c9d1d9; pointer-events: none; opacity: 0; line-height: 1.5; }
+  a.back { color: #58a6ff; font-size: .8rem; margin-bottom: 1rem; text-decoration: none; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← all visualizations</a>
+<h1>Explicit Content Timeline</h1>
+<p class="sub">What fraction of monthly streams carry Spotify's "Explicit" tag? Tracking the E-rating over time to see if listening is getting cleaner — or dirtier.</p>
+<div id="chart"></div>
+<div class="tooltip" id="tip"></div>
+<script>
+const W = 960, H = 480, M = {top: 30, right: 30, bottom: 60, left: 65};
+const w = W - M.left - M.right, h = H - M.top - M.bottom;
+
+const svg = d3.select("#chart").append("svg").attr("width", W).attr("height", H);
+const g = svg.append("g").attr("transform", `translate(${M.left},${M.top})`);
+const tip = d3.select("#tip");
+
+d3.json("data/explicit_timeline.json").then(data => {
+  data.sort((a,b) => a.month.localeCompare(b.month));
+
+  const x = d3.scalePoint().domain(data.map(d => d.month)).range([0, w]).padding(0.5);
+  const y = d3.scaleLinear().domain([0, d3.max(data, d => d.explicit_pct) * 1.15]).nice().range([h, 0]);
+  const y2 = d3.scaleLinear().domain([0, d3.max(data, d => d.total) * 1.1]).range([h, 0]);
+
+  // Bar chart for total streams
+  const barW = Math.min(40, w / data.length * 0.6);
+  g.selectAll("rect.bar")
+    .data(data)
+    .join("rect")
+    .attr("class","bar")
+    .attr("x", d => x(d.month) - barW/2)
+    .attr("y", d => y2(d.total))
+    .attr("width", barW)
+    .attr("height", d => h - y2(d.total))
+    .attr("fill", "#21262d")
+    .attr("rx", 2);
+
+  // Explicit % stacked portion
+  g.selectAll("rect.explicit")
+    .data(data)
+    .join("rect")
+    .attr("class","explicit")
+    .attr("x", d => x(d.month) - barW/2)
+    .attr("y", d => y2(d.explicit_count))
+    .attr("width", barW)
+    .attr("height", d => h - y2(d.explicit_count))
+    .attr("fill", "#da3633")
+    .attr("opacity", 0.6)
+    .attr("rx", 2);
+
+  // Line for explicit %
+  const line = d3.line().x(d => x(d.month)).y(d => y(d.explicit_pct)).curve(d3.curveMonotoneX);
+  g.append("path").datum(data).attr("d", line)
+    .attr("fill","none").attr("stroke","#f0883e").attr("stroke-width",3);
+
+  // Dots
+  g.selectAll("circle.dot")
+    .data(data)
+    .join("circle")
+    .attr("class","dot")
+    .attr("cx", d => x(d.month))
+    .attr("cy", d => y(d.explicit_pct))
+    .attr("r", 5)
+    .attr("fill", "#f0883e")
+    .attr("stroke", "#0d1117")
+    .attr("stroke-width", 1.5)
+    .on("mouseover", (e,d) => {
+      tip.style("opacity",1).html(
+        `<b>${d.month}</b><br>` +
+        `${d.explicit_pct}% explicit<br>` +
+        `${d3.format(",")(d.explicit_count)} / ${d3.format(",")(d.total)} streams`
+      );
+    })
+    .on("mousemove", e => tip.style("left",(e.pageX+12)+"px").style("top",(e.pageY-20)+"px"))
+    .on("mouseout", () => tip.style("opacity",0));
+
+  // Axes
+  g.append("g").attr("transform", `translate(0,${h})`).call(d3.axisBottom(x))
+    .selectAll("text").style("fill","#8b949e").attr("transform","rotate(-45)").attr("text-anchor","end");
+  g.append("g").call(d3.axisLeft(y).ticks(8).tickFormat(d => d + "%"))
+    .selectAll("text").style("fill","#f0883e");
+  g.append("g").attr("transform", `translate(${w},0)`)
+    .call(d3.axisRight(y2).ticks(6).tickFormat(d3.format(",.0f")))
+    .selectAll("text").style("fill","#8b949e");
+  g.selectAll(".domain, .tick line").attr("stroke","#30363d");
+
+  svg.append("text").attr("x", M.left + w/2).attr("y", H - 4).attr("text-anchor","middle").attr("fill","#8b949e").attr("font-size","12px").text("Month");
+  svg.append("text").attr("transform","rotate(-90)").attr("x", -(M.top + h/2)).attr("y", 14).attr("text-anchor","middle").attr("fill","#f0883e").attr("font-size","12px").text("% Explicit");
+  svg.append("text").attr("transform","rotate(90)").attr("x", (M.top + h/2)).attr("y", -(W - 8)).attr("text-anchor","middle").attr("fill","#8b949e").attr("font-size","12px").text("Total Streams");
+
+  // Legend
+  const lg = g.append("g").attr("transform", `translate(10, 10)`);
+  lg.append("rect").attr("width",12).attr("height",12).attr("fill","#da3633").attr("opacity",0.6);
+  lg.append("text").attr("x",16).attr("y",10).attr("fill","#c9d1d9").attr("font-size","10px").text("Explicit streams");
+  lg.append("rect").attr("y",18).attr("width",12).attr("height",12).attr("fill","#21262d");
+  lg.append("text").attr("x",16).attr("y",28).attr("fill","#c9d1d9").attr("font-size","10px").text("Clean streams");
+  lg.append("line").attr("x1",0).attr("x2",12).attr("y1",42).attr("y2",42).attr("stroke","#f0883e").attr("stroke-width",3);
+  lg.append("text").attr("x",16).attr("y",45).attr("fill","#c9d1d9").attr("font-size","10px").text("Explicit %");
+});
+</script>
+</body>
+</html>

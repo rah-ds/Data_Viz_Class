@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>1 — Mood Space Density</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-contour@4"></script>
+<style>
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+  h1 { font-size: 1.4rem; color: #58a6ff; margin-bottom: .2rem; }
+  p.sub { color: #8b949e; font-size: .85rem; margin-bottom: 1rem; }
+  svg { background: #161b22; border-radius: 8px; }
+  .tooltip { position: absolute; background: #1c2128; border: 1px solid #30363d; border-radius: 6px; padding: 6px 10px; font-size: .75rem; color: #c9d1d9; pointer-events: none; opacity: 0; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 1rem; font-size: .75rem; }
+  .legend span { display: flex; align-items: center; gap: 4px; }
+  .legend .swatch { width: 10px; height: 10px; border-radius: 50%; }
+  a.back { color: #58a6ff; font-size: .8rem; margin-bottom: 1rem; text-decoration: none; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← all options</a>
+<h1>Mood Space — Energy × Valence</h1>
+<p class="sub">Every stream plotted in mood-quadrant space, colored by listener. Quadrants: happy/energetic, sad/calm, angry/turbulent, peaceful.</p>
+<div id="chart"></div>
+<div class="legend" id="legend"></div>
+<div class="tooltip" id="tip"></div>
+<script>
+const W = 900, H = 900, M = {top: 40, right: 40, bottom: 50, left: 55};
+const w = W - M.left - M.right, h = H - M.top - M.bottom;
+
+const svg = d3.select("#chart").append("svg").attr("width", W).attr("height", H);
+const g = svg.append("g").attr("transform", `translate(${M.left},${M.top})`);
+
+const x = d3.scaleLinear().domain([0, 1]).range([0, w]);
+const y = d3.scaleLinear().domain([0, 1]).range([h, 0]);
+const color = d3.scaleOrdinal(d3.schemeTableau10);
+
+// Axes
+g.append("g").attr("transform", `translate(0,${h})`).call(d3.axisBottom(x).ticks(10)).selectAll("text").style("fill","#8b949e");
+g.append("g").call(d3.axisLeft(y).ticks(10)).selectAll("text").style("fill","#8b949e");
+g.selectAll(".domain, .tick line").attr("stroke","#30363d");
+
+// Axis labels
+svg.append("text").attr("x", M.left + w/2).attr("y", H - 8).attr("text-anchor","middle").attr("fill","#8b949e").attr("font-size","13px").text("Valence (musical positiveness →)");
+svg.append("text").attr("transform","rotate(-90)").attr("x", -(M.top + h/2)).attr("y", 14).attr("text-anchor","middle").attr("fill","#8b949e").attr("font-size","13px").text("Energy →");
+
+// Quadrant lines & labels
+g.append("line").attr("x1",x(0.5)).attr("x2",x(0.5)).attr("y1",0).attr("y2",h).attr("stroke","#30363d").attr("stroke-dasharray","4,4");
+g.append("line").attr("x1",0).attr("x2",w).attr("y1",y(0.5)).attr("y2",y(0.5)).attr("stroke","#30363d").attr("stroke-dasharray","4,4");
+const ql = [["Angry / Turbulent",0.15,0.92],["Happy / Energetic",0.85,0.92],["Sad / Depressed",0.15,0.06],["Calm / Peaceful",0.85,0.06]];
+ql.forEach(([t,vx,vy]) => g.append("text").attr("x",x(vx)).attr("y",y(vy)).attr("text-anchor","middle").attr("fill","#484f58").attr("font-size","11px").text(t));
+
+const tip = d3.select("#tip");
+
+Promise.all([
+  d3.json("data/mood_space.json"),
+  d3.json("data/mood_centroids.json")
+]).then(([data, centroids]) => {
+  const persons = [...new Set(data.map(d => d.personID))].sort((a,b)=>a-b);
+  color.domain(persons);
+
+  // Points
+  g.selectAll("circle.pt")
+    .data(data)
+    .join("circle")
+    .attr("class","pt")
+    .attr("cx", d => x(d.valence))
+    .attr("cy", d => y(d.energy))
+    .attr("r", 2)
+    .attr("fill", d => color(d.personID))
+    .attr("opacity", 0.25)
+    .on("mouseover", (e,d) => {
+      tip.style("opacity",1).html(`<b>P${d.personID}</b>: ${d.artistName} — ${d.trackName}<br>E=${d.energy.toFixed(2)} V=${d.valence.toFixed(2)}`);
+    })
+    .on("mousemove", e => tip.style("left",(e.pageX+12)+"px").style("top",(e.pageY-20)+"px"))
+    .on("mouseout", () => tip.style("opacity",0));
+
+  // Centroids
+  g.selectAll("circle.centroid")
+    .data(centroids)
+    .join("circle")
+    .attr("class","centroid")
+    .attr("cx", d => x(d.valence))
+    .attr("cy", d => y(d.energy))
+    .attr("r", 12)
+    .attr("fill", d => color(d.personID))
+    .attr("stroke", "#f0f6fc")
+    .attr("stroke-width", 2)
+    .attr("opacity", 0.9);
+
+  g.selectAll("text.clabel")
+    .data(centroids)
+    .join("text")
+    .attr("class","clabel")
+    .attr("x", d => x(d.valence))
+    .attr("y", d => y(d.energy) + 4)
+    .attr("text-anchor","middle")
+    .attr("fill","#f0f6fc")
+    .attr("font-size","9px")
+    .attr("font-weight","bold")
+    .text(d => `P${d.personID}`);
+
+  // Legend
+  const leg = d3.select("#legend");
+  persons.forEach(p => {
+    leg.append("span").html(`<span class="swatch" style="background:${color(p)}"></span>Person ${p}`);
+  });
+});
+</script>
+</body>
+</html>

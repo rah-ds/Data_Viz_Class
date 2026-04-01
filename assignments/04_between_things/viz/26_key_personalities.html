@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>26 — Key Personalities</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+  h1 { font-size: 1.6rem; color: #58a6ff; margin-bottom: .2rem; }
+  p.sub { color: #8b949e; font-size: .85rem; margin-bottom: 1.2rem; max-width: 700px; text-align: center; }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .cell { background: #161b22; border-radius: 10px; border: 1px solid #30363d; display: flex; flex-direction: column; align-items: center; padding: 10px 4px 6px; transition: border-color .2s; }
+  .cell:hover { border-color: #58a6ff; }
+  .cell h3 { font-size: .9rem; color: #f0f6fc; margin: 0; }
+  .cell .persona { font-size: .65rem; color: #8b949e; margin: 2px 0 4px; }
+  a.back { color: #58a6ff; font-size: .8rem; margin-bottom: 1rem; text-decoration: none; }
+  .tooltip { position: absolute; background: #1c2128ee; border: 1px solid #30363d; border-radius: 6px; padding: 8px 12px; font-size: .72rem; color: #c9d1d9; pointer-events: none; opacity: 0; line-height: 1.5; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← all visualizations</a>
+<h1>🎭 Key Personalities</h1>
+<p class="sub">Every musical key has a vibe. These 12 mini-radars reveal the audio personality of each key — who's the party animal, who's the philosopher? Hover any vertex for details.</p>
+<div class="grid" id="grid"></div>
+<div class="tooltip" id="tip"></div>
+<script>
+const feats = ["danceability","energy","speechiness","acousticness","instrumentalness","liveness","valence"];
+const labels = ["Dance","Energy","Speech","Acoustic","Instr.","Live","Valence"];
+const n = feats.length, slice = (2*Math.PI)/n;
+const R = 62, W = 170, H = 160;
+const tip = d3.select("#tip");
+
+const personalities = {
+  danceability: ["💃 The Groover","#ff6b9d"],
+  energy: ["⚡ The Powerhouse","#ff6b35"],
+  speechiness: ["🎤 The Storyteller","#ffd166"],
+  acousticness: ["🎸 The Unplugged","#06d6a0"],
+  instrumentalness: ["🎹 The Silent Type","#118ab2"],
+  liveness: ["🎪 The Stage Lover","#ef476f"],
+  valence: ["☀️ The Optimist","#ffd700"]
+};
+
+const keyHues = d3.scaleOrdinal().domain(d3.range(12))
+  .range(["#58a6ff","#3fb950","#d2a8ff","#f0883e","#ff7b72","#f778ba",
+          "#ffd700","#79c0ff","#56d364","#bc8cff","#d29922","#da3633"]);
+
+d3.json("data/key_features.json").then(data => {
+  // Compute z-scores for personality assignment
+  const means = {}, stds = {};
+  feats.forEach(f => {
+    const vals = data.map(d => d[f]);
+    means[f] = d3.mean(vals);
+    stds[f] = d3.deviation(vals) || 0.001;
+  });
+
+  data.forEach(d => {
+    let maxZ = -Infinity, best = "energy";
+    feats.forEach(f => {
+      const z = (d[f] - means[f]) / stds[f];
+      if (z > maxZ) { maxZ = z; best = f; }
+    });
+    d._persona = personalities[best][0];
+    d._personaColor = personalities[best][1];
+  });
+
+  const grid = d3.select("#grid");
+
+  data.forEach(d => {
+    const cell = grid.append("div").attr("class","cell");
+    cell.append("h3").text(d.key_name);
+    cell.append("div").attr("class","persona").style("color", d._personaColor).text(d._persona);
+
+    const svg = cell.append("svg").attr("width",W).attr("height",H);
+    const g = svg.append("g").attr("transform",`translate(${W/2},${H/2+6})`);
+    const rScale = d3.scaleLinear().domain([0,1]).range([0,R]);
+
+    // Grid
+    [0.33,0.66,1].forEach(lev => {
+      const r = rScale(lev);
+      const pts = feats.map((_,i) => {
+        const a = slice*i - Math.PI/2;
+        return `${Math.cos(a)*r},${Math.sin(a)*r}`;
+      });
+      g.append("polygon").attr("points",pts.join(" "))
+        .attr("fill","none").attr("stroke","#21262d").attr("stroke-width",0.5);
+    });
+
+    // Axes
+    feats.forEach((f,i) => {
+      const a = slice*i - Math.PI/2;
+      g.append("line").attr("x1",0).attr("y1",0)
+        .attr("x2",Math.cos(a)*R).attr("y2",Math.sin(a)*R)
+        .attr("stroke","#21262d").attr("stroke-width",0.5);
+      const lr = R + 13;
+      g.append("text").attr("x",Math.cos(a)*lr).attr("y",Math.sin(a)*lr)
+        .attr("text-anchor","middle").attr("dominant-baseline","middle")
+        .attr("fill","#484f58").attr("font-size","7px").text(labels[i]);
+    });
+
+    // Radar polygon
+    const color = keyHues(d.key);
+    const pts = feats.map((f,i) => {
+      const a = slice*i - Math.PI/2;
+      const r = rScale(d[f]);
+      return `${Math.cos(a)*r},${Math.sin(a)*r}`;
+    });
+    g.append("polygon").attr("points",pts.join(" "))
+      .attr("fill",color).attr("fill-opacity",0.2)
+      .attr("stroke",color).attr("stroke-width",1.5);
+
+    // Dots
+    feats.forEach((f,i) => {
+      const a = slice*i - Math.PI/2;
+      const r = rScale(d[f]);
+      g.append("circle")
+        .attr("cx",Math.cos(a)*r).attr("cy",Math.sin(a)*r)
+        .attr("r",3).attr("fill",color)
+        .on("mouseover",e => {
+          tip.style("opacity",1).html(`<b>${d.key_name}</b> — ${f}<br>Value: <b>${d[f].toFixed(4)}</b><br>${d3.format(",")(d.streams)} streams`);
+        })
+        .on("mousemove",e=>tip.style("left",(e.pageX+10)+"px").style("top",(e.pageY-18)+"px"))
+        .on("mouseout",()=>tip.style("opacity",0));
+    });
+  });
+});
+</script>
+</body>
+</html>

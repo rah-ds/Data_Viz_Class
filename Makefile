@@ -1,4 +1,4 @@
-.PHONY: help install export-svgs serve-vda prepare-vda notebook lint fmt-py fmt-md clean
+.PHONY: help install export-svgs serve-vda serve-btw prepare-vda notebook lint fmt-py fmt-md clean
 
 # Default port for the dev server
 PORT ?= 8000
@@ -11,6 +11,7 @@ help:
 	@echo "  install        Bootstrap uv (if missing) and sync all Python packages"
 	@echo "  export-svgs    Export the 3 key D3 vizs to labelled SVGs in viz/to_refine/"
 	@echo "  serve-vda      Serve the visual_data_analysis D3 files (viz/raw/) in a browser"
+	@echo "  serve-btw      Serve the between_things D3 viz files on port 8080"
 	@echo "  prepare-vda    Run the data-prep script for visual_data_analysis"
 	@echo "  notebook       Launch Jupyter Notebook from the notebooks/ directory"
 	@echo "  lint           Run proselint on all markdown writeups"
@@ -26,6 +27,10 @@ export-svgs:
 ## serve-vda: serve the D3 visualisations for visual_data_analysis
 serve-vda:
 	uv run python assignments/03_visual_data_analysis/scripts/serve.py $(PORT)
+
+## serve-btw: serve the between_things D3 viz files
+serve-btw:
+	uv run python assignments/04_between_things/scripts/serve_viz.py
 
 ## prepare-vda: run the data preparation script for visual_data_analysis
 prepare-vda:

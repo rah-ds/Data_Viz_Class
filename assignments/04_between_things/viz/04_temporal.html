@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>4 — Temporal Rhythms</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+  h1 { font-size: 1.4rem; color: #58a6ff; margin-bottom: .2rem; }
+  p.sub { color: #8b949e; font-size: .85rem; margin-bottom: 1rem; }
+  .grid { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .panel { background: #161b22; border-radius: 6px; padding: 8px; }
+  .panel h3 { font-size: .75rem; color: #c9d1d9; text-align: center; margin-bottom: 4px; }
+  a.back { color: #58a6ff; font-size: .8rem; margin-bottom: 1rem; text-decoration: none; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← all options</a>
+<h1>Temporal Rhythms — When Do They Listen?</h1>
+<p class="sub">Small-multiple heatmaps: day-of-week (rows) × hour (columns). Color intensity = stream count. UTC times.</p>
+<div class="grid" id="panels"></div>
+<script>
+const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+const cellW = 16, cellH = 14, mL = 30, mT = 14;
+const panelW = mL + 24*cellW + 6;
+const panelH = mT + 7*cellH + 20;
+
+d3.json("data/temporal_patterns.json").then(data => {
+  const persons = [...new Set(data.map(d=>d.personID))].sort((a,b)=>a-b);
+  const maxC = d3.max(data, d=>d.count);
+  const colorScale = d3.scaleSequential(d3.interpolateYlOrRd).domain([0, maxC * 0.6]);
+
+  persons.forEach(pid => {
+    const pData = data.filter(d=>d.personID===pid);
+    const lookup = {};
+    pData.forEach(d => { lookup[`${d.dow}-${d.hour}`] = d.count; });
+
+    const panel = d3.select("#panels").append("div").attr("class","panel");
+    panel.append("h3").text(`Person ${pid}`);
+    const svg = panel.append("svg").attr("width", panelW).attr("height", panelH);
+    const g = svg.append("g").attr("transform",`translate(${mL},${mT})`);
+
+    // Day labels
+    DAYS.forEach((d,i) => {
+      g.append("text").attr("x",-4).attr("y",i*cellH + cellH/2 + 3)
+        .attr("text-anchor","end").attr("font-size","8px").attr("fill","#8b949e").text(d);
+    });
+
+    // Hour labels (every 4)
+    for(let h=0; h<24; h+=4) {
+      g.append("text").attr("x",h*cellW + cellW/2).attr("y", 7*cellH + 12)
+        .attr("text-anchor","middle").attr("font-size","7px").attr("fill","#484f58").text(h);
+    }
+
+    // Cells
+    for(let dow=0; dow<7; dow++) {
+      for(let hr=0; hr<24; hr++) {
+        const v = lookup[`${dow}-${hr}`] || 0;
+        g.append("rect")
+          .attr("x", hr*cellW).attr("y", dow*cellH)
+          .attr("width", cellW-1).attr("height", cellH-1)
+          .attr("rx", 2)
+          .attr("fill", v===0 ? "#21262d" : colorScale(v));
+      }
+    }
+  });
+});
+</script>
+</body>
+</html>

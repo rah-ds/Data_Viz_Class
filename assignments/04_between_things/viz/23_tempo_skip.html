@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>23 — Tempo × Skip Behavior</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+  h1 { font-size: 1.4rem; color: #58a6ff; margin-bottom: .2rem; }
+  p.sub { color: #8b949e; font-size: .85rem; margin-bottom: 1rem; max-width: 800px; text-align: center; }
+  svg { background: #161b22; border-radius: 8px; }
+  .tooltip { position: absolute; background: #1c2128; border: 1px solid #30363d; border-radius: 6px; padding: 10px 14px; font-size: .75rem; color: #c9d1d9; pointer-events: none; opacity: 0; line-height: 1.6; max-width: 240px; }
+  a.back { color: #58a6ff; font-size: .8rem; margin-bottom: 1rem; text-decoration: none; }
+  .panel-label { font-size: 12px; fill: #8b949e; font-weight: bold; }
+  .annotation { font-size: 9px; fill: #484f58; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← all visualizations</a>
+<h1>Tempo × Skip Behavior</h1>
+<p class="sub">Do fast songs get skipped more? A combined view: the top panel shows stream volume by BPM (colored by energy), the middle shows skip rate vs full-play rate at each tempo, and the bottom encodes average play-through percentage. Genre tempo zones are annotated across all panels.</p>
+<div id="chart"></div>
+<div class="tooltip" id="tip"></div>
+<script>
+const W = 1000;
+const h1 = 200, h2 = 180, h3 = 100, gap = 30;
+const H = 40 + h1 + gap + h2 + gap + h3 + 50;
+const M = {top: 40, right: 40, bottom: 50, left: 65};
+const w = W - M.left - M.right;
+
+const svg = d3.select("#chart").append("svg").attr("width", W).attr("height", H);
+const tip = d3.select("#tip");
+
+const annotations = [
+  {bpm: 70, label: "Hip-Hop"},
+  {bpm: 80, label: "Lo-Fi"},
+  {bpm: 90, label: "Reggaeton"},
+  {bpm: 100, label: "Pop"},
+  {bpm: 120, label: "House"},
+  {bpm: 128, label: "EDM"},
+  {bpm: 150, label: "D&B"},
+  {bpm: 174, label: "Jungle"},
+];
+
+d3.json("data/tempo_skip.json").then(data => {
+  data = data.filter(d => d.streams >= 20).sort((a,b) => a.tempo_bin - b.tempo_bin);
+
+  const x = d3.scaleLinear()
+    .domain([d3.min(data, d => d.tempo_bin) - 2, d3.max(data, d => d.tempo_bin) + 6])
+    .range([0, w]);
+
+  const barW = Math.max(2, w / data.length * 0.7);
+
+  // ── PANEL 1: Stream volume (bars colored by energy) ─────────────
+  const g1 = svg.append("g").attr("transform", `translate(${M.left},${M.top})`);
+  const y1 = d3.scaleLinear().domain([0, d3.max(data, d => d.streams) * 1.1]).nice().range([h1, 0]);
+  const energyColor = d3.scaleSequential(d3.interpolatePlasma).domain([0.3, 0.85]);
+
+  g1.append("g").call(d3.axisLeft(y1).ticks(5).tickFormat(d3.format(",.0f")))
+    .selectAll("text").style("fill","#8b949e");
+  g1.selectAll(".domain, .tick line").attr("stroke","#30363d");
+  g1.append("text").attr("class","panel-label").attr("x", -8).attr("y", -10).attr("text-anchor","start").text("Streams by BPM");
+
+  // Area background
+  const area1 = d3.area().x(d=>x(d.tempo_bin)).y0(h1).y1(d=>y1(d.streams)).curve(d3.curveBasis);
+  g1.append("path").datum(data).attr("d", area1).attr("fill","#58a6ff").attr("fill-opacity",0.08);
+
+  g1.selectAll("rect.bar1")
+    .data(data).join("rect").attr("class","bar1")
+    .attr("x", d => x(d.tempo_bin) - barW/2)
+    .attr("y", d => y1(d.streams))
+    .attr("width", barW)
+    .attr("height", d => h1 - y1(d.streams))
+    .attr("fill", d => energyColor(d.avg_energy))
+    .attr("opacity", 0.9)
+    .on("mouseover", showTip).on("mousemove", moveTip).on("mouseout", hideTip);
+
+  // Energy legend
+  const lgW = 140, lgH = 10;
+  const lg1 = g1.append("g").attr("transform", `translate(${w - lgW - 5}, 2)`);
+  const defs = svg.append("defs");
+  const grad1 = defs.append("linearGradient").attr("id","eGrad");
+  grad1.append("stop").attr("offset","0%").attr("stop-color", energyColor(0.3));
+  grad1.append("stop").attr("offset","100%").attr("stop-color", energyColor(0.85));
+  lg1.append("rect").attr("width",lgW).attr("height",lgH).attr("fill","url(#eGrad)").attr("rx",2);
+  lg1.append("text").attr("y",lgH+10).attr("fill","#8b949e").attr("font-size","8px").text("Low Energy");
+  lg1.append("text").attr("x",lgW).attr("y",lgH+10).attr("text-anchor","end").attr("fill","#8b949e").attr("font-size","8px").text("High Energy");
+
+  // ── PANEL 2: Skip rate + Full play rate (dual line) ─────────────
+  const top2 = M.top + h1 + gap;
+  const g2 = svg.append("g").attr("transform", `translate(${M.left},${top2})`);
+  const y2 = d3.scaleLinear().domain([0, Math.max(
+    d3.max(data, d => d.skip_rate),
+    d3.max(data, d => d.full_play_rate)
+  ) * 1.15]).nice().range([h2, 0]);
+
+  g2.append("g").call(d3.axisLeft(y2).ticks(6).tickFormat(d => d + "%"))
+    .selectAll("text").style("fill","#8b949e");
+  g2.selectAll(".domain, .tick line").attr("stroke","#30363d");
+  g2.append("text").attr("class","panel-label").attr("x", -8).attr("y", -10).attr("text-anchor","start").text("Skip Rate vs Full-Play Rate");
+
+  // Skip rate area + line
+  const skipArea = d3.area().x(d=>x(d.tempo_bin)).y0(h2).y1(d=>y2(d.skip_rate)).curve(d3.curveMonotoneX);
+  g2.append("path").datum(data).attr("d", skipArea).attr("fill","#da3633").attr("fill-opacity",0.12);
+  const skipLine = d3.line().x(d=>x(d.tempo_bin)).y(d=>y2(d.skip_rate)).curve(d3.curveMonotoneX);
+  g2.append("path").datum(data).attr("d", skipLine).attr("fill","none").attr("stroke","#da3633").attr("stroke-width",2.5);
+
+  // Full play area + line
+  const fullArea = d3.area().x(d=>x(d.tempo_bin)).y0(h2).y1(d=>y2(d.full_play_rate)).curve(d3.curveMonotoneX);
+  g2.append("path").datum(data).attr("d", fullArea).attr("fill","#3fb950").attr("fill-opacity",0.10);
+  const fullLine = d3.line().x(d=>x(d.tempo_bin)).y(d=>y2(d.full_play_rate)).curve(d3.curveMonotoneX);
+  g2.append("path").datum(data).attr("d", fullLine).attr("fill","none").attr("stroke","#3fb950").attr("stroke-width",2.5);
+
+  // Dots for interaction
+  g2.selectAll("circle.skip")
+    .data(data).join("circle").attr("class","skip")
+    .attr("cx", d => x(d.tempo_bin)).attr("cy", d => y2(d.skip_rate))
+    .attr("r", 3.5).attr("fill","#da3633").attr("stroke","#0d1117").attr("stroke-width",1)
+    .on("mouseover", showTip).on("mousemove", moveTip).on("mouseout", hideTip);
+
+  g2.selectAll("circle.full")
+    .data(data).join("circle").attr("class","full")
+    .attr("cx", d => x(d.tempo_bin)).attr("cy", d => y2(d.full_play_rate))
+    .attr("r", 3.5).attr("fill","#3fb950").attr("stroke","#0d1117").attr("stroke-width",1)
+    .on("mouseover", showTip).on("mousemove", moveTip).on("mouseout", hideTip);
+
+  // Legend
+  const lg2 = g2.append("g").attr("transform", `translate(${w - 180}, 2)`);
+  lg2.append("line").attr("x1",0).attr("x2",18).attr("y1",0).attr("y2",0).attr("stroke","#da3633").attr("stroke-width",2.5);
+  lg2.append("text").attr("x",22).attr("y",4).attr("fill","#da3633").attr("font-size","10px").text("Skip Rate (<30s)");
+  lg2.append("line").attr("x1",0).attr("x2",18).attr("y1",16).attr("y2",16).attr("stroke","#3fb950").attr("stroke-width",2.5);
+  lg2.append("text").attr("x",22).attr("y",20).attr("fill","#3fb950").attr("font-size","10px").text("Full Play Rate (≥90%)");
+
+  // ── PANEL 3: Avg play % (heatmap strip) ─────────────────────────
+  const top3 = top2 + h2 + gap;
+  const g3 = svg.append("g").attr("transform", `translate(${M.left},${top3})`);
+  const playColor = d3.scaleSequential(d3.interpolateRdYlGn).domain([20, 80]);
+
+  g3.append("text").attr("class","panel-label").attr("x", -8).attr("y", -10).attr("text-anchor","start").text("Avg % of Track Played");
+
+  const cellW = w / data.length;
+  g3.selectAll("rect.heat")
+    .data(data).join("rect").attr("class","heat")
+    .attr("x", (d,i) => i * cellW)
+    .attr("y", 10)
+    .attr("width", cellW - 1)
+    .attr("height", h3 - 20)
+    .attr("rx", 2)
+    .attr("fill", d => playColor(d.avg_play_pct))
+    .attr("opacity", 0.9)
+    .on("mouseover", showTip).on("mousemove", moveTip).on("mouseout", hideTip);
+
+  // Play % labels on the cells (only every few)
+  data.forEach((d, i) => {
+    if (i % 3 === 0) {
+      g3.append("text")
+        .attr("x", i * cellW + cellW/2)
+        .attr("y", 10 + (h3-20)/2 + 4)
+        .attr("text-anchor","middle")
+        .attr("fill", d.avg_play_pct > 55 ? "#0d1117" : "#f0f6fc")
+        .attr("font-size","9px")
+        .attr("font-weight","bold")
+        .text(d.avg_play_pct.toFixed(0) + "%");
+    }
+  });
+
+  // Heatmap legend
+  const lgHW = 120, lgHH = 10;
+  const lg3 = g3.append("g").attr("transform", `translate(${w - lgHW - 5}, ${h3 - 8})`);
+  const grad3 = defs.append("linearGradient").attr("id","playGrad");
+  grad3.append("stop").attr("offset","0%").attr("stop-color",playColor(20));
+  grad3.append("stop").attr("offset","100%").attr("stop-color",playColor(80));
+  lg3.append("rect").attr("width",lgHW).attr("height",lgHH).attr("fill","url(#playGrad)").attr("rx",2);
+  lg3.append("text").attr("y",lgHH+10).attr("fill","#8b949e").attr("font-size","8px").text("20%");
+  lg3.append("text").attr("x",lgHW).attr("y",lgHH+10).attr("text-anchor","end").attr("fill","#8b949e").attr("font-size","8px").text("80%");
+
+  // ── Shared X axis at bottom ─────────────────────────────────────
+  const gX = svg.append("g").attr("transform", `translate(${M.left},${top3 + h3})`);
+  gX.call(d3.axisBottom(x).ticks(18).tickFormat(d => d + "")).selectAll("text").style("fill","#8b949e");
+  gX.selectAll(".domain, .tick line").attr("stroke","#30363d");
+  svg.append("text")
+    .attr("x", M.left + w/2).attr("y", top3 + h3 + 38)
+    .attr("text-anchor","middle").attr("fill","#8b949e").attr("font-size","12px")
+    .text("Tempo (BPM)");
+
+  // ── Genre annotation lines across all panels ────────────────────
+  annotations.forEach(a => {
+    if (x(a.bpm) < 0 || x(a.bpm) > w) return;
+    // Vertical line across all 3 panels
+    [g1, g2].forEach((gp, gi) => {
+      const ph = gi === 0 ? h1 : h2;
+      gp.append("line")
+        .attr("x1", x(a.bpm)).attr("x2", x(a.bpm))
+        .attr("y1", 0).attr("y2", ph)
+        .attr("stroke","#30363d").attr("stroke-dasharray","3,4").attr("stroke-width",0.7);
+    });
+    // Label at top of panel 1
+    g1.append("text").attr("class","annotation")
+      .attr("x", x(a.bpm)).attr("y", -2)
+      .attr("text-anchor","middle")
+      .attr("font-size","9px").attr("fill","#484f58")
+      .text(a.label);
+  });
+
+  // ── Tooltip ─────────────────────────────────────────────────────
+  function showTip(e, d) {
+    tip.style("opacity",1).html(
+      `<b>${d.tempo_bin} BPM</b> · ${d3.format(",")(d.streams)} streams<br>` +
+      `<span style="color:#da3633">Skip Rate: ${d.skip_rate.toFixed(1)}%</span><br>` +
+      `<span style="color:#3fb950">Full Play: ${d.full_play_rate.toFixed(1)}%</span><br>` +
+      `Avg Play-through: ${d.avg_play_pct.toFixed(1)}%<br>` +
+      `<hr style="border-color:#30363d;margin:4px 0">` +
+      `Energy: ${d.avg_energy.toFixed(2)}<br>` +
+      `Danceability: ${d.avg_danceability.toFixed(2)}<br>` +
+      `Valence: ${d.avg_valence.toFixed(2)}`
+    );
+  }
+  function moveTip(e) { tip.style("left",(e.pageX+14)+"px").style("top",(e.pageY-24)+"px"); }
+  function hideTip() { tip.style("opacity",0); }
+});
+</script>
+</body>
+</html>

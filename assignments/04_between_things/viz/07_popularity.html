@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>7 — Popularity Ridgeline</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+  h1 { font-size: 1.4rem; color: #58a6ff; margin-bottom: .2rem; }
+  p.sub { color: #8b949e; font-size: .85rem; margin-bottom: 1rem; }
+  svg { background: #161b22; border-radius: 8px; }
+  a.back { color: #58a6ff; font-size: .8rem; margin-bottom: 1rem; text-decoration: none; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← all options</a>
+<h1>Popularity Ridgeline — Mainstream vs. Obscure</h1>
+<p class="sub">Overlapping density curves of track popularity (0-100) per person. Sorted by mean popularity. Who goes deep?</p>
+<div id="chart"></div>
+<script>
+const W = 900, H = 700, M = {top: 30, right: 30, bottom: 40, left: 60};
+const w = W - M.left - M.right, h = H - M.top - M.bottom;
+
+const svg = d3.select("#chart").append("svg").attr("width",W).attr("height",H);
+const g = svg.append("g").attr("transform",`translate(${M.left},${M.top})`);
+const color = d3.scaleOrdinal(d3.schemeTableau10);
+
+d3.json("data/popularity_dist.json").then(data => {
+  const persons = [...new Set(data.map(d => d.personID))].sort((a,b)=>a-b);
+  color.domain(persons);
+
+  // Compute mean popularity per person for sorting
+  const personMean = {};
+  persons.forEach(p => {
+    const pData = data.filter(d=>d.personID===p);
+    const total = d3.sum(pData, d=>d.count);
+    personMean[p] = d3.sum(pData, d=>d.pop_bin * d.count) / total;
+  });
+  const sortedPersons = persons.sort((a,b) => personMean[a] - personMean[b]);
+
+  const x = d3.scaleLinear().domain([0, 100]).range([0, w]);
+  const rowH = h / sortedPersons.length;
+  const yCount = d3.scaleLinear().domain([0, d3.max(data, d=>d.count)]).range([0, rowH * 2.5]);
+
+  // X axis
+  g.append("g").attr("transform",`translate(0,${h})`).call(d3.axisBottom(x).ticks(10))
+    .selectAll("text").style("fill","#8b949e");
+  g.selectAll(".domain, .tick line").attr("stroke","#30363d");
+  svg.append("text").attr("x",M.left+w/2).attr("y",H-6).attr("text-anchor","middle").attr("fill","#8b949e").attr("font-size","12px").text("Track Popularity →");
+
+  const area = d3.area()
+    .x(d => x(d.pop_bin + 2.5))
+    .y0(0)
+    .y1(d => -yCount(d.count))
+    .curve(d3.curveBasis);
+
+  sortedPersons.forEach((pid, i) => {
+    const pData = data.filter(d=>d.personID===pid).sort((a,b)=>a.pop_bin-b.pop_bin);
+    const yOffset = M.top + (i + 1) * rowH;
+
+    // Person label
+    g.append("text")
+      .attr("x", -8).attr("y", (i+1)*rowH - rowH/2 + 3)
+      .attr("text-anchor","end").attr("fill","#8b949e")
+      .attr("font-size","10px").text(`P${pid}`);
+
+    // Ridge
+    g.append("path")
+      .datum(pData)
+      .attr("d", area)
+      .attr("transform", `translate(0,${(i+1)*rowH})`)
+      .attr("fill", color(pid))
+      .attr("fill-opacity", 0.5)
+      .attr("stroke", color(pid))
+      .attr("stroke-width", 1.5);
+
+    // Mean line
+    g.append("line")
+      .attr("x1", x(personMean[pid]))
+      .attr("x2", x(personMean[pid]))
+      .attr("y1", (i+1)*rowH)
+      .attr("y2", (i+1)*rowH - rowH*0.6)
+      .attr("stroke", color(pid))
+      .attr("stroke-width", 2)
+      .attr("stroke-dasharray", "3,2");
+  });
+});
+</script>
+</body>
+</html>

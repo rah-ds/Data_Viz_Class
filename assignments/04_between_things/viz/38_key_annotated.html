@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Chromatic Scales?</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+  h1 { font-size: 1.6rem; color: #58a6ff; margin-bottom: .2rem; text-align: center; }
+  p.sub { color: #8b949e; font-size: .84rem; margin-bottom: 1rem; max-width: 860px; text-align: center; line-height: 1.5; }
+  a.back { color: #58a6ff; font-size: .8rem; margin-bottom: 1rem; text-decoration: none; }
+  .tooltip { position: absolute; background: #1c2128ee; border: 1px solid #30363d; border-radius: 6px; padding: 10px 14px; font-size: .76rem; color: #c9d1d9; pointer-events: none; opacity: 0; line-height: 1.55; z-index: 10; max-width: 300px; }
+
+  /* Piano */
+  .scale-wrap { width: 100%; max-width: 960px; margin-bottom: 1rem; }
+  .scale-title { font-size: .75rem; color: #484f58; text-align: center; margin-bottom: 6px; }
+  .kb-outer { display: flex; justify-content: center; }
+  .keyboard { position: relative; height: 76px; }
+  .key-white { width: 68px; height: 72px; background: #c9d1d9; border: 1px solid #30363d; border-radius: 0 0 5px 5px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 6px; cursor: pointer; transition: background .15s, box-shadow .15s, filter .15s; position: absolute; z-index: 1; }
+  .key-white:hover, .key-black:hover { filter: brightness(1.25); }
+  .key-white .note { font-size: .78rem; color: #0d1117; font-weight: 700; }
+  .key-white .freq { font-size: .55rem; color: #484f58; }
+  .key-black { width: 42px; height: 46px; background: #21262d; border: 1px solid #484f58; border-radius: 0 0 4px 4px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 4px; cursor: pointer; position: absolute; z-index: 2; transition: background .15s, box-shadow .15s, filter .15s; }
+  .key-black .note { font-size: .68rem; color: #c9d1d9; font-weight: 600; }
+  .key-black .freq { font-size: .5rem; color: #8b949e; }
+  .key-hl { box-shadow: 0 0 0 3px #58a6ff, 0 0 12px #58a6ff66; z-index: 3 !important; }
+
+  /* Grid */
+  .grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; width: 100%; max-width: 960px; }
+  @media (max-width: 900px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+  .cell { background: #161b22; border-radius: 10px; border: 1px solid #30363d; display: flex; flex-direction: column; align-items: center; padding: 10px 4px 8px; transition: border-color .2s, background .2s, opacity .25s; cursor: pointer; position: relative; }
+  .cell:hover, .cell.active { border-color: #58a6ff; background: #1c2128; }
+  .cell.dim { opacity: .35; }
+  .cell.spotlight { border-color: var(--accent); border-width: 2px; }
+  .cell h3 { font-size: .88rem; color: #f0f6fc; margin: 0; }
+  .cell .persona { font-size: .66rem; margin: 2px 0 3px; font-weight: 600; }
+  .cell .meta { font-size: .58rem; color: #484f58; margin-bottom: 2px; }
+  .cell .top-song { font-size: .60rem; color: #8b949e; text-align: center; line-height: 1.3; margin-top: 4px; max-width: 140px; }
+  .cell .top-song .ts-title { color: #c9d1d9; font-weight: 600; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cell .top-song .ts-artist { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* Annotation callout */
+  .callout { position: relative; font-size: .68rem; line-height: 1.5; padding: 6px 10px; margin-top: 4px; border-radius: 6px; background: #0d1117; border-left: 3px solid var(--accent); color: #c9d1d9; text-align: left; max-width: 145px; }
+  .callout .why { color: #8b949e; }
+
+  /* Narrative band between rows */
+  .narrative { grid-column: 1 / -1; font-size: .78rem; color: #8b949e; padding: 8px 0 4px; border-top: 1px solid #21262d; margin-top: 4px; line-height: 1.6; }
+  .narrative b { color: #f0f6fc; }
+
+  /* Legend */
+  .legend-row { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 1.2rem; font-size: .74rem; color: #8b949e; }
+  .legend-row span { display: flex; align-items: center; gap: 5px; }
+  .ldot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+  /* Glossary */
+  .glossary { width: 100%; max-width: 900px; margin-top: 2rem; border-top: 1px solid #21262d; padding-top: 1.2rem; }
+  .glossary h2 { font-size: 1.1rem; color: #58a6ff; margin: 0 0 .8rem; }
+  .glossary table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+  .glossary th { text-align: left; color: #58a6ff; font-weight: 600; padding: 6px 10px; border-bottom: 1px solid #30363d; }
+  .glossary td { padding: 6px 10px; border-bottom: 1px solid #21262d; color: #c9d1d9; vertical-align: top; }
+  .glossary td:first-child { font-weight: 600; white-space: nowrap; color: #f0f6fc; }
+
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← all visualizations</a>
+<h1>Chromatic Scales?</h1>
+<p class="sub">Seven audio features rescaled across all keys. Keys with a bold colored border scored at least 1&sigma; above the median on one feature and earned a personality label.</p>
+
+<div class="scale-wrap">
+  <div class="scale-title">Chromatic Scale, C4 → B4 (coloured by personality label)</div>
+  <div class="kb-outer"><div class="keyboard" id="keyboard"></div></div>
+</div>
+
+<div class="grid" id="grid"></div>
+<div class="legend-row" id="legend"></div>
+<div class="glossary" id="glossary"></div>
+<div class="tooltip" id="tip"></div>
+
+<script>
+const feats  = ["acousticness","danceability","energy","instrumentalness","liveness","speechiness","valence"];
+const labels = ["Acoustic","Dance","Energy","Instr.","Live","Speech","Valence"];
+const nF = feats.length, SA = (2*Math.PI)/nF;
+const R = 55, W = 148, H = 148;
+const Z_THRESH = 1.0;
+const tip = d3.select("#tip");
+
+const keyShort = ["C","C♯","D","D♯","E","F","F♯","G","G♯","A","A♯","B"];
+const freqs    = [261.6,277.2,293.7,311.1,329.6,349.2,370.0,392.0,415.3,440.0,466.2,493.9];
+const isBlack  = [false,true,false,true,false,false,true,false,true,false,true,false];
+
+const personalities = {
+  acousticness:     {name:"The Unplugged",    color:"#45aaf2"},
+  danceability:     {name:"The Groover",      color:"#26de81"},
+  energy:           {name:"The Powerhouse",   color:"#ff6348"},
+  instrumentalness: {name:"The Silent Type",  color:"#a55eea"},
+  liveness:         {name:"The Stage Lover",  color:"#e84393"},
+  speechiness:      {name:"The Storyteller",  color:"#ffa502"},
+  valence:          {name:"The Optimist",     color:"#c4e538"}
+};
+const UNCAT = {name:"", color:"#484f58"};
+
+// Storytelling annotations per personality
+const storyAnnotations = {
+  danceability: d => `Groove champion: ${d.key_name} has the steadiest pulse of all 12 keys. ${d.top_track ? `"${d.top_track}" by ${d.top_artist} sets the vibe.` : ""}`,
+  instrumentalness: d => `Vocals step aside in ${d.key_name}, where ambient, lo-fi, and film scores dominate. ${d.top_track ? `Think "${d.top_track}."` : ""}`,
+  liveness: d => `${d.key_name} sounds like a live show, with more crowd noise, stage energy, and raw performance. ${d.top_track ? `"${d.top_track}" captures it.` : ""}`,
+  speechiness: d => `The wordiest key: ${d.key_name} is packed with rapping, storytelling, and spoken delivery. ${d.top_track ? `Proof: "${d.top_track}."` : ""}`,
+  valence: d => `Pure sunshine: ${d.key_name} is the happiest-sounding key in the dataset. ${d.top_track ? `"${d.top_track}" says it all.` : ""}`,
+  acousticness: d => `Stripped-back and organic: ${d.key_name} leans on real instruments over electronics. ${d.top_track ? `"${d.top_track}" is the poster child.` : ""}`,
+  energy: d => `${d.key_name} runs hot with loud, fast, dense production. The most physically intense key. ${d.top_track ? `"${d.top_track}" brings the heat.` : ""}`
+};
+
+// Piano
+const KW=68, whiteIdx=[0,2,4,5,7,9,11], blackIdx=[1,3,6,8,10], kbW=whiteIdx.length*KW;
+const kb = d3.select("#keyboard").style("width",kbW+"px");
+whiteIdx.forEach((ki,wi)=>{
+  const el=kb.append("div").attr("class","key-white").attr("data-key",ki).style("left",(wi*KW)+"px");
+  el.append("div").attr("class","note").text(keyShort[ki]);
+  el.append("div").attr("class","freq").text(freqs[ki].toFixed(0)+" Hz");
+});
+const blackLeft={1:KW*1-21,3:KW*2-21,6:KW*4-21,8:KW*5-21,10:KW*6-21};
+blackIdx.forEach(ki=>{
+  const el=kb.append("div").attr("class","key-black").attr("data-key",ki).style("left",blackLeft[ki]+"px");
+  el.append("div").attr("class","note").text(keyShort[ki]);
+  el.append("div").attr("class","freq").text(Math.round(freqs[ki]));
+});
+
+d3.json("data/key_features.json").then(data => {
+  data.sort((a,b)=>a.key-b.key);
+
+  // Min-max
+  const mins={},maxs={},ranges={};
+  feats.forEach(f=>{const v=data.map(d=>d[f]); mins[f]=d3.min(v); maxs[f]=d3.max(v); ranges[f]=maxs[f]-mins[f]||.001;});
+  data.forEach(d=>{d._raw={}; feats.forEach(f=>{d._raw[f]=d[f]; d[f]=(d[f]-mins[f])/ranges[f];});});
+
+  const medians={},mads={};
+  feats.forEach(f=>{
+    const v=data.map(d=>d[f]).sort((a,b)=>a-b);
+    medians[f]=d3.median(v);
+    const ad=v.map(x=>Math.abs(x-medians[f])).sort((a,b)=>a-b);
+    mads[f]=d3.median(ad)*1.4826||.001;
+  });
+
+  data.forEach(d=>{
+    d._z={}; let mx=-Infinity,best=null;
+    feats.forEach(f=>{const z=(d[f]-medians[f])/mads[f]; d._z[f]=z; if(z>mx){mx=z;best=f;}});
+    if(mx>=Z_THRESH){d._dominant=best;d._persona=personalities[best].name;d._personaColor=personalities[best].color;}
+    else{d._dominant="_uncategorized";d._persona=UNCAT.name;d._personaColor=UNCAT.color;}
+  });
+
+  // Colour piano
+  data.forEach(d=>{
+    if(d._dominant==="_uncategorized")return;
+    const el=kb.select(`[data-key="${d.key}"]`);
+    if(!el.empty()){
+      el.style("background",d._personaColor);
+      if(!isBlack[d.key]){el.select(".note").style("color","#0d1117");el.select(".freq").style("color","#0d1117").style("opacity",".6");}
+      else{el.select(".note").style("color","#f0f6fc");el.select(".freq").style("color","#c9d1d9");}
+    }
+  });
+
+  // Highlight
+  let activeKey=null;
+  function highlightKey(ki){
+    activeKey=activeKey===ki?null:ki;
+    d3.selectAll(".key-white,.key-black").classed("key-hl",function(){return +this.dataset.key===activeKey;});
+    d3.selectAll(".cell").each(function(){
+      const k=+this.dataset.key;
+      if (activeKey !== null) {
+        d3.select(this).style("opacity", k===activeKey ? 1 : .2);
+      } else {
+        // Restore dim/spotlight state
+        const isDim = this.classList.contains("dim");
+        d3.select(this).style("opacity", isDim ? .35 : 1);
+      }
+    });
+  }
+  d3.selectAll(".key-white,.key-black").on("click",function(){highlightKey(+this.dataset.key);});
+
+  const grid = d3.select("#grid");
+
+  // ─── Narrative intro before first row ───
+  const distinctCount = data.filter(d => d._dominant !== "_uncategorized").length;
+  grid.append("div").attr("class","narrative")
+    .html(`<b>${distinctCount} of 12 keys</b> have a clearly distinctive audio profile (z &gt; 1&sigma; above median on at least one feature). The remaining keys fall within the normal range. Read left to right, C through B.`);
+
+  // Draw cells
+  data.forEach((d, idx) => {
+    const isDistinct = d._dominant !== "_uncategorized";
+    const color = d._personaColor;
+
+    const cell = grid.append("div")
+      .attr("class", `cell ${isDistinct ? "spotlight" : "dim"}`)
+      .attr("data-key", d.key)
+      .style("--accent", color)
+      .on("click", () => highlightKey(d.key));
+
+    cell.append("h3").text(d.key_name);
+    cell.append("div").attr("class","persona").style("color",color).text(d._persona);
+    cell.append("div").attr("class","meta")
+      .text(`${freqs[d.key].toFixed(0)} Hz · ${d3.format(",")(d.streams)} streams`);
+
+    // Radar SVG
+    const svg = cell.append("svg").attr("width",W).attr("height",H);
+    const g = svg.append("g").attr("transform",`translate(${W/2},${H/2+2})`);
+    const rScale = d3.scaleLinear().domain([0,1]).range([0,R]);
+
+    [0.33,0.66,1].forEach(lev=>{
+      const r=rScale(lev);
+      const pts=feats.map((_,i)=>{const a=SA*i-Math.PI/2;return `${Math.cos(a)*r},${Math.sin(a)*r}`;});
+      g.append("polygon").attr("points",pts.join(" ")).attr("fill","none").attr("stroke","#21262d").attr("stroke-width",.5);
+    });
+    feats.forEach((_,i)=>{const a=SA*i-Math.PI/2;g.append("line").attr("x1",0).attr("y1",0).attr("x2",Math.cos(a)*R).attr("y2",Math.sin(a)*R).attr("stroke","#21262d").attr("stroke-width",.5);});
+
+    // Median
+    const medPts=feats.map((f,i)=>{const a=SA*i-Math.PI/2;const r=rScale(medians[f]);return `${Math.cos(a)*r},${Math.sin(a)*r}`;});
+    g.append("polygon").attr("points",medPts.join(" ")).attr("fill","#8b949e").attr("fill-opacity",.08).attr("stroke","#484f58").attr("stroke-width",1).attr("stroke-dasharray","3,3");
+
+    // Key polygon
+    const pts=feats.map((f,i)=>{const a=SA*i-Math.PI/2;const r=rScale(d[f]);return `${Math.cos(a)*r},${Math.sin(a)*r}`;});
+    g.append("polygon").attr("points",pts.join(" "))
+      .attr("fill",color).attr("fill-opacity", isDistinct ? .22 : .08)
+      .attr("stroke",color).attr("stroke-width", isDistinct ? 2 : 1).attr("stroke-opacity", isDistinct ? .9 : .3);
+
+    // Axis labels
+    feats.forEach((f,i)=>{
+      const a=SA*i-Math.PI/2,lr=R+14,absZ=Math.abs(d._z[f]);
+      g.append("text").attr("x",Math.cos(a)*lr).attr("y",Math.sin(a)*lr)
+        .attr("text-anchor","middle").attr("dominant-baseline","middle")
+        .attr("fill",absZ>=Z_THRESH?"#c9d1d9":"#30363d")
+        .attr("font-size","8px").attr("font-weight",absZ>=Z_THRESH?"bold":"normal")
+        .text(labels[i]);
+    });
+
+    // Dots with tooltips
+    feats.forEach((f,i)=>{
+      const a=SA*i-Math.PI/2,r=rScale(d[f]),z=d._z[f],absZ=Math.abs(z);
+      const sig=absZ>=Z_THRESH,above=z>=Z_THRESH,below=z<=-Z_THRESH;
+      g.append("circle")
+        .attr("cx",Math.cos(a)*r).attr("cy",Math.sin(a)*r)
+        .attr("r",sig?4.5:2)
+        .attr("fill",sig?(above?color:"none"):"#30363d")
+        .attr("stroke",sig?(above?"#f0f6fc":color):"none")
+        .attr("stroke-width",sig?1.5:0).attr("opacity",sig?1:.35)
+        .on("mouseover",e=>{
+          const zStr=z>=0?`+${z.toFixed(2)}σ`:`${z.toFixed(2)}σ`;
+          tip.style("opacity",1).html(
+            `<b>${d.key_name}</b>: ${f}<br>Raw: ${d._raw[f].toFixed(4)} · Scaled: ${d[f].toFixed(3)}<br>z: <b style="color:${above?'#3fb950':below?'#ff7b72':'#8b949e'}">${zStr}</b><br>${d3.format(",")(d.streams)} streams`);
+        })
+        .on("mousemove",e=>tip.style("left",(e.pageX+10)+"px").style("top",(e.pageY-18)+"px"))
+        .on("mouseout",()=>tip.style("opacity",0));
+    });
+
+    // Top song
+    if (d.top_track) {
+      const songDiv=cell.append("div").attr("class","top-song");
+      songDiv.append("span").attr("class","ts-title").text(`♫ ${d.top_track}`);
+      songDiv.append("span").attr("class","ts-artist").text(d.top_artist);
+    }
+
+    // ─── ANNOTATION callout only for distinctive keys ───
+    if (isDistinct && storyAnnotations[d._dominant]) {
+      const callout = cell.append("div").attr("class","callout").style("--accent", color);
+      callout.html(storyAnnotations[d._dominant](d));
+    }
+  });
+
+  // Narrative after row 1 (after key 5 = F, idx=5)
+  // We can't easily insert mid-grid, so narrative is at top; callouts carry the story per-cell
+
+  // Legend
+  const leg = d3.select("#legend");
+  leg.append("span").html(`<span class="ldot" style="background:#8b949e;opacity:.3"></span> Median (dashed)`);
+  leg.append("span").html(`<span class="ldot" style="background:#58a6ff"></span> Significant above`);
+  leg.append("span").html(`<span class="ldot" style="background:none;border:2px solid #58a6ff"></span> Significant below`);
+  leg.append("span").text("Bold border = distinctive · Dim = average");
+
+  // Glossary
+  const activeP=new Set(); data.forEach(d=>{if(d._dominant!=="_uncategorized")activeP.add(d._dominant);});
+  const glossDiv=d3.select("#glossary");
+  glossDiv.append("h2").text("The Personalities, Explained");
+  glossDiv.append("p").style("font-size",".8rem").style("color","#8b949e").style("margin","0 0 .8rem")
+    .html("A key earns its personality when one audio feature is ≥ 1 standard deviation above the median (after min-max rescaling). <b>Not every key has a personality</b>; some are simply average across all features.");
+  const table=glossDiv.append("table");
+  table.append("tr").html(`<th>Personality</th><th>Feature</th><th>Why This Name?</th>`);
+  const whyDescs = {
+    acousticness:"Tracks in these keys are built on real instruments (guitars, pianos, strings) rather than synthesizers.",
+    danceability:"These keys attract the most groove-friendly, steady-beat tracks. You'd hear them at a dance party.",
+    energy:"Loud, fast, dense production. The kind of music that fills a stadium.",
+    instrumentalness:"Vocals are unusually absent. Favoured by ambient, classical, and lo-fi artists.",
+    liveness:"Recordings that capture the feel of a live performance. You can almost hear the crowd.",
+    speechiness:"Word-heavy: rap, spoken word, storytelling. The vocals carry more than the melody.",
+    valence:"The happiest keys. Music theory aside, these tracks just sound sunny."
+  };
+  feats.forEach(f=>{
+    if(!activeP.has(f))return;
+    const p=personalities[f];
+    table.append("tr").html(`<td style="color:${p.color}">${p.name}</td><td>${f.charAt(0).toUpperCase()+f.slice(1)}</td><td>${whyDescs[f]}</td>`);
+  });
+
+});
+</script>
+</body>
+</html>

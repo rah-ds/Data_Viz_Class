@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>3 — Taste Distance Network</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+  h1 { font-size: 1.4rem; color: #58a6ff; margin-bottom: .2rem; }
+  p.sub { color: #8b949e; font-size: .85rem; margin-bottom: 1rem; max-width: 700px; text-align: center; }
+  svg { background: #161b22; border-radius: 8px; }
+  .tooltip { position: absolute; background: #1c2128; border: 1px solid #30363d; border-radius: 6px; padding: 6px 10px; font-size: .75rem; color: #c9d1d9; pointer-events: none; opacity: 0; }
+  a.back { color: #58a6ff; font-size: .8rem; margin-bottom: 1rem; text-decoration: none; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← all options</a>
+<h1>Taste Distance Network</h1>
+<p class="sub">Force-directed layout: similar listeners pull together. Edge thickness = similarity (inverse distance). Drag to explore. Node size = how many audio-feature dimensions are above average.</p>
+<div id="chart"></div>
+<div class="tooltip" id="tip"></div>
+<script>
+const W = 900, H = 700;
+const svg = d3.select("#chart").append("svg").attr("width",W).attr("height",H);
+const color = d3.scaleOrdinal(d3.schemeTableau10);
+const tip = d3.select("#tip");
+
+Promise.all([
+  d3.json("data/taste_network.json"),
+  d3.json("data/person_summary.json")
+]).then(([graph, summaries]) => {
+  const summaryMap = Object.fromEntries(summaries.map(s => [s.personID, s]));
+
+  // Invert distance → similarity for link strength and width
+  const maxDist = d3.max(graph.links, d => d.distance);
+  graph.links.forEach(d => { d.similarity = 1 - d.distance / maxDist; });
+
+  const edgeWidth = d3.scaleLinear().domain([0,1]).range([0.5, 6]);
+  const nodeRadius = d3.scaleLinear()
+    .domain(d3.extent(summaries, s => s.total_hours))
+    .range([10, 30]);
+
+  color.domain(graph.nodes.map(n => n.id));
+
+  const sim = d3.forceSimulation(graph.nodes)
+    .force("link", d3.forceLink(graph.links).id(d=>d.id)
+      .distance(d => 40 + (1-d.similarity)*250)
+      .strength(d => 0.3 * d.similarity))
+    .force("charge", d3.forceManyBody().strength(-300))
+    .force("center", d3.forceCenter(W/2, H/2))
+    .force("collide", d3.forceCollide(35));
+
+  // Links
+  const link = svg.append("g")
+    .selectAll("line")
+    .data(graph.links)
+    .join("line")
+    .attr("stroke", "#30363d")
+    .attr("stroke-width", d => edgeWidth(d.similarity))
+    .attr("stroke-opacity", d => 0.15 + 0.6 * d.similarity);
+
+  // Nodes
+  const node = svg.append("g")
+    .selectAll("g")
+    .data(graph.nodes)
+    .join("g")
+    .call(d3.drag()
+      .on("start", (e,d) => { if(!e.active) sim.alphaTarget(0.3).restart(); d.fx=d.x; d.fy=d.y; })
+      .on("drag", (e,d) => { d.fx=e.x; d.fy=e.y; })
+      .on("end", (e,d) => { if(!e.active) sim.alphaTarget(0); d.fx=null; d.fy=null; }));
+
+  node.append("circle")
+    .attr("r", d => nodeRadius(summaryMap[d.id]?.total_hours ?? 20))
+    .attr("fill", d => color(d.id))
+    .attr("stroke","#f0f6fc")
+    .attr("stroke-width", 2)
+    .attr("opacity", 0.85)
+    .on("mouseover", (e,d) => {
+      const s = summaryMap[d.id] || {};
+      tip.style("opacity",1).html(`<b>Person ${d.id}</b><br>${s.total_hours ?? '?'} hrs · ${s.unique_artists ?? '?'} artists · ${s.unique_tracks??'?'} tracks`);
+    })
+    .on("mousemove", e => tip.style("left",(e.pageX+14)+"px").style("top",(e.pageY-20)+"px"))
+    .on("mouseout", () => tip.style("opacity",0));
+
+  node.append("text")
+    .text(d => `P${d.id}`)
+    .attr("text-anchor","middle")
+    .attr("dy","0.35em")
+    .attr("fill","#f0f6fc")
+    .attr("font-size","11px")
+    .attr("font-weight","bold")
+    .attr("pointer-events","none");
+
+  sim.on("tick", () => {
+    link.attr("x1",d=>d.source.x).attr("y1",d=>d.source.y)
+        .attr("x2",d=>d.target.x).attr("y2",d=>d.target.y);
+    node.attr("transform", d => `translate(${d.x},${d.y})`);
+  });
+});
+</script>
+</body>
+</html>

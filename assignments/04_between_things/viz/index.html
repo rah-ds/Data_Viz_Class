@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Spotify Viz Options — Between Things</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; padding: 2rem; }
+  h1 { font-size: 1.8rem; margin-bottom: .3rem; color: #58a6ff; }
+  p.sub { color: #8b949e; margin-bottom: 2rem; font-style: italic; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.2rem; }
+  .card { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 1.4rem; transition: transform .15s, border-color .15s; }
+  .card:hover { transform: translateY(-4px); border-color: #58a6ff; }
+  .card h2 { font-size: 1.1rem; color: #f0f6fc; margin-bottom: .4rem; }
+  .card .tag { display: inline-block; background: #1f6feb33; color: #58a6ff; font-size: .7rem; padding: 2px 8px; border-radius: 12px; margin-right: 4px; margin-bottom: .5rem; }
+  .card p { font-size: .85rem; color: #8b949e; line-height: 1.45; }
+  .card a { display: inline-block; margin-top: .8rem; color: #58a6ff; text-decoration: none; font-size: .85rem; }
+  .card a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<h1>30 Visualization Options — "Between Things"</h1>
+<p class="sub">"I do not paint things, I paint only the differences between things." — Matisse</p>
+<div class="grid">
+
+  <div class="card">
+    <h2>1. Mood Space Density</h2>
+    <span class="tag">energy × valence</span><span class="tag">contours</span>
+    <p>20k streams plotted in energy × valence mood space with per-person density contours. Shows where each listener lives emotionally — and the gaps between them.</p>
+    <a href="01_mood_space.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>2. Sonic Fingerprints</h2>
+    <span class="tag">radar</span><span class="tag">audio features</span>
+    <p>Overlaid radar charts of each person's mean audio profile. The shape difference IS the story — who skews acoustic vs. energetic, happy vs. dark.</p>
+    <a href="02_sonic_fingerprints.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>3. Taste Distance Network</h2>
+    <span class="tag">force graph</span><span class="tag">similarity</span>
+    <p>Force-directed network where persons are nodes and edges encode taste similarity. Similar listeners pull together; outliers drift to the edge.</p>
+    <a href="03_taste_network.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>4. Temporal Rhythms</h2>
+    <span class="tag">heatmap</span><span class="tag">time-of-day</span>
+    <p>24h × 7-day heatmaps per person. Night owls, morning commuters, weekend bingers — temporal patterns define listeners as much as what they play.</p>
+    <a href="04_temporal.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>5. Artist Loyalty</h2>
+    <span class="tag">bar race</span><span class="tag">concentration</span>
+    <p>Each person's top 15 artists shown as stacked/grouped bars. Reveals loyalists (deep, narrow) vs. explorers (wide, shallow).</p>
+    <a href="05_artist_loyalty.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>6. Genre Landscape</h2>
+    <span class="tag">stacked area</span><span class="tag">genre</span>
+    <p>Per-person genre breakdown shown as proportional bars. What genres dominate each listener's streaming, and where do they overlap?</p>
+    <a href="06_genre_landscape.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>7. Popularity Ridgeline</h2>
+    <span class="tag">ridgeline</span><span class="tag">mainstream vs obscure</span>
+    <p>Overlapping density curves of track popularity per person. Who goes mainstream? Who digs deep? The spread tells the story.</p>
+    <a href="07_popularity.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>8. Shared Artist Matrix</h2>
+    <span class="tag">heatmap</span><span class="tag">overlap</span>
+    <p>Interactive heatmap showing how many artists each pair of listeners shares. Artist overlap = cultural proximity.</p>
+    <a href="08_shared_artists.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>9. Genre Chord Diagram</h2>
+    <span class="tag">chord</span><span class="tag">co-occurrence</span>
+    <p>Which genres live together in the same artists? A chord diagram of genre co-occurrence — the bridges between musical worlds.</p>
+    <a href="09_genre_chord.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>10. Listening Arcs</h2>
+    <span class="tag">time series</span><span class="tag">mood drift</span>
+    <p>Weekly rolling average of valence and energy per person over time. Do moods drift? Are there seasonal patterns? Exam-week dips?</p>
+    <a href="10_listening_arcs.html">Open →</a>
+  </div>
+
+</div>
+
+<h2 style="color: #58a6ff; margin: 2.5rem 0 .3rem; font-size: 1.4rem;">Aggregate Visualizations — The Bigger Picture</h2>
+<p class="sub">Not per-person. These look at the entire dataset as a whole — the music itself, listening behavior, and Spotify's metadata.</p>
+<div class="grid">
+
+  <div class="card">
+    <h2>11. Release Year Archaeology</h2>
+    <span class="tag">histogram</span><span class="tag">decade</span>
+    <p>When was the music actually released? A decade-colored histogram of every stream by album release year — bleeding edge or back catalog?</p>
+    <a href="11_release_archaeology.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>12. Tempo Landscape</h2>
+    <span class="tag">BPM</span><span class="tag">energy gradient</span>
+    <p>BPM distribution of all streamed tracks, colored by average energy. Annotated with genre tempo zones — where are the danceable sweet spots?</p>
+    <a href="12_tempo_landscape.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>13. Key Signatures</h2>
+    <span class="tag">polar chart</span><span class="tag">music theory</span>
+    <p>The 12 musical keys arranged in a clock-face polar chart, split by major vs minor mode. What harmonic palette dominates modern streaming?</p>
+    <a href="13_key_signatures.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>14. The Skip Map</h2>
+    <span class="tag">histogram</span><span class="tag">behavior</span>
+    <p>How much of each track actually gets played? Play duration as % of song length — instant skips, partial listens, and full plays mapped out.</p>
+    <a href="14_skip_map.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>15. Dancefloor Clock</h2>
+    <span class="tag">radial</span><span class="tag">time-of-day</span>
+    <p>How does the sonic character change by hour? A 24-hour radial chart of danceability, energy, valence, and acousticness — morning acoustics to late-night vibes.</p>
+    <a href="15_dancefloor_clock.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>16. Loudness vs Energy</h2>
+    <span class="tag">bubble chart</span><span class="tag">correlation</span>
+    <p>Does loudness (dB) predict Spotify's "energy" feature? Bubble scatter with regression line — testing the relationship between volume and intensity.</p>
+    <a href="16_loudness_energy.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>17. The Long Tail</h2>
+    <span class="tag">Lorenz curve</span><span class="tag">power law</span>
+    <p>Line up every artist from most- to least-played: how fast do you cover all listening? A Lorenz-style curve revealing the brutal concentration of attention.</p>
+    <a href="17_long_tail.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>18. Explicit Content Timeline</h2>
+    <span class="tag">dual axis</span><span class="tag">trends</span>
+    <p>What fraction of monthly streams carry the "Explicit" tag? Tracking the E-rating over time with total volume context.</p>
+    <a href="18_explicit_timeline.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>19. Song Length Eras</h2>
+    <span class="tag">time series</span><span class="tag">duration</span>
+    <p>Are songs getting shorter? Median track duration with IQR band by release year. The streaming economy may be reshaping song structure.</p>
+    <a href="19_song_length_eras.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>20. Feature Correlations</h2>
+    <span class="tag">heatmap</span><span class="tag">matrix</span>
+    <p>How do Spotify's 9 audio features relate? A correlation matrix reveals the hidden structure — energy ↔ loudness, acousticness ↔ energy, and more.</p>
+    <a href="20_feature_correlations.html">Open →</a>
+  </div>
+
+</div>
+
+<h2 style="color: #58a6ff; margin: 2.5rem 0 .3rem; font-size: 1.4rem;">Bonus — Spotify Extras</h2>
+<p class="sub">Leveraging Spotify's less-common data exports: Marquee listener segments and the music/podcast/audiobook media mix.</p>
+<div class="grid">
+
+  <div class="card">
+    <h2>21. Marquee Segments</h2>
+    <span class="tag">donut</span><span class="tag">Spotify internal</span>
+    <p>Spotify classifies each listener–artist pair as Super, Moderate, Light, or Previously Active. Click segments to reveal which artists dominate each tier.</p>
+    <a href="21_marquee_segments.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>22. The Media Mix</h2>
+    <span class="tag">stacked area</span><span class="tag">multi-media</span>
+    <p>Music vs Podcasts vs Audiobooks — monthly listening hours stacked. Spotify isn't just a music app anymore; the data proves it.</p>
+    <a href="22_media_mix.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>23. Tempo × Skip Behavior</h2>
+    <span class="tag">multi-panel</span><span class="tag">BPM</span><span class="tag">skip rate</span>
+    <p>Do fast songs get skipped more? Three linked panels: stream volume by BPM (energy-colored), skip rate vs full-play rate, and average play-through % — all aligned by tempo with genre annotations.</p>
+    <a href="23_tempo_skip.html">Open →</a>
+  </div>
+
+</div>
+
+<h2 style="color: #58a6ff; margin: 2.5rem 0 .3rem; font-size: 1.4rem;">🎛️ Polar Playgrounds — Audio Features × Keys</h2>
+<p class="sub">Playful polar and radial charts exploring audio features (danceability, energy, valence, etc.), musical keys, and how they dance together across time.</p>
+<div class="grid">
+
+  <div class="card">
+    <h2>24. 🔮 The Mood Ring</h2>
+    <span class="tag">polar</span><span class="tag">valence</span><span class="tag">24h</span>
+    <p>Your collective emotional orbit through the day — each hour is a ring segment colored by average valence. Purple = melancholy. Gold = euphoric. Does 3 AM feel different from 3 PM?</p>
+    <a href="24_mood_ring.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>25. 🧬 Weekly Vibe DNA</h2>
+    <span class="tag">radar</span><span class="tag">7 features</span><span class="tag">day-of-week</span>
+    <p>Seven overlapping radar shapes — one per day of the week. Do Mondays really feel different from Saturdays? Click a day to spotlight its shape. The vibe IS the shape.</p>
+    <a href="25_vibe_radar.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>26. 🎭 Key Personalities</h2>
+    <span class="tag">small multiples</span><span class="tag">radar</span><span class="tag">12 keys</span>
+    <p>Every musical key has a vibe. 12 mini-radars reveal each key's audio personality — who's the Groover, who's the Unplugged, who's the Storyteller?</p>
+    <a href="26_key_personalities.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>27. 🌍 Seasonal Energy Orbit</h2>
+    <span class="tag">polar area</span><span class="tag">12 months</span><span class="tag">seasons</span>
+    <p>The year as a circle — January at the top, spinning clockwise. Each month's wedge shows average energy; seasonal colors paint the seasons. Dashed line traces acousticness.</p>
+    <a href="27_energy_seasons.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>28. 🌸 Audio Feature Flowers</h2>
+    <span class="tag">flower petals</span><span class="tag">7 features</span><span class="tag">12 keys</span>
+    <p>Each of the 12 musical keys blooms into a flower — 7 petals for 7 audio features, petal length = feature strength. Arranged in a clock-face orbit. Pure botanical data art.</p>
+    <a href="28_feature_flowers.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>29. 🎙️ Vocal / Instrumental Compass</h2>
+    <span class="tag">double-ring polar</span><span class="tag">speechiness</span><span class="tag">24h</span>
+    <p>A dual-ring clock: outer ring = speechiness, inner ring = instrumentalness, green dots = liveness. When does the music go wordless? When do the vocals take over?</p>
+    <a href="29_vocal_compass.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>30. 🌹 The Loudness Rose</h2>
+    <span class="tag">wind rose</span><span class="tag">loudness</span><span class="tag">12 keys</span>
+    <p>A wind rose for sound — each petal direction is a musical key, stacked rings represent loudness ranges from whisper-quiet to ear-splitting. Which keys bloom loudest?</p>
+    <a href="30_loudness_rose.html">Open →</a>
+  </div>
+  <div class="card">
+    <h2>31. Chromatic Personalities</h2>
+    <span class="tag">small multiples</span><span class="tag">z-score</span><span class="tag">12 keys</span>
+    <p>Each musical key gets a personality based on the audio feature that stands out most (z > 1 above median). Piano keys glow with personality colours, radar charts reveal why, and a hand-picked track proves the point.</p>
+    <a href="31_key_differences.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>33. Cleaned Baseline — Chromatic Order</h2>
+    <span class="tag">radar</span><span class="tag">small multiples</span><span class="tag">chromatic</span>
+    <p>Chart 32 cleaned up: sig-tags removed, keys in chromatic order (C→B) matching the piano, question-framed title, bigger labels for static readability. The baseline for refinement.</p>
+    <a href="33_key_cleaned.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>34. Key Feature Heatmap</h2>
+    <span class="tag">heatmap</span><span class="tag">diverging</span><span class="tag">annotations</span>
+    <p>A 7×12 heatmap replaces radar charts — features as rows, keys as columns, colours diverge from median. Song callouts annotate the most extreme cells. New data-grounded profile names.</p>
+    <a href="34_key_heatmap.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>35. Key Deviation Lollipops</h2>
+    <span class="tag">lollipop</span><span class="tag">deviation</span><span class="tag">top 3 features</span>
+    <p>Maximally simplified: only the 3 most variable features shown. Horizontal lollipops reveal each key's deviation from median. Dot size = stream count. Song callout cards per profile.</p>
+    <a href="35_key_lollipop.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>36. Key Feature Bars</h2>
+    <span class="tag">bar chart</span><span class="tag">small multiples</span><span class="tag">deviation</span>
+    <p>Horizontal bars replace radars for precise static readability. Each bar shows one feature's scaled value relative to the median baseline. Coloured bars = statistically significant.</p>
+    <a href="36_key_bars.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>37. Parallel Coordinates</h2>
+    <span class="tag">parallel coords</span><span class="tag">7 axes</span><span class="tag">IQR band</span>
+    <p>Each key is a coloured line threading through 7 vertical axes. Where lines diverge, differences emerge. Grey IQR band shows the "normal" zone. Hover to isolate any key.</p>
+    <a href="37_key_parallel.html">Open →</a>
+  </div>
+
+  <div class="card">
+    <h2>38. Annotated Storytelling</h2>
+    <span class="tag">radar</span><span class="tag">annotations</span><span class="tag">narrative</span>
+    <p>Same radar layout as chart 33, but storytelling-first: distinctive keys get bold borders and inline callout annotations explaining WHY they earned their personality. Neutral keys are dimmed.</p>
+    <a href="38_key_annotated.html">Open →</a>
+  </div>
+</div>
+</body>
+</html>

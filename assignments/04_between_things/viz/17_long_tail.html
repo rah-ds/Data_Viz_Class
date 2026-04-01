@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>17 — The Long Tail</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+  h1 { font-size: 1.4rem; color: #58a6ff; margin-bottom: .2rem; }
+  p.sub { color: #8b949e; font-size: .85rem; margin-bottom: 1rem; max-width: 750px; text-align: center; }
+  svg { background: #161b22; border-radius: 8px; }
+  .tooltip { position: absolute; background: #1c2128; border: 1px solid #30363d; border-radius: 6px; padding: 8px 12px; font-size: .75rem; color: #c9d1d9; pointer-events: none; opacity: 0; line-height: 1.5; }
+  a.back { color: #58a6ff; font-size: .8rem; margin-bottom: 1rem; text-decoration: none; }
+  .stat-row { display: flex; gap: 2rem; margin-bottom: 1rem; }
+  .stat { text-align: center; }
+  .stat .num { font-size: 1.5rem; color: #58a6ff; font-weight: bold; }
+  .stat .label { font-size: .7rem; color: #8b949e; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← all visualizations</a>
+<h1>The Long Tail</h1>
+<p class="sub">If you line up every artist from most-played to least, how quickly do you cover all listening? This Lorenz-style curve reveals the power law: a handful of artists dominate, while thousands are played once or twice.</p>
+<div class="stat-row" id="stats"></div>
+<div id="chart"></div>
+<div class="tooltip" id="tip"></div>
+<script>
+const W = 900, H = 600, M = {top: 30, right: 30, bottom: 55, left: 65};
+const w = W - M.left - M.right, h = H - M.top - M.bottom;
+
+const svg = d3.select("#chart").append("svg").attr("width", W).attr("height", H);
+const g = svg.append("g").attr("transform", `translate(${M.left},${M.top})`);
+const tip = d3.select("#tip");
+
+d3.json("data/long_tail.json").then(raw => {
+  const data = raw.data;
+
+  const stats = d3.select("#stats");
+  [{num: d3.format(",")(raw.total_artists), label: "Unique Artists"},
+   {num: d3.format(",")(raw.total_streams), label: "Total Streams"},
+   {num: raw.top10_pct + "%", label: "Top 10 Artists"},
+   {num: raw.top50_pct + "%", label: "Top 50 Artists"},
+  ].forEach(s => {
+    const div = stats.append("div").attr("class","stat");
+    div.append("div").attr("class","num").text(s.num);
+    div.append("div").attr("class","label").text(s.label);
+  });
+
+  const x = d3.scaleLinear().domain([0, 100]).range([0, w]);
+  const y = d3.scaleLinear().domain([0, 100]).range([h, 0]);
+
+  g.append("g").attr("transform", `translate(0,${h})`).call(d3.axisBottom(x).ticks(10).tickFormat(d => d + "%"))
+    .selectAll("text").style("fill","#8b949e");
+  g.append("g").call(d3.axisLeft(y).ticks(10).tickFormat(d => d + "%"))
+    .selectAll("text").style("fill","#8b949e");
+  g.selectAll(".domain, .tick line").attr("stroke","#30363d");
+
+  svg.append("text").attr("x", M.left + w/2).attr("y", H - 8).attr("text-anchor","middle").attr("fill","#8b949e").attr("font-size","12px").text("% of Artists (ranked by streams)");
+  svg.append("text").attr("transform","rotate(-90)").attr("x", -(M.top + h/2)).attr("y", 14).attr("text-anchor","middle").attr("fill","#8b949e").attr("font-size","12px").text("Cumulative % of All Streams");
+
+  // Perfect equality line
+  g.append("line")
+    .attr("x1", x(0)).attr("y1", y(0))
+    .attr("x2", x(100)).attr("y2", y(100))
+    .attr("stroke", "#484f58").attr("stroke-dasharray", "4,4").attr("stroke-width", 1);
+  g.append("text").attr("x", x(60)).attr("y", y(62)).attr("fill","#484f58").attr("font-size","10px")
+    .attr("transform", `rotate(-36, ${x(60)}, ${y(62)})`).text("Perfect Equality");
+
+  // The Lorenz curve
+  const area = d3.area()
+    .x(d => x(d.artist_pct))
+    .y0(h)
+    .y1(d => y(d.cum_pct))
+    .curve(d3.curveMonotoneX);
+
+  g.append("path").datum(data).attr("d", area)
+    .attr("fill", "#58a6ff").attr("fill-opacity", 0.1);
+
+  const line = d3.line()
+    .x(d => x(d.artist_pct))
+    .y(d => y(d.cum_pct))
+    .curve(d3.curveMonotoneX);
+
+  g.append("path").datum(data).attr("d", line)
+    .attr("fill", "none").attr("stroke", "#58a6ff").attr("stroke-width", 2.5);
+
+  // Annotation: 50% mark
+  const pctAt50 = data.find(d => d.cum_pct >= 50);
+  if (pctAt50) {
+    g.append("line")
+      .attr("x1", x(pctAt50.artist_pct)).attr("x2", x(pctAt50.artist_pct))
+      .attr("y1", y(50)).attr("y2", h)
+      .attr("stroke", "#f0883e").attr("stroke-dasharray", "3,3");
+    g.append("line")
+      .attr("x1", 0).attr("x2", x(pctAt50.artist_pct))
+      .attr("y1", y(50)).attr("y2", y(50))
+      .attr("stroke", "#f0883e").attr("stroke-dasharray", "3,3");
+    g.append("text")
+      .attr("x", x(pctAt50.artist_pct) + 6)
+      .attr("y", y(50) - 6)
+      .attr("fill", "#f0883e").attr("font-size", "11px")
+      .text(`${pctAt50.artist_pct.toFixed(1)}% of artists → 50% of streams`);
+  }
+
+  // Interactive dots on top artists
+  const topDots = data.filter(d => d.rank <= 50);
+  g.selectAll("circle.dot")
+    .data(topDots)
+    .join("circle")
+    .attr("class","dot")
+    .attr("cx", d => x(d.artist_pct))
+    .attr("cy", d => y(d.cum_pct))
+    .attr("r", 4)
+    .attr("fill", "#58a6ff")
+    .attr("stroke", "#0d1117")
+    .attr("stroke-width", 1)
+    .on("mouseover", (e,d) => {
+      tip.style("opacity",1).html(
+        `<b>#${d.rank}: ${d.artistName}</b><br>` +
+        `${d3.format(",")(d.streams)} streams (${d.total_min} min)<br>` +
+        `Covers ${d.cum_pct}% of all listening`
+      );
+    })
+    .on("mousemove", e => tip.style("left",(e.pageX+12)+"px").style("top",(e.pageY-20)+"px"))
+    .on("mouseout", () => tip.style("opacity",0));
+});
+</script>
+</body>
+</html>

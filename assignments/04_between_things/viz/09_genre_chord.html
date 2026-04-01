@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>9 — Genre Chord Diagram</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+  h1 { font-size: 1.4rem; color: #58a6ff; margin-bottom: .2rem; }
+  p.sub { color: #8b949e; font-size: .85rem; margin-bottom: 1rem; max-width: 700px; text-align: center; }
+  svg { background: #161b22; border-radius: 8px; }
+  .tooltip { position: absolute; background: #1c2128; border: 1px solid #30363d; border-radius: 6px; padding: 6px 10px; font-size: .75rem; color: #c9d1d9; pointer-events: none; opacity: 0; }
+  a.back { color: #58a6ff; font-size: .8rem; margin-bottom: 1rem; text-decoration: none; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← all options</a>
+<h1>Genre Chord Diagram</h1>
+<p class="sub">Which genres co-occur in the same artists? Thick ribbons = strong genre bridges — artists that live between musical worlds.</p>
+<div id="chart"></div>
+<div class="tooltip" id="tip"></div>
+<script>
+const W = 800, H = 800, outerR = 340, innerR = 320;
+const svg = d3.select("#chart").append("svg").attr("width",W).attr("height",H)
+  .append("g").attr("transform",`translate(${W/2},${H/2})`);
+const tip = d3.select("#tip");
+const color = d3.scaleOrdinal(d3.schemeSet3);
+
+d3.json("data/genre_chord.json").then(data => {
+  const genres = data.genres;
+  const n = genres.length;
+  const idx = Object.fromEntries(genres.map((g,i) => [g,i]));
+  color.domain(genres);
+
+  // Build matrix
+  const matrix = Array.from({length: n}, () => new Array(n).fill(0));
+  data.links.forEach(l => {
+    const i = idx[l.source], j = idx[l.target];
+    if (i !== undefined && j !== undefined) {
+      matrix[i][j] += l.value;
+      matrix[j][i] += l.value;
+    }
+  });
+
+  const chord = d3.chord().padAngle(0.04).sortSubgroups(d3.descending)(matrix);
+
+  // Arcs
+  const arc = d3.arc().innerRadius(innerR).outerRadius(outerR);
+  svg.append("g")
+    .selectAll("path")
+    .data(chord.groups)
+    .join("path")
+    .attr("d", arc)
+    .attr("fill", d => color(genres[d.index]))
+    .attr("stroke", "#0d1117")
+    .attr("stroke-width", 1)
+    .on("mouseover", (e,d) => {
+      tip.style("opacity",1).html(`<b>${genres[d.index]}</b><br>Total co-occurrence: ${d.value}`);
+    })
+    .on("mousemove", e => tip.style("left",(e.pageX+14)+"px").style("top",(e.pageY-16)+"px"))
+    .on("mouseout", () => tip.style("opacity",0));
+
+  // Genre labels
+  svg.append("g")
+    .selectAll("text")
+    .data(chord.groups)
+    .join("text")
+    .each(d => { d.angle = (d.startAngle + d.endAngle) / 2; })
+    .attr("transform", d => `rotate(${(d.angle * 180/Math.PI - 90)}) translate(${outerR + 10}) ${d.angle > Math.PI ? "rotate(180)" : ""}`)
+    .attr("text-anchor", d => d.angle > Math.PI ? "end" : "start")
+    .attr("fill", d => color(genres[d.index]))
+    .attr("font-size", "10px")
+    .text(d => genres[d.index]);
+
+  // Ribbons
+  const ribbon = d3.ribbon().radius(innerR);
+  svg.append("g")
+    .selectAll("path")
+    .data(chord)
+    .join("path")
+    .attr("d", ribbon)
+    .attr("fill", d => color(genres[d.source.index]))
+    .attr("fill-opacity", 0.5)
+    .attr("stroke", "#0d1117")
+    .attr("stroke-width", 0.5)
+    .on("mouseover", (e,d) => {
+      tip.style("opacity",1).html(`<b>${genres[d.source.index]}</b> ↔ <b>${genres[d.target.index]}</b><br>Co-occurrence: ${d.source.value}`);
+    })
+    .on("mousemove", e => tip.style("left",(e.pageX+14)+"px").style("top",(e.pageY-16)+"px"))
+    .on("mouseout", () => tip.style("opacity",0));
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>29 — The Vocal / Instrumental Compass</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+  h1 { font-size: 1.6rem; color: #58a6ff; margin-bottom: .2rem; }
+  p.sub { color: #8b949e; font-size: .85rem; margin-bottom: 1.2rem; max-width: 700px; text-align: center; }
+  svg { background: #161b22; border-radius: 12px; }
+  .tooltip { position: absolute; background: #1c2128ee; border: 1px solid #30363d; border-radius: 6px; padding: 10px 14px; font-size: .75rem; color: #c9d1d9; pointer-events: none; opacity: 0; line-height: 1.6; }
+  a.back { color: #58a6ff; font-size: .8rem; margin-bottom: 1rem; text-decoration: none; }
+  .legend { display: flex; gap: 20px; margin-top: 1rem; font-size: .82rem; }
+  .legend span { display: flex; align-items: center; gap: 5px; }
+  .swatch { width: 14px; height: 14px; border-radius: 50%; display: inline-block; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← all visualizations</a>
+<h1>🎙️ The Vocal / Instrumental Compass</h1>
+<p class="sub">A double-ring clock: the <b style="color:#f0883e">outer ring</b> traces speechiness (words!), the <b style="color:#58a6ff">inner ring</b> traces instrumentalness (no words!), and <b style="color:#3fb950">green dots</b> mark liveness. When does the music go wordless?</p>
+<div id="chart"></div>
+<div class="legend" id="legend"></div>
+<div class="tooltip" id="tip"></div>
+<script>
+const W = 720, H = 720, cx = W/2, cy = H/2;
+const outerMax = 290, outerMin = 190, innerMax = 175, innerMin = 70;
+
+const svg = d3.select("#chart").append("svg").attr("width",W).attr("height",H);
+const defs = svg.append("defs");
+const filt = defs.append("filter").attr("id","glow");
+filt.append("feGaussianBlur").attr("stdDeviation",3).attr("result","b");
+const fm = filt.append("feMerge"); fm.append("feMergeNode").attr("in","b"); fm.append("feMergeNode").attr("in","SourceGraphic");
+
+const g = svg.append("g").attr("transform",`translate(${cx},${cy})`);
+const tip = d3.select("#tip");
+
+d3.json("data/mood_ring.json").then(data => {
+  const slice = (2*Math.PI)/24;
+
+  // Scales
+  const speechExt = d3.extent(data, d=>d.speechiness);
+  const instrExt = d3.extent(data, d=>d.instrumentalness);
+  const liveExt = d3.extent(data, d=>d.liveness);
+
+  const speechR = d3.scaleLinear().domain([0, speechExt[1]*1.3]).range([outerMin, outerMax]);
+  const instrR = d3.scaleLinear().domain([0, instrExt[1]*1.3]).range([innerMin, innerMax]);
+  const liveR = d3.scaleLinear().domain(liveExt).range([innerMax+8, outerMin-8]);
+
+  // Separator ring
+  g.append("circle").attr("r",(innerMax+outerMin)/2)
+    .attr("fill","none").attr("stroke","#30363d").attr("stroke-width",1).attr("stroke-dasharray","3,4");
+
+  // Faint grid
+  [outerMin, (outerMin+outerMax)/2, outerMax].forEach(r => {
+    g.append("circle").attr("r",r).attr("fill","none").attr("stroke","#21262d").attr("stroke-width",0.5);
+  });
+  [innerMin, (innerMin+innerMax)/2, innerMax].forEach(r => {
+    g.append("circle").attr("r",r).attr("fill","none").attr("stroke","#21262d").attr("stroke-width",0.5);
+  });
+
+  const arc = d3.arc();
+
+  // Outer ring: Speechiness (orange)
+  g.selectAll(".speech").data(data).join("path")
+    .attr("d", d => arc({
+      innerRadius: outerMin,
+      outerRadius: speechR(d.speechiness),
+      startAngle: slice * d.hour,
+      endAngle: slice * (d.hour+1) - 0.02,
+    }))
+    .attr("fill","#f0883e").attr("opacity",0.7)
+    .attr("stroke","#0d1117").attr("stroke-width",0.8)
+    .attr("filter","url(#glow)")
+    .on("mouseover",(e,d) => showTip(e,d))
+    .on("mousemove",e=>tip.style("left",(e.pageX+14)+"px").style("top",(e.pageY-20)+"px"))
+    .on("mouseout",()=>tip.style("opacity",0));
+
+  // Inner ring: Instrumentalness (blue)
+  g.selectAll(".instr").data(data).join("path")
+    .attr("d", d => arc({
+      innerRadius: innerMin,
+      outerRadius: instrR(d.instrumentalness),
+      startAngle: slice * d.hour,
+      endAngle: slice * (d.hour+1) - 0.02,
+    }))
+    .attr("fill","#58a6ff").attr("opacity",0.7)
+    .attr("stroke","#0d1117").attr("stroke-width",0.8)
+    .attr("filter","url(#glow)")
+    .on("mouseover",(e,d) => showTip(e,d))
+    .on("mousemove",e=>tip.style("left",(e.pageX+14)+"px").style("top",(e.pageY-20)+"px"))
+    .on("mouseout",()=>tip.style("opacity",0));
+
+  // Liveness dots (green) between the rings
+  data.forEach(d => {
+    const a = slice*d.hour + slice/2;
+    const r = liveR(d.liveness);
+    g.append("circle")
+      .attr("cx", Math.sin(a)*r).attr("cy", -Math.cos(a)*r)
+      .attr("r", 4 + d.liveness * 8)
+      .attr("fill","#3fb950").attr("opacity",0.6)
+      .attr("stroke","#3fb950").attr("stroke-width",0.5)
+      .on("mouseover",(e) => showTip(e,d))
+      .on("mousemove",e=>tip.style("left",(e.pageX+14)+"px").style("top",(e.pageY-20)+"px"))
+      .on("mouseout",()=>tip.style("opacity",0));
+  });
+
+  // Hour labels
+  data.forEach(d => {
+    const a = slice*d.hour + slice/2;
+    const r = outerMax + 22;
+    g.append("text").attr("x",Math.sin(a)*r).attr("y",-Math.cos(a)*r)
+      .attr("text-anchor","middle").attr("dominant-baseline","middle")
+      .attr("fill","#8b949e").attr("font-size","11px")
+      .text(d.hour + "h");
+  });
+
+  // Center
+  g.append("text").attr("text-anchor","middle").attr("dy","-.6em")
+    .attr("fill","#58a6ff").attr("font-size","12px").attr("font-weight","bold").text("🎹 Instrumental");
+  g.append("text").attr("text-anchor","middle").attr("dy","1em")
+    .attr("fill","#8b949e").attr("font-size","10px").text("(inner ring)");
+
+  function showTip(e, d) {
+    tip.style("opacity",1).html(
+      `<b>${String(d.hour).padStart(2,'0')}:00</b><br>`+
+      `<span style="color:#f0883e">● Speechiness:</span> ${d.speechiness.toFixed(4)}<br>`+
+      `<span style="color:#58a6ff">● Instrumentalness:</span> ${d.instrumentalness.toFixed(4)}<br>`+
+      `<span style="color:#3fb950">● Liveness:</span> ${d.liveness.toFixed(4)}<br>`+
+      `${d3.format(",")(d.streams)} streams`);
+  }
+
+  // Legend
+  const leg = d3.select("#legend");
+  leg.append("span").html(`<span class="swatch" style="background:#f0883e"></span> Speechiness (outer)`);
+  leg.append("span").html(`<span class="swatch" style="background:#58a6ff"></span> Instrumentalness (inner)`);
+  leg.append("span").html(`<span class="swatch" style="background:#3fb950"></span> Liveness (dots)`);
+});
+</script>
+</body>
+</html>

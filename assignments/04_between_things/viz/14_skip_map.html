@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>14 — The Skip Map</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+  h1 { font-size: 1.4rem; color: #58a6ff; margin-bottom: .2rem; }
+  p.sub { color: #8b949e; font-size: .85rem; margin-bottom: 1rem; max-width: 750px; text-align: center; }
+  svg { background: #161b22; border-radius: 8px; }
+  .tooltip { position: absolute; background: #1c2128; border: 1px solid #30363d; border-radius: 6px; padding: 8px 12px; font-size: .75rem; color: #c9d1d9; pointer-events: none; opacity: 0; line-height: 1.5; }
+  a.back { color: #58a6ff; font-size: .8rem; margin-bottom: 1rem; text-decoration: none; }
+  .stat-row { display: flex; gap: 2rem; margin-bottom: 1.2rem; }
+  .stat { text-align: center; }
+  .stat .num { font-size: 1.8rem; font-weight: bold; }
+  .stat .label { font-size: .7rem; color: #8b949e; }
+  .skip-color { color: #da3633; }
+  .full-color { color: #3fb950; }
+  .mid-color { color: #d29922; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← all visualizations</a>
+<h1>The Skip Map</h1>
+<p class="sub">How much of each track actually gets played? Each bar shows what percentage of the song was heard before moving on. The spike at 0% = instant skips. The spike at 100% = full plays.</p>
+<div class="stat-row" id="stats"></div>
+<div id="chart"></div>
+<div class="tooltip" id="tip"></div>
+<script>
+const W = 960, H = 480, M = {top: 30, right: 30, bottom: 50, left: 65};
+const w = W - M.left - M.right, h = H - M.top - M.bottom;
+
+const svg = d3.select("#chart").append("svg").attr("width", W).attr("height", H);
+const g = svg.append("g").attr("transform", `translate(${M.left},${M.top})`);
+const tip = d3.select("#tip");
+
+d3.json("data/skip_map.json").then(raw => {
+  const data = raw.bins;
+  const stats = d3.select("#stats");
+
+  [{num: raw.skip_rate + "%", label: "Skip Rate (<30s)", cls: "skip-color"},
+   {num: raw.full_play_rate + "%", label: "Full Plays (≥90%)", cls: "full-color"},
+   {num: d3.format(",")(raw.total_streams), label: "Total Streams", cls: "mid-color"},
+  ].forEach(s => {
+    const div = stats.append("div").attr("class","stat");
+    div.append("div").attr("class","num " + s.cls).text(s.num);
+    div.append("div").attr("class","label").text(s.label);
+  });
+
+  const x = d3.scaleBand().domain(data.map(d => d.pct_bin)).range([0, w]).padding(0.1);
+  const y = d3.scaleLinear().domain([0, d3.max(data, d => d.count) * 1.05]).nice().range([h, 0]);
+
+  const colorScale = d3.scaleLinear()
+    .domain([0, 50, 100])
+    .range(["#da3633", "#d29922", "#3fb950"]);
+
+  g.append("g").attr("transform", `translate(0,${h})`)
+    .call(d3.axisBottom(x).tickValues(data.map(d=>d.pct_bin).filter(v=>v%10===0)))
+    .selectAll("text").style("fill","#8b949e");
+  g.append("g").call(d3.axisLeft(y).ticks(8).tickFormat(d3.format(",.0f")))
+    .selectAll("text").style("fill","#8b949e");
+  g.selectAll(".domain, .tick line").attr("stroke","#30363d");
+
+  svg.append("text").attr("x", M.left + w/2).attr("y", H - 4).attr("text-anchor","middle").attr("fill","#8b949e").attr("font-size","12px").text("% of Track Played");
+  svg.append("text").attr("transform","rotate(-90)").attr("x", -(M.top + h/2)).attr("y", 14).attr("text-anchor","middle").attr("fill","#8b949e").attr("font-size","12px").text("Stream Count");
+
+  // Zone backgrounds
+  const zones = [
+    {x0: 0, x1: 15, label: "Skipped", color: "#da363322"},
+    {x0: 15, x1: 85, label: "Partial", color: "#d2992211"},
+    {x0: 85, x1: 150, label: "Full Play", color: "#3fb95015"},
+  ];
+  zones.forEach(z => {
+    const px0 = x(data.find(d => d.pct_bin >= z.x0)?.pct_bin || 0) || 0;
+    const lastBin = data.filter(d => d.pct_bin <= z.x1).pop();
+    const px1 = lastBin ? x(lastBin.pct_bin) + x.bandwidth() : w;
+    g.append("rect").attr("x", px0).attr("y", 0).attr("width", px1 - px0).attr("height", h)
+      .attr("fill", z.color);
+    g.append("text").attr("x", (px0 + px1)/2).attr("y", 16).attr("text-anchor","middle")
+      .attr("fill","#484f58").attr("font-size","10px").text(z.label);
+  });
+
+  g.selectAll("rect.bar")
+    .data(data)
+    .join("rect")
+    .attr("class","bar")
+    .attr("x", d => x(d.pct_bin))
+    .attr("y", d => y(d.count))
+    .attr("width", x.bandwidth())
+    .attr("height", d => h - y(d.count))
+    .attr("fill", d => colorScale(Math.min(d.pct_bin, 100)))
+    .attr("opacity", 0.85)
+    .on("mouseover", (e,d) => {
+      tip.style("opacity",1).html(
+        `<b>${d.pct_bin}–${d.pct_bin+5}% played</b><br>` +
+        `${d3.format(",")(d.count)} streams<br>` +
+        `Avg Popularity: ${d.avg_popularity}`
+      );
+    })
+    .on("mousemove", e => tip.style("left",(e.pageX+12)+"px").style("top",(e.pageY-20)+"px"))
+    .on("mouseout", () => tip.style("opacity",0));
+});
+</script>
+</body>
+</html>
