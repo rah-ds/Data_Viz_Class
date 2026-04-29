@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>6 — Genre Landscape</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+  h1 { font-size: 1.4rem; color: #58a6ff; margin-bottom: .2rem; }
+  p.sub { color: #8b949e; font-size: .85rem; margin-bottom: 1rem; }
+  svg { background: #161b22; border-radius: 8px; }
+  .tooltip { position: absolute; background: #1c2128; border: 1px solid #30363d; border-radius: 6px; padding: 6px 10px; font-size: .75rem; color: #c9d1d9; pointer-events: none; opacity: 0; }
+  .legend { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: .8rem; font-size: .7rem; }
+  .legend span { display: flex; align-items: center; gap: 4px; }
+  .legend .swatch { width: 10px; height: 10px; border-radius: 2px; }
+  a.back { color: #58a6ff; font-size: .8rem; margin-bottom: 1rem; text-decoration: none; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← all options</a>
+<h1>Genre Landscape — Proportional Stacked Bars</h1>
+<p class="sub">Each person's listening broken down by genre (top 10). Width = proportion of total minutes. Genres colored consistently.</p>
+<div id="chart"></div>
+<div class="legend" id="legend"></div>
+<div class="tooltip" id="tip"></div>
+<script>
+const W = 1000, H = 500, M = {top: 30, right: 20, bottom: 30, left: 70};
+const w = W - M.left - M.right, h = H - M.top - M.bottom;
+
+const svg = d3.select("#chart").append("svg").attr("width",W).attr("height",H);
+const g = svg.append("g").attr("transform",`translate(${M.left},${M.top})`);
+const tip = d3.select("#tip");
+
+d3.json("data/genre_per_person.json").then(data => {
+  const persons = [...new Set(data.map(d=>d.personID))].sort((a,b)=>a-b);
+  const allGenres = [...new Set(data.map(d=>d.genre))];
+  // Top genres by total minutes across all persons
+  const genreTotals = d3.rollup(data, v=>d3.sum(v,d=>d.total_min), d=>d.genre);
+  const topGenres = [...genreTotals.entries()].sort((a,b)=>b[1]-a[1]).slice(0,15).map(d=>d[0]);
+  const color = d3.scaleOrdinal(d3.schemeSet3).domain(topGenres);
+
+  const y = d3.scaleBand().domain(persons).range([0,h]).padding(0.2);
+  const x = d3.scaleLinear().domain([0,1]).range([0,w]);
+
+  // Person labels
+  g.append("g").call(d3.axisLeft(y).tickFormat(d=>`P${d}`)).selectAll("text").style("fill","#c9d1d9").style("font-size","11px");
+  g.selectAll(".domain, .tick line").attr("stroke","#30363d");
+
+  // % axis
+  g.append("g").attr("transform",`translate(0,${h})`).call(d3.axisBottom(x).ticks(5).tickFormat(d3.format(".0%")))
+    .selectAll("text").style("fill","#8b949e");
+
+  persons.forEach(pid => {
+    const pData = data.filter(d=>d.personID===pid && topGenres.includes(d.genre));
+    const total = d3.sum(pData, d=>d.total_min);
+    let cumPct = 0;
+
+    pData.sort((a,b)=>b.total_min-a.total_min).forEach(d => {
+      const pct = d.total_min / total;
+      g.append("rect")
+        .attr("x", x(cumPct))
+        .attr("y", y(pid))
+        .attr("width", x(pct))
+        .attr("height", y.bandwidth())
+        .attr("fill", color(d.genre))
+        .attr("opacity", 0.85)
+        .on("mouseover", (e) => {
+          tip.style("opacity",1).html(`<b>P${pid}</b> — ${d.genre}<br>${d.total_min} min (${(pct*100).toFixed(1)}%)`);
+        })
+        .on("mousemove", e => tip.style("left",(e.pageX+12)+"px").style("top",(e.pageY-16)+"px"))
+        .on("mouseout", () => tip.style("opacity",0));
+      cumPct += pct;
+    });
+  });
+
+  // Legend
+  const leg = d3.select("#legend");
+  topGenres.forEach(genre => {
+    leg.append("span").html(`<span class="swatch" style="background:${color(genre)}"></span>${genre}`);
+  });
+});
+</script>
+</body>
+</html>

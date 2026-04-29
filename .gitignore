@@ -108,6 +108,14 @@ rsconnect/
 data/**/*.zip
 data/**/*.tar.gz
 data/**/*.parquet
+
+# Large Spotify data files (>10MB) — purged from history
+data/raw/04_in_between_things/spotify_extras/trackInfo_AvailableMarkets.csv
+data/raw/04_in_between_things/spotify_extras/trackInfo_full.json
+data/raw/04_in_between_things/spotify_data/trackFeatures_6yrs.csv
+data/raw/04_in_between_things/spotify_data/StreamingHistory_music.csv
+data/raw/04_in_between_things/spotify_extras/artistInfo_full.json
+data/raw/04_in_between_things/spotify_data/trackInfo.csv
 data/**/*.feather
 *.h5
 *.hdf5

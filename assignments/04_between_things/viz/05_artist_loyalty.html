@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>5 — Artist Loyalty</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+  h1 { font-size: 1.4rem; color: #58a6ff; margin-bottom: .2rem; }
+  p.sub { color: #8b949e; font-size: .85rem; margin-bottom: 1rem; }
+  .container { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+  svg { background: #161b22; border-radius: 6px; }
+  .tooltip { position: absolute; background: #1c2128; border: 1px solid #30363d; border-radius: 6px; padding: 6px 10px; font-size: .72rem; color: #c9d1d9; pointer-events: none; opacity: 0; }
+  a.back { color: #58a6ff; font-size: .8rem; margin-bottom: 1rem; text-decoration: none; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← all options</a>
+<h1>Artist Loyalty — Top 15 per Person</h1>
+<p class="sub">Horizontal bars: each person's top 15 artists by listening minutes. Width of top bar vs. total reveals loyalist vs. explorer.</p>
+<div class="container" id="charts"></div>
+<div class="tooltip" id="tip"></div>
+<script>
+const tip = d3.select("#tip");
+const PW = 320, PH = 300, M = {top: 24, right: 10, bottom: 10, left: 110};
+
+d3.json("data/top_artists_per_person.json").then(data => {
+  const persons = [...new Set(data.map(d=>d.personID))].sort((a,b)=>a-b);
+  const color = d3.scaleOrdinal(d3.schemeTableau10).domain(persons);
+
+  persons.forEach(pid => {
+    const pData = data.filter(d=>d.personID===pid).sort((a,b)=>b.total_min-a.total_min);
+    const maxMin = d3.max(pData, d=>d.total_min);
+
+    const svg = d3.select("#charts").append("svg").attr("width",PW).attr("height",PH);
+    const g = svg.append("g").attr("transform", `translate(${M.left},${M.top})`);
+    const w = PW - M.left - M.right;
+    const h = PH - M.top - M.bottom;
+
+    svg.append("text").attr("x", PW/2).attr("y", 16)
+      .attr("text-anchor","middle").attr("fill","#c9d1d9").attr("font-size","12px").attr("font-weight","bold")
+      .text(`Person ${pid}`);
+
+    const y = d3.scaleBand().domain(pData.map(d=>d.artistName)).range([0,h]).padding(0.15);
+    const x = d3.scaleLinear().domain([0, maxMin]).range([0, w]);
+
+    // Artist labels (truncate)
+    g.selectAll("text.label")
+      .data(pData).join("text")
+      .attr("class","label")
+      .attr("x", -4).attr("y", d => y(d.artistName) + y.bandwidth()/2)
+      .attr("dy","0.35em").attr("text-anchor","end")
+      .attr("fill","#8b949e").attr("font-size","8px")
+      .text(d => d.artistName.length > 16 ? d.artistName.slice(0,15)+"…" : d.artistName);
+
+    g.selectAll("rect")
+      .data(pData).join("rect")
+      .attr("x",0).attr("y", d=>y(d.artistName))
+      .attr("width", d=>x(d.total_min)).attr("height", y.bandwidth())
+      .attr("fill", color(pid)).attr("rx", 3).attr("opacity", 0.8)
+      .on("mouseover", (e,d) => {
+        tip.style("opacity",1).html(`<b>${d.artistName}</b><br>${d.total_min} min · ${d.streams} streams`);
+      })
+      .on("mousemove", e => tip.style("left",(e.pageX+12)+"px").style("top",(e.pageY-16)+"px"))
+      .on("mouseout", () => tip.style("opacity",0));
+  });
+});
+</script>
+</body>
+</html>

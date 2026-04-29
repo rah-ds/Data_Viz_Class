@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>10 — Listening Arcs</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+  h1 { font-size: 1.4rem; color: #58a6ff; margin-bottom: .2rem; }
+  p.sub { color: #8b949e; font-size: .85rem; margin-bottom: 1rem; max-width: 700px; text-align: center; }
+  svg { background: #161b22; border-radius: 8px; }
+  .controls { margin-bottom: 1rem; display: flex; gap: 10px; }
+  .controls button { background: #21262d; border: 1px solid #30363d; color: #c9d1d9; padding: 4px 14px; border-radius: 6px; cursor: pointer; font-size: .8rem; }
+  .controls button.active { background: #1f6feb; border-color: #58a6ff; color: #fff; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: .8rem; font-size: .75rem; }
+  .legend span { display: flex; align-items: center; gap: 4px; }
+  .legend .swatch { width: 14px; height: 3px; }
+  a.back { color: #58a6ff; font-size: .8rem; margin-bottom: 1rem; text-decoration: none; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← all options</a>
+<h1>Listening Arcs — Mood Over Time</h1>
+<p class="sub">Weekly rolling average of valence (musical happiness) and energy per person over their listening history. Do moods drift? Are there seasonal patterns?</p>
+<div class="controls" id="controls">
+  <button class="active" data-metric="valence">Valence</button>
+  <button data-metric="energy">Energy</button>
+</div>
+<div id="chart"></div>
+<div class="legend" id="legend"></div>
+<script>
+const W = 1000, H = 500, M = {top: 20, right: 30, bottom: 35, left: 50};
+const w = W - M.left - M.right, h = H - M.top - M.bottom;
+
+const svg = d3.select("#chart").append("svg").attr("width",W).attr("height",H);
+const g = svg.append("g").attr("transform",`translate(${M.left},${M.top})`);
+const color = d3.scaleOrdinal(d3.schemeTableau10);
+
+let currentMetric = "valence";
+
+d3.json("data/listening_arcs.json").then(data => {
+  data.forEach(d => { d.date = new Date(d.endTime); });
+  const persons = [...new Set(data.map(d=>d.personID))].sort((a,b)=>a-b);
+  color.domain(persons);
+
+  const x = d3.scaleTime()
+    .domain(d3.extent(data, d=>d.date))
+    .range([0, w]);
+
+  const y = d3.scaleLinear().domain([0, 1]).range([h, 0]);
+
+  // Axes
+  const xAxis = g.append("g").attr("transform",`translate(0,${h})`).call(d3.axisBottom(x).ticks(8));
+  const yAxis = g.append("g").call(d3.axisLeft(y).ticks(5));
+  g.selectAll(".domain, .tick line").attr("stroke","#30363d");
+  xAxis.selectAll("text").style("fill","#8b949e");
+  yAxis.selectAll("text").style("fill","#8b949e");
+
+  const yLabel = svg.append("text").attr("transform","rotate(-90)")
+    .attr("x",-(M.top+h/2)).attr("y",14).attr("text-anchor","middle")
+    .attr("fill","#8b949e").attr("font-size","12px").text("Valence");
+
+  // Reference line at 0.5
+  g.append("line").attr("x1",0).attr("x2",w).attr("y1",y(0.5)).attr("y2",y(0.5))
+    .attr("stroke","#30363d").attr("stroke-dasharray","4,4");
+
+  const line = d3.line()
+    .defined(d => !isNaN(d[currentMetric]) && d[currentMetric] !== null)
+    .x(d => x(d.date))
+    .y(d => y(d[currentMetric]))
+    .curve(d3.curveCatmullRom);
+
+  const paths = g.selectAll("path.arc")
+    .data(persons)
+    .join("path")
+    .attr("class","arc")
+    .attr("fill","none")
+    .attr("stroke", p => color(p))
+    .attr("stroke-width", 1.8)
+    .attr("stroke-opacity", 0.7)
+    .attr("d", p => line(data.filter(d=>d.personID===p)));
+
+  // Legend
+  const leg = d3.select("#legend");
+  persons.forEach(p => {
+    leg.append("span").html(`<span class="swatch" style="background:${color(p)}"></span>P${p}`);
+  });
+
+  // Toggle
+  d3.selectAll("#controls button").on("click", function() {
+    currentMetric = this.dataset.metric;
+    d3.selectAll("#controls button").classed("active", false);
+    d3.select(this).classed("active", true);
+    yLabel.text(currentMetric.charAt(0).toUpperCase() + currentMetric.slice(1));
+
+    const newLine = d3.line()
+      .defined(d => !isNaN(d[currentMetric]) && d[currentMetric] !== null)
+      .x(d => x(d.date))
+      .y(d => y(d[currentMetric]))
+      .curve(d3.curveCatmullRom);
+
+    paths.transition().duration(600)
+      .attr("d", p => newLine(data.filter(d=>d.personID===p)));
+  });
+});
+</script>
+</body>
+</html>

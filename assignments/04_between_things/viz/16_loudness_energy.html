@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>16 — Loudness vs Energy</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+  h1 { font-size: 1.4rem; color: #58a6ff; margin-bottom: .2rem; }
+  p.sub { color: #8b949e; font-size: .85rem; margin-bottom: 1rem; max-width: 750px; text-align: center; }
+  svg { background: #161b22; border-radius: 8px; }
+  .tooltip { position: absolute; background: #1c2128; border: 1px solid #30363d; border-radius: 6px; padding: 8px 12px; font-size: .75rem; color: #c9d1d9; pointer-events: none; opacity: 0; line-height: 1.5; }
+  a.back { color: #58a6ff; font-size: .8rem; margin-bottom: 1rem; text-decoration: none; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← all visualizations</a>
+<h1>Loudness vs Energy</h1>
+<p class="sub">Spotify's "energy" feature promises to measure perceptual intensity. Does loudness (in dB) predict it? This bubble chart tests that relationship — bubble size = stream count, color = average danceability.</p>
+<div id="chart"></div>
+<div class="tooltip" id="tip"></div>
+<script>
+const W = 900, H = 600, M = {top: 30, right: 80, bottom: 55, left: 65};
+const w = W - M.left - M.right, h = H - M.top - M.bottom;
+
+const svg = d3.select("#chart").append("svg").attr("width", W).attr("height", H);
+const g = svg.append("g").attr("transform", `translate(${M.left},${M.top})`);
+const tip = d3.select("#tip");
+
+d3.json("data/loudness_energy.json").then(data => {
+  data = data.filter(d => d.count >= 5);
+
+  const x = d3.scaleLinear().domain([d3.min(data, d => d.loud_bin) - 1, 0]).range([0, w]);
+  const y = d3.scaleLinear().domain([0, 1]).range([h, 0]);
+  const r = d3.scaleSqrt().domain([0, d3.max(data, d => d.count)]).range([2, 22]);
+  const color = d3.scaleSequential(d3.interpolateViridis).domain([0.35, 0.75]);
+
+  g.append("g").attr("transform", `translate(0,${h})`).call(d3.axisBottom(x).ticks(12))
+    .selectAll("text").style("fill","#8b949e");
+  g.append("g").call(d3.axisLeft(y).ticks(10))
+    .selectAll("text").style("fill","#8b949e");
+  g.selectAll(".domain, .tick line").attr("stroke","#30363d");
+
+  svg.append("text").attr("x", M.left + w/2).attr("y", H - 8).attr("text-anchor","middle").attr("fill","#8b949e").attr("font-size","12px").text("Loudness (dB) →");
+  svg.append("text").attr("transform","rotate(-90)").attr("x", -(M.top + h/2)).attr("y", 14).attr("text-anchor","middle").attr("fill","#8b949e").attr("font-size","12px").text("Avg Energy →");
+
+  // Correlation line (simple linear regression)
+  const xVals = data.map(d => d.loud_bin);
+  const yVals = data.map(d => d.avg_energy);
+  const n = xVals.length;
+  const xMean = d3.mean(xVals), yMean = d3.mean(yVals);
+  const ssxy = d3.sum(xVals.map((xi, i) => (xi - xMean) * (yVals[i] - yMean)));
+  const ssxx = d3.sum(xVals.map(xi => (xi - xMean) ** 2));
+  const slope = ssxy / ssxx;
+  const intercept = yMean - slope * xMean;
+  const r_val = ssxy / Math.sqrt(ssxx * d3.sum(yVals.map(yi => (yi - yMean) ** 2)));
+
+  const lineX0 = d3.min(data, d => d.loud_bin);
+  const lineX1 = 0;
+  g.append("line")
+    .attr("x1", x(lineX0)).attr("y1", y(slope * lineX0 + intercept))
+    .attr("x2", x(lineX1)).attr("y2", y(Math.min(1, slope * lineX1 + intercept)))
+    .attr("stroke", "#f0883e").attr("stroke-width", 2).attr("stroke-dasharray", "6,4").attr("opacity", 0.7);
+
+  g.append("text")
+    .attr("x", w - 5).attr("y", y(Math.min(1, slope * lineX1 + intercept)) + 16)
+    .attr("text-anchor", "end").attr("fill", "#f0883e").attr("font-size", "11px")
+    .text(`r = ${r_val.toFixed(3)}`);
+
+  // Bubbles
+  g.selectAll("circle.bubble")
+    .data(data.sort((a,b) => b.count - a.count))
+    .join("circle")
+    .attr("class", "bubble")
+    .attr("cx", d => x(d.loud_bin))
+    .attr("cy", d => y(d.avg_energy))
+    .attr("r", d => r(d.count))
+    .attr("fill", d => color(d.avg_dance))
+    .attr("opacity", 0.7)
+    .attr("stroke", "#0d1117")
+    .attr("stroke-width", 0.5)
+    .on("mouseover", (e, d) => {
+      tip.style("opacity",1).html(
+        `<b>${d.loud_bin} dB</b><br>` +
+        `${d3.format(",")(d.count)} streams<br>` +
+        `Avg Energy: ${d.avg_energy.toFixed(3)}<br>` +
+        `Avg Valence: ${d.avg_valence.toFixed(3)}<br>` +
+        `Avg Danceability: ${d.avg_dance.toFixed(3)}`
+      );
+    })
+    .on("mousemove", e => tip.style("left",(e.pageX+12)+"px").style("top",(e.pageY-20)+"px"))
+    .on("mouseout", () => tip.style("opacity",0));
+
+  // Color legend
+  const legendW = 150, legendH = 12;
+  const lg = svg.append("g").attr("transform", `translate(${W - M.right + 10}, ${M.top + 20})`);
+  lg.append("text").attr("fill","#8b949e").attr("font-size","10px").attr("dy","-4").text("Danceability");
+  const defs = svg.append("defs");
+  const grad = defs.append("linearGradient").attr("id","danceGrad").attr("x1","0").attr("y1","1").attr("x2","0").attr("y2","0");
+  grad.append("stop").attr("offset","0%").attr("stop-color", color(0.35));
+  grad.append("stop").attr("offset","100%").attr("stop-color", color(0.75));
+  lg.append("rect").attr("width", 14).attr("height", 120).attr("fill","url(#danceGrad)").attr("rx",3);
+  lg.append("text").attr("x",18).attr("y",8).attr("fill","#8b949e").attr("font-size","9px").text("0.75");
+  lg.append("text").attr("x",18).attr("y",118).attr("fill","#8b949e").attr("font-size","9px").text("0.35");
+});
+</script>
+</body>
+</html>

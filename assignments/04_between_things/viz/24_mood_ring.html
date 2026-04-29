@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>24 — The Mood Ring</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+  h1 { font-size: 1.6rem; color: #58a6ff; margin-bottom: .2rem; }
+  p.sub { color: #8b949e; font-size: .85rem; margin-bottom: 1.2rem; max-width: 680px; text-align: center; }
+  svg { background: #161b22; border-radius: 12px; }
+  .tooltip { position: absolute; background: #1c2128ee; border: 1px solid #30363d; border-radius: 6px; padding: 10px 14px; font-size: .75rem; color: #c9d1d9; pointer-events: none; opacity: 0; line-height: 1.6; }
+  a.back { color: #58a6ff; font-size: .8rem; margin-bottom: 1rem; text-decoration: none; }
+  .legend-bar { width: 300px; height: 14px; border-radius: 7px; margin-top: 1rem; }
+  .legend-labels { display: flex; justify-content: space-between; width: 300px; font-size: .7rem; color: #8b949e; margin-top: 4px; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← all visualizations</a>
+<h1>🔮 The Mood Ring</h1>
+<p class="sub">Each hour is a segment of the ring — radius shows how much you stream, color reveals the average valence (mood). Purple = melancholy. Teal = neutral. Gold = euphoric. Does 3 AM feel different from 3 PM?</p>
+<div id="chart"></div>
+<canvas class="legend-bar" id="legendBar"></canvas>
+<div class="legend-labels"><span>😢 Sad</span><span>😐 Neutral</span><span>😊 Happy</span></div>
+<div class="tooltip" id="tip"></div>
+<script>
+const W = 720, H = 720, cx = W/2, cy = H/2;
+const maxR = 290, minR = 90;
+
+const svg = d3.select("#chart").append("svg").attr("width", W).attr("height", H);
+const defs = svg.append("defs");
+const filt = defs.append("filter").attr("id","glow");
+filt.append("feGaussianBlur").attr("stdDeviation",4).attr("result","blur");
+const fm = filt.append("feMerge");
+fm.append("feMergeNode").attr("in","blur");
+fm.append("feMergeNode").attr("in","SourceGraphic");
+
+const g = svg.append("g").attr("transform",`translate(${cx},${cy})`);
+const tip = d3.select("#tip");
+
+const moodColor = d3.scaleLinear()
+  .domain([0.30, 0.42, 0.52, 0.62])
+  .range(["#7b2d8e","#2196f3","#06d6a0","#ffd700"])
+  .clamp(true);
+
+d3.json("data/mood_ring.json").then(data => {
+  const rScale = d3.scaleLinear()
+    .domain([0, d3.max(data, d => d.streams)])
+    .range([minR, maxR]);
+
+  const arc = d3.arc();
+  const slice = (2*Math.PI)/24;
+
+  // Faint grid circles
+  [0.25,0.5,0.75,1].forEach(p => {
+    const r = minR + (maxR-minR)*p;
+    g.append("circle").attr("r",r).attr("fill","none").attr("stroke","#21262d").attr("stroke-dasharray","2,4");
+  });
+
+  // Ring segments
+  g.selectAll(".seg").data(data).join("path")
+    .attr("d", d => arc({
+      innerRadius: minR,
+      outerRadius: rScale(d.streams),
+      startAngle: slice * d.hour,
+      endAngle: slice * (d.hour + 1) - 0.02,
+    }))
+    .attr("fill", d => moodColor(d.valence))
+    .attr("stroke","#0d1117").attr("stroke-width",1.5)
+    .attr("filter","url(#glow)")
+    .attr("opacity",0.88)
+    .on("mouseover",(e,d) => {
+      d3.select(e.target).attr("opacity",1).attr("stroke","#f0f6fc").attr("stroke-width",2);
+      tip.style("opacity",1).html(
+        `<b style="font-size:1rem">${String(d.hour).padStart(2,'0')}:00</b><br>`+
+        `Valence: <b style="color:${moodColor(d.valence)}">${d.valence.toFixed(3)}</b><br>`+
+        `Energy: ${d.energy.toFixed(3)}<br>`+
+        `Danceability: ${d.danceability.toFixed(3)}<br>`+
+        `Acousticness: ${d.acousticness.toFixed(3)}<br>`+
+        `${d3.format(",")(d.streams)} streams`);
+    })
+    .on("mousemove",e=>tip.style("left",(e.pageX+14)+"px").style("top",(e.pageY-24)+"px"))
+    .on("mouseout",(e)=>{
+      d3.select(e.target).attr("opacity",0.88).attr("stroke","#0d1117").attr("stroke-width",1.5);
+      tip.style("opacity",0);
+    });
+
+  // Hour labels
+  data.forEach(d => {
+    const a = slice*d.hour + slice/2;
+    const r = maxR + 22;
+    g.append("text")
+      .attr("x", Math.sin(a)*r).attr("y", -Math.cos(a)*r)
+      .attr("text-anchor","middle").attr("dominant-baseline","middle")
+      .attr("fill","#8b949e").attr("font-size","11px")
+      .text(d.hour+"h");
+  });
+
+  // Center stats
+  const happiest = data.reduce((a,b)=>a.valence>b.valence?a:b);
+  const saddest = data.reduce((a,b)=>a.valence<b.valence?a:b);
+  g.append("text").attr("text-anchor","middle").attr("dy","-1.8em")
+    .attr("fill","#ffd700").attr("font-size","14px").attr("font-weight","bold")
+    .text(`☀️ ${happiest.hour}:00`);
+  g.append("text").attr("text-anchor","middle").attr("dy","-.3em")
+    .attr("fill","#8b949e").attr("font-size","10px").text("happiest hour");
+  g.append("text").attr("text-anchor","middle").attr("dy","1.3em")
+    .attr("fill","#7b2d8e").attr("font-size","14px").attr("font-weight","bold")
+    .text(`🌙 ${saddest.hour}:00`);
+  g.append("text").attr("text-anchor","middle").attr("dy","2.8em")
+    .attr("fill","#8b949e").attr("font-size","10px").text("most melancholy");
+
+  // Legend gradient bar
+  const canvas = document.getElementById("legendBar");
+  canvas.width = 300; canvas.height = 14;
+  const ctx = canvas.getContext("2d");
+  const grad = ctx.createLinearGradient(0,0,300,0);
+  grad.addColorStop(0,"#7b2d8e"); grad.addColorStop(0.33,"#2196f3");
+  grad.addColorStop(0.66,"#06d6a0"); grad.addColorStop(1,"#ffd700");
+  ctx.fillStyle = grad;
+  ctx.beginPath(); ctx.roundRect(0,0,300,14,7); ctx.fill();
+});
+</script>
+</body>
+</html>

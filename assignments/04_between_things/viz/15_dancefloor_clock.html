@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>15 — Dancefloor Clock</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+  h1 { font-size: 1.4rem; color: #58a6ff; margin-bottom: .2rem; }
+  p.sub { color: #8b949e; font-size: .85rem; margin-bottom: 1rem; max-width: 750px; text-align: center; }
+  svg { background: #161b22; border-radius: 8px; }
+  .tooltip { position: absolute; background: #1c2128; border: 1px solid #30363d; border-radius: 6px; padding: 8px 12px; font-size: .75rem; color: #c9d1d9; pointer-events: none; opacity: 0; line-height: 1.5; }
+  a.back { color: #58a6ff; font-size: .8rem; margin-bottom: 1rem; text-decoration: none; }
+  .controls { display: flex; gap: 8px; margin-bottom: 1rem; }
+  .controls button { background: #21262d; border: 1px solid #30363d; color: #c9d1d9; padding: 6px 14px; border-radius: 20px; font-size: .75rem; cursor: pointer; transition: all .15s; }
+  .controls button.active { background: #1f6feb; border-color: #58a6ff; color: #fff; }
+  .controls button:hover { border-color: #58a6ff; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← all visualizations</a>
+<h1>Dancefloor Clock</h1>
+<p class="sub">How does the sonic character of listening change throughout the day? A radial chart mapping hours to audio features — morning acoustics, afternoon energy, late-night vibes.</p>
+<div class="controls" id="controls"></div>
+<div id="chart"></div>
+<div class="tooltip" id="tip"></div>
+<script>
+const W = 700, H = 700;
+const cx = W/2, cy = H/2, outerR = 280, innerR = 80;
+
+const svg = d3.select("#chart").append("svg").attr("width", W).attr("height", H);
+const g = svg.append("g").attr("transform", `translate(${cx},${cy})`);
+const tip = d3.select("#tip");
+
+const features = [
+  {key: "danceability", label: "Danceability", color: "#58a6ff"},
+  {key: "energy", label: "Energy", color: "#f0883e"},
+  {key: "valence", label: "Valence", color: "#3fb950"},
+  {key: "acousticness", label: "Acousticness", color: "#bc8cff"},
+];
+
+d3.json("data/dancefloor_clock.json").then(data => {
+  data.sort((a,b) => a.hour - b.hour);
+  const angleSlice = (2 * Math.PI) / 24;
+
+  // Hour labels (clock face)
+  const hourLabels = ["12a","1a","2a","3a","4a","5a","6a","7a","8a","9a","10a","11a",
+                       "12p","1p","2p","3p","4p","5p","6p","7p","8p","9p","10p","11p"];
+
+  // Grid circles
+  [0.2, 0.4, 0.6, 0.8].forEach(v => {
+    const r = innerR + (outerR - innerR) * v;
+    g.append("circle").attr("r", r).attr("fill","none").attr("stroke","#21262d").attr("stroke-dasharray","2,3");
+    g.append("text").attr("x", 4).attr("y", -r - 2).attr("font-size","8px").attr("fill","#484f58").text((v).toFixed(1));
+  });
+
+  // Hour spokes & labels
+  data.forEach((d, i) => {
+    const angle = angleSlice * i - Math.PI/2;
+    g.append("line")
+      .attr("x1", Math.cos(angle) * innerR).attr("y1", Math.sin(angle) * innerR)
+      .attr("x2", Math.cos(angle) * outerR).attr("y2", Math.sin(angle) * outerR)
+      .attr("stroke", "#21262d").attr("stroke-width", 0.5);
+    g.append("text")
+      .attr("x", Math.cos(angle) * (outerR + 18))
+      .attr("y", Math.sin(angle) * (outerR + 18))
+      .attr("text-anchor", "middle").attr("dominant-baseline", "middle")
+      .attr("fill", "#8b949e").attr("font-size", "10px")
+      .text(hourLabels[i]);
+  });
+
+  // Day/night background
+  const nightArc = d3.arc()({innerRadius: innerR - 10, outerRadius: outerR + 5,
+    startAngle: angleSlice * 21 + Math.PI/2 - Math.PI, endAngle: angleSlice * 6 + Math.PI/2 - Math.PI});
+  g.append("path").attr("d", nightArc).attr("fill", "#0d111766");
+
+  const rScale = d3.scaleLinear().domain([0, 1]).range([innerR, outerR]);
+
+  function drawFeature(feat) {
+    g.selectAll(".feature-path").remove();
+    g.selectAll(".feature-dot").remove();
+
+    const line = d3.lineRadial()
+      .angle((d, i) => angleSlice * i)
+      .radius(d => rScale(d[feat.key]))
+      .curve(d3.curveCardinalClosed.tension(0.4));
+
+    g.append("path")
+      .attr("class", "feature-path")
+      .attr("d", line(data))
+      .attr("fill", feat.color)
+      .attr("fill-opacity", 0.15)
+      .attr("stroke", feat.color)
+      .attr("stroke-width", 2.5);
+
+    g.selectAll(".feature-dot")
+      .data(data)
+      .join("circle")
+      .attr("class", "feature-dot")
+      .attr("cx", (d, i) => Math.cos(angleSlice * i - Math.PI/2) * rScale(d[feat.key]))
+      .attr("cy", (d, i) => Math.sin(angleSlice * i - Math.PI/2) * rScale(d[feat.key]))
+      .attr("r", 5)
+      .attr("fill", feat.color)
+      .attr("stroke", "#0d1117")
+      .attr("stroke-width", 1.5)
+      .on("mouseover", (e, d) => {
+        tip.style("opacity",1).html(
+          `<b>${hourLabels[d.hour]}</b> (${d3.format(",")(d.streams)} streams)<br>` +
+          `Danceability: ${d.danceability.toFixed(3)}<br>` +
+          `Energy: ${d.energy.toFixed(3)}<br>` +
+          `Valence: ${d.valence.toFixed(3)}<br>` +
+          `Acousticness: ${d.acousticness.toFixed(3)}<br>` +
+          `Avg Tempo: ${d.tempo.toFixed(1)} BPM`
+        );
+      })
+      .on("mousemove", e => tip.style("left",(e.pageX+12)+"px").style("top",(e.pageY-20)+"px"))
+      .on("mouseout", () => tip.style("opacity",0));
+  }
+
+  // Buttons
+  const controls = d3.select("#controls");
+  features.forEach((f, i) => {
+    controls.append("button")
+      .text(f.label)
+      .classed("active", i === 0)
+      .style("border-color", i === 0 ? f.color : null)
+      .on("click", function() {
+        controls.selectAll("button").classed("active", false).style("border-color", null);
+        d3.select(this).classed("active", true).style("border-color", f.color);
+        drawFeature(f);
+      });
+  });
+
+  // Center text
+  g.append("text").attr("text-anchor","middle").attr("dy","-.2em").attr("fill","#c9d1d9").attr("font-size","11px").text("24-Hour");
+  g.append("text").attr("text-anchor","middle").attr("dy","1em").attr("fill","#c9d1d9").attr("font-size","11px").text("Clock");
+
+  drawFeature(features[0]);
+});
+</script>
+</body>
+</html>

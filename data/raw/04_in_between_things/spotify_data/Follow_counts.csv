@@ -1,0 +1,12 @@
+personID,userIsFollowing_count,userIsFollowedBy_count,userIsBlocking_count
+1,0,3,0
+10,25,26,0
+2,101,105,0
+3,29,30,0
+5,2,5,0
+6,9,13,0
+7,0,9,0
+8,19,17,0
+9,3,4,0
+11,22,21,0
+12,16,17,0

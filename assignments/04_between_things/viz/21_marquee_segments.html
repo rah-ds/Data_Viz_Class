@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>21 — Marquee Segments</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+  h1 { font-size: 1.4rem; color: #58a6ff; margin-bottom: .2rem; }
+  p.sub { color: #8b949e; font-size: .85rem; margin-bottom: 1rem; max-width: 750px; text-align: center; }
+  svg { background: #161b22; border-radius: 8px; }
+  .tooltip { position: absolute; background: #1c2128; border: 1px solid #30363d; border-radius: 6px; padding: 8px 12px; font-size: .75rem; color: #c9d1d9; pointer-events: none; opacity: 0; line-height: 1.5; }
+  a.back { color: #58a6ff; font-size: .8rem; margin-bottom: 1rem; text-decoration: none; }
+  .flex-row { display: flex; gap: 2rem; align-items: flex-start; flex-wrap: wrap; justify-content: center; }
+  .right-panel { max-width: 380px; }
+  .right-panel h3 { font-size: .95rem; color: #58a6ff; margin: .5rem 0 .3rem; }
+  .artist-list { font-size: .8rem; line-height: 1.8; }
+  .artist-list .bar-wrap { display: flex; align-items: center; gap: 6px; margin: 2px 0; }
+  .artist-list .bar { height: 14px; border-radius: 3px; min-width: 2px; }
+  .artist-list .name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← all visualizations</a>
+<h1>Marquee — Listener Segments</h1>
+<p class="sub">Spotify classifies each listener-artist relationship into segments: Super Listeners, Moderate, Light, and Previously Active. The donut shows the overall breakdown; click a segment to see its top artists.</p>
+<div class="flex-row">
+  <div id="chart"></div>
+  <div class="right-panel" id="panel">
+    <h3 id="panelTitle">Click a segment</h3>
+    <div class="artist-list" id="artists"></div>
+  </div>
+</div>
+<div class="tooltip" id="tip"></div>
+<script>
+const W = 420, H = 420;
+const cx = W/2, cy = H/2, outerR = 180, innerR = 90;
+
+const svg = d3.select("#chart").append("svg").attr("width", W).attr("height", H);
+const g = svg.append("g").attr("transform", `translate(${cx},${cy})`);
+const tip = d3.select("#tip");
+
+const segColors = {
+  "Super Listeners": "#3fb950",
+  "Moderate listeners": "#58a6ff",
+  "Light listeners": "#d29922",
+  "Previously Active Listeners": "#da3633"
+};
+
+d3.json("data/marquee_segments.json").then(raw => {
+  const segments = raw.segments;
+  const topArtists = raw.top_artists;
+  const total = d3.sum(segments, d => d.count);
+
+  const pie = d3.pie().value(d => d.count).sort(null);
+  const arc = d3.arc().innerRadius(innerR).outerRadius(outerR).padAngle(0.02).cornerRadius(4);
+  const arcHover = d3.arc().innerRadius(innerR - 4).outerRadius(outerR + 8).padAngle(0.02).cornerRadius(4);
+
+  const arcs = g.selectAll("path.seg")
+    .data(pie(segments))
+    .join("path")
+    .attr("class","seg")
+    .attr("d", arc)
+    .attr("fill", d => segColors[d.data.segment] || "#8b949e")
+    .attr("stroke", "#0d1117")
+    .attr("stroke-width", 2)
+    .style("cursor","pointer")
+    .on("mouseover", function(e, d) {
+      d3.select(this).transition().duration(150).attr("d", arcHover);
+      tip.style("opacity",1).html(
+        `<b>${d.data.segment}</b><br>${d3.format(",")(d.data.count)} artist-relationships<br>${(d.data.count/total*100).toFixed(1)}%`
+      );
+    })
+    .on("mousemove", e => tip.style("left",(e.pageX+12)+"px").style("top",(e.pageY-20)+"px"))
+    .on("mouseout", function() {
+      d3.select(this).transition().duration(150).attr("d", arc);
+      tip.style("opacity",0);
+    })
+    .on("click", (e, d) => showArtists(d.data.segment));
+
+  // Center label
+  g.append("text").attr("text-anchor","middle").attr("dy","-.3em").attr("fill","#c9d1d9").attr("font-size","22px").attr("font-weight","bold").text(d3.format(",")(total));
+  g.append("text").attr("text-anchor","middle").attr("dy","1.2em").attr("fill","#8b949e").attr("font-size","11px").text("relationships");
+
+  // Segment labels around donut
+  g.selectAll("text.seg-label")
+    .data(pie(segments))
+    .join("text")
+    .attr("class","seg-label")
+    .attr("transform", d => {
+      const [lx, ly] = arc.centroid(d);
+      return `translate(${lx * 1.6}, ${ly * 1.6})`;
+    })
+    .attr("text-anchor","middle")
+    .attr("fill", d => segColors[d.data.segment])
+    .attr("font-size","10px")
+    .attr("font-weight","bold")
+    .text(d => `${(d.data.count/total*100).toFixed(0)}%`);
+
+  function showArtists(segment) {
+    const color = segColors[segment];
+    d3.select("#panelTitle").text(segment).style("color", color);
+    const arts = topArtists.filter(d => d.segment === segment);
+    const maxCount = d3.max(arts, d => d.count);
+    const barScale = d3.scaleLinear().domain([0, maxCount]).range([0, 140]);
+
+    const div = d3.select("#artists").html("");
+    arts.forEach(a => {
+      const wrap = div.append("div").attr("class","bar-wrap");
+      wrap.append("div").attr("class","bar")
+        .style("width", barScale(a.count) + "px")
+        .style("background", color);
+      wrap.append("span").attr("class","name").text(a.artistName);
+      wrap.append("span").style("color","#8b949e").style("font-size",".7rem").text(` (${a.count})`);
+    });
+  }
+
+  // Auto-select first segment
+  showArtists(segments[0].segment);
+});
+</script>
+</body>
+</html>

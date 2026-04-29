@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>8 — Shared Artist Matrix</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+  h1 { font-size: 1.4rem; color: #58a6ff; margin-bottom: .2rem; }
+  p.sub { color: #8b949e; font-size: .85rem; margin-bottom: 1rem; }
+  svg { background: #161b22; border-radius: 8px; }
+  .tooltip { position: absolute; background: #1c2128; border: 1px solid #30363d; border-radius: 6px; padding: 6px 10px; font-size: .75rem; color: #c9d1d9; pointer-events: none; opacity: 0; }
+  a.back { color: #58a6ff; font-size: .8rem; margin-bottom: 1rem; text-decoration: none; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← all options</a>
+<h1>Shared Artist Matrix</h1>
+<p class="sub">How many artists does each pair of listeners share? Brighter = more overlap = closer cultural taste.</p>
+<div id="chart"></div>
+<div class="tooltip" id="tip"></div>
+<script>
+const W = 700, H = 700, M = {top: 50, right: 20, bottom: 20, left: 50};
+const w = W - M.left - M.right, h = H - M.top - M.bottom;
+const svg = d3.select("#chart").append("svg").attr("width",W).attr("height",H);
+const g = svg.append("g").attr("transform",`translate(${M.left},${M.top})`);
+const tip = d3.select("#tip");
+
+d3.json("data/shared_artists.json").then(data => {
+  // Exclude diagonal for max color
+  const offDiag = data.filter(d => d.personA !== d.personB);
+  const persons = [...new Set(data.map(d=>d.personA))].sort((a,b)=>a-b);
+  const n = persons.length;
+  const cellSize = Math.min(w, h) / n;
+
+  const maxShared = d3.max(offDiag, d=>d.shared);
+  const color = d3.scaleSequential(d3.interpolatePurples).domain([0, maxShared]);
+
+  const x = d3.scaleBand().domain(persons).range([0, n*cellSize]).padding(0.05);
+  const y = d3.scaleBand().domain(persons).range([0, n*cellSize]).padding(0.05);
+
+  // Labels
+  persons.forEach(p => {
+    g.append("text").attr("x", x(p)+x.bandwidth()/2).attr("y",-6)
+      .attr("text-anchor","middle").attr("fill","#c9d1d9").attr("font-size","11px").text(`P${p}`);
+    g.append("text").attr("x",-6).attr("y", y(p)+y.bandwidth()/2+4)
+      .attr("text-anchor","end").attr("fill","#c9d1d9").attr("font-size","11px").text(`P${p}`);
+  });
+
+  g.selectAll("rect")
+    .data(data)
+    .join("rect")
+    .attr("x", d => x(d.personA))
+    .attr("y", d => y(d.personB))
+    .attr("width", x.bandwidth())
+    .attr("height", y.bandwidth())
+    .attr("rx", 3)
+    .attr("fill", d => d.personA === d.personB ? "#21262d" : color(d.shared))
+    .on("mouseover", (e,d) => {
+      tip.style("opacity",1).html(
+        d.personA === d.personB
+          ? `<b>P${d.personA}</b>: ${d.shared} total artists`
+          : `<b>P${d.personA} ↔ P${d.personB}</b><br>Shared: ${d.shared} artists<br>Only P${d.personA}: ${d.onlyA} · Only P${d.personB}: ${d.onlyB}`
+      );
+    })
+    .on("mousemove", e => tip.style("left",(e.pageX+14)+"px").style("top",(e.pageY-16)+"px"))
+    .on("mouseout", () => tip.style("opacity",0));
+
+  // Cell value labels
+  g.selectAll("text.val")
+    .data(data.filter(d=>d.personA !== d.personB))
+    .join("text")
+    .attr("class","val")
+    .attr("x", d => x(d.personA) + x.bandwidth()/2)
+    .attr("y", d => y(d.personB) + y.bandwidth()/2 + 4)
+    .attr("text-anchor","middle")
+    .attr("fill", d => d.shared > maxShared*0.6 ? "#f0f6fc" : "#8b949e")
+    .attr("font-size","9px")
+    .text(d => d.shared);
+});
+</script>
+</body>
+</html>

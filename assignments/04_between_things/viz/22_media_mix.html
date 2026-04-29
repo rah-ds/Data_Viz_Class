@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>22 — Media Mix</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+  h1 { font-size: 1.4rem; color: #58a6ff; margin-bottom: .2rem; }
+  p.sub { color: #8b949e; font-size: .85rem; margin-bottom: 1rem; max-width: 750px; text-align: center; }
+  svg { background: #161b22; border-radius: 8px; }
+  .tooltip { position: absolute; background: #1c2128; border: 1px solid #30363d; border-radius: 6px; padding: 8px 12px; font-size: .75rem; color: #c9d1d9; pointer-events: none; opacity: 0; line-height: 1.5; }
+  a.back { color: #58a6ff; font-size: .8rem; margin-bottom: 1rem; text-decoration: none; }
+  .legend { display: flex; gap: 20px; margin-top: 1rem; font-size: .8rem; }
+  .legend span { display: flex; align-items: center; gap: 6px; }
+  .legend .swatch { width: 14px; height: 14px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← all visualizations</a>
+<h1>The Media Mix</h1>
+<p class="sub">Music dominates, but how much? A stacked area chart of monthly listening hours split by media type — Music, Podcasts, and Audiobooks. Spotify is more than songs.</p>
+<div id="chart"></div>
+<div class="legend" id="legend"></div>
+<div class="tooltip" id="tip"></div>
+<script>
+const W = 960, H = 500, M = {top: 30, right: 30, bottom: 60, left: 65};
+const w = W - M.left - M.right, h = H - M.top - M.bottom;
+
+const svg = d3.select("#chart").append("svg").attr("width", W).attr("height", H);
+const g = svg.append("g").attr("transform", `translate(${M.left},${M.top})`);
+const tip = d3.select("#tip");
+
+const typeColors = {"Music": "#58a6ff", "Podcast": "#bc8cff", "Audiobook": "#3fb950"};
+
+d3.json("data/media_mix.json").then(data => {
+  // Pivot: month → {Music, Podcast, Audiobook}
+  const months = [...new Set(data.map(d => d.endTime))].sort();
+  const pivoted = months.map(m => {
+    const row = {month: m};
+    ["Music","Podcast","Audiobook"].forEach(t => {
+      const match = data.find(d => d.endTime === m && d.type === t);
+      row[t] = match ? match.hours : 0;
+    });
+    return row;
+  });
+
+  const keys = ["Music", "Podcast", "Audiobook"];
+  const stack = d3.stack().keys(keys).order(d3.stackOrderNone);
+  const series = stack(pivoted);
+
+  const x = d3.scalePoint().domain(months).range([0, w]).padding(0.5);
+  const y = d3.scaleLinear()
+    .domain([0, d3.max(pivoted, d => d.Music + d.Podcast + d.Audiobook) * 1.1])
+    .nice().range([h, 0]);
+
+  g.append("g").attr("transform", `translate(0,${h})`).call(d3.axisBottom(x))
+    .selectAll("text").style("fill","#8b949e").attr("transform","rotate(-45)").attr("text-anchor","end");
+  g.append("g").call(d3.axisLeft(y).ticks(8).tickFormat(d => d + "h"))
+    .selectAll("text").style("fill","#8b949e");
+  g.selectAll(".domain, .tick line").attr("stroke","#30363d");
+
+  svg.append("text").attr("x", M.left + w/2).attr("y", H - 4).attr("text-anchor","middle").attr("fill","#8b949e").attr("font-size","12px").text("Month");
+  svg.append("text").attr("transform","rotate(-90)").attr("x", -(M.top + h/2)).attr("y", 14).attr("text-anchor","middle").attr("fill","#8b949e").attr("font-size","12px").text("Listening Hours (all 14 people)");
+
+  const area = d3.area()
+    .x((d, i) => x(pivoted[i].month))
+    .y0(d => y(d[0]))
+    .y1(d => y(d[1]))
+    .curve(d3.curveMonotoneX);
+
+  g.selectAll("path.area")
+    .data(series)
+    .join("path")
+    .attr("class","area")
+    .attr("d", area)
+    .attr("fill", d => typeColors[d.key])
+    .attr("opacity", 0.7);
+
+  // Hover overlay per month
+  g.selectAll("rect.overlay")
+    .data(pivoted)
+    .join("rect")
+    .attr("class","overlay")
+    .attr("x", d => x(d.month) - w/months.length/2)
+    .attr("y", 0)
+    .attr("width", w / months.length)
+    .attr("height", h)
+    .attr("fill", "transparent")
+    .on("mouseover", (e, d) => {
+      const total = d.Music + d.Podcast + d.Audiobook;
+      tip.style("opacity", 1).html(
+        `<b>${d.month}</b><br>` +
+        `🎵 Music: ${d.Music}h (${(d.Music/total*100).toFixed(0)}%)<br>` +
+        `🎙️ Podcast: ${d.Podcast}h (${(d.Podcast/total*100).toFixed(0)}%)<br>` +
+        `📖 Audiobook: ${d.Audiobook}h (${(d.Audiobook/total*100).toFixed(0)}%)<br>` +
+        `Total: ${total.toFixed(1)}h`
+      );
+    })
+    .on("mousemove", e => tip.style("left",(e.pageX+12)+"px").style("top",(e.pageY-20)+"px"))
+    .on("mouseout", () => tip.style("opacity",0));
+
+  // Legend
+  const leg = d3.select("#legend");
+  keys.forEach(k => {
+    leg.append("span").html(`<span class="swatch" style="background:${typeColors[k]}"></span>${k}`);
+  });
+});
+</script>
+</body>
+</html>

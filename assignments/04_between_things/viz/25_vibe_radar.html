@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>25 — Weekly Vibe DNA</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+  h1 { font-size: 1.6rem; color: #58a6ff; margin-bottom: .2rem; }
+  p.sub { color: #8b949e; font-size: .85rem; margin-bottom: 1.2rem; max-width: 680px; text-align: center; }
+  svg { background: #161b22; border-radius: 12px; }
+  .tooltip { position: absolute; background: #1c2128ee; border: 1px solid #30363d; border-radius: 6px; padding: 10px 14px; font-size: .75rem; color: #c9d1d9; pointer-events: none; opacity: 0; line-height: 1.6; }
+  a.back { color: #58a6ff; font-size: .8rem; margin-bottom: 1rem; text-decoration: none; }
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 1rem; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: .8rem; cursor: pointer; padding: 4px 10px; border-radius: 16px; border: 1px solid #30363d; transition: all .2s; }
+  .legend-item:hover { border-color: #58a6ff; }
+  .legend-item.active { border-color: currentColor; background: #ffffff0a; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← all visualizations</a>
+<h1>🧬 Weekly Vibe DNA</h1>
+<p class="sub">Seven overlapping radar shapes — one per day of the week. Do Mondays really feel different from Saturdays? Click a day to spotlight it. The shape IS the vibe.</p>
+<div id="chart"></div>
+<div class="legend" id="legend"></div>
+<div class="tooltip" id="tip"></div>
+<script>
+const W = 700, H = 700, cx = W/2, cy = H/2, R = 260;
+const feats = ["danceability","energy","speechiness","acousticness","instrumentalness","liveness","valence"];
+const prettyNames = ["Dance","Energy","Speech","Acoustic","Instrumental","Live","Valence"];
+const n = feats.length;
+const slice = (2*Math.PI)/n;
+
+const dayColors = ["#58a6ff","#3fb950","#d2a8ff","#f0883e","#ff7b72","#f778ba","#ffd700"];
+const dayEmoji = ["😩","📝","🐪","🎯","🎉","🕺","☕"];
+
+const svg = d3.select("#chart").append("svg").attr("width",W).attr("height",H);
+const g = svg.append("g").attr("transform",`translate(${cx},${cy})`);
+const tip = d3.select("#tip");
+
+const rScale = d3.scaleLinear().domain([0,1]).range([0,R]);
+
+// Grid
+[0.2,0.4,0.6,0.8,1.0].forEach(lev => {
+  const r = rScale(lev);
+  const pts = feats.map((_,i) => {
+    const a = slice*i - Math.PI/2;
+    return `${Math.cos(a)*r},${Math.sin(a)*r}`;
+  });
+  g.append("polygon").attr("points",pts.join(" "))
+    .attr("fill","none").attr("stroke","#21262d").attr("stroke-width", lev===1?1:0.5);
+  if (lev < 1) g.append("text").attr("x",4).attr("y",-r+3)
+    .attr("fill","#484f58").attr("font-size","9px").text(lev.toFixed(1));
+});
+
+// Axes
+feats.forEach((f,i) => {
+  const a = slice*i - Math.PI/2;
+  g.append("line").attr("x1",0).attr("y1",0)
+    .attr("x2",Math.cos(a)*R).attr("y2",Math.sin(a)*R)
+    .attr("stroke","#30363d").attr("stroke-width",0.5);
+  const lr = R + 22;
+  const tx = Math.cos(a)*lr, ty = Math.sin(a)*lr;
+  g.append("text").attr("x",tx).attr("y",ty)
+    .attr("text-anchor", Math.abs(tx)<5?"middle": tx>0?"start":"end")
+    .attr("dominant-baseline","middle")
+    .attr("fill","#c9d1d9").attr("font-size","12px").attr("font-weight","bold")
+    .text(prettyNames[i]);
+});
+
+d3.json("data/weekly_vibe.json").then(data => {
+  data.sort((a,b)=>a.dow-b.dow);
+  let active = null;
+
+  const polys = g.selectAll(".day-poly").data(data).join("polygon")
+    .attr("class","day-poly")
+    .attr("points", d => feats.map((f,i) => {
+      const a = slice*i - Math.PI/2;
+      const r = rScale(d[f]);
+      return `${Math.cos(a)*r},${Math.sin(a)*r}`;
+    }).join(" "))
+    .attr("fill", d => dayColors[d.dow])
+    .attr("fill-opacity", 0.12)
+    .attr("stroke", d => dayColors[d.dow])
+    .attr("stroke-width", 2)
+    .attr("stroke-opacity", 0.7);
+
+  // Dots at vertices
+  const dots = g.selectAll(".day-dot").data(data.flatMap(d =>
+    feats.map((f,i) => ({...d, feat: f, fi: i, val: d[f]}))
+  )).join("circle").attr("class","day-dot")
+    .attr("cx", d => { const a=slice*d.fi-Math.PI/2; return Math.cos(a)*rScale(d.val); })
+    .attr("cy", d => { const a=slice*d.fi-Math.PI/2; return Math.sin(a)*rScale(d.val); })
+    .attr("r", 3.5)
+    .attr("fill", d => dayColors[d.dow])
+    .attr("opacity", 0.7)
+    .on("mouseover",(e,d) => {
+      tip.style("opacity",1).html(
+        `<b>${dayEmoji[d.dow]} ${d.day_name}</b><br>${d.feat}: <b>${d.val.toFixed(3)}</b><br>${d3.format(",")(d.streams)} streams`);
+    })
+    .on("mousemove",e=>tip.style("left",(e.pageX+12)+"px").style("top",(e.pageY-20)+"px"))
+    .on("mouseout",()=>tip.style("opacity",0));
+
+  function highlight(dow) {
+    if (active === dow) { active = null; } else { active = dow; }
+    polys.transition().duration(300)
+      .attr("fill-opacity", d => active===null ? 0.12 : d.dow===active ? 0.25 : 0.03)
+      .attr("stroke-opacity", d => active===null ? 0.7 : d.dow===active ? 1 : 0.15)
+      .attr("stroke-width", d => active===null ? 2 : d.dow===active ? 3.5 : 1);
+    dots.transition().duration(300)
+      .attr("opacity", d => active===null ? 0.7 : d.dow===active ? 1 : 0.1)
+      .attr("r", d => active===null ? 3.5 : d.dow===active ? 5 : 2);
+    d3.selectAll(".legend-item").classed("active", function(){ return +this.dataset.dow===active; });
+  }
+
+  // Legend
+  const leg = d3.select("#legend");
+  data.forEach(d => {
+    const item = leg.append("div").attr("class","legend-item")
+      .attr("data-dow", d.dow)
+      .style("color", dayColors[d.dow])
+      .on("click", () => highlight(d.dow));
+    item.append("div").attr("class","legend-dot").style("background", dayColors[d.dow]);
+    item.append("span").text(`${dayEmoji[d.dow]} ${d.day_name}`);
+  });
+});
+</script>
+</body>
+</html>

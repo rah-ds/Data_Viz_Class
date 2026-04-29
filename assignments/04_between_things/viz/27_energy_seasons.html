@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>27 — Seasonal Energy Orbit</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+  h1 { font-size: 1.6rem; color: #58a6ff; margin-bottom: .2rem; }
+  p.sub { color: #8b949e; font-size: .85rem; margin-bottom: 1.2rem; max-width: 680px; text-align: center; }
+  svg { background: #161b22; border-radius: 12px; }
+  .tooltip { position: absolute; background: #1c2128ee; border: 1px solid #30363d; border-radius: 6px; padding: 10px 14px; font-size: .75rem; color: #c9d1d9; pointer-events: none; opacity: 0; line-height: 1.6; }
+  a.back { color: #58a6ff; font-size: .8rem; margin-bottom: 1rem; text-decoration: none; }
+  .legend { display: flex; gap: 18px; margin-top: 1rem; font-size: .8rem; }
+  .legend span { display: flex; align-items: center; gap: 5px; }
+  .swatch { width: 14px; height: 14px; border-radius: 50%; display: inline-block; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← all visualizations</a>
+<h1>🌍 Seasonal Energy Orbit</h1>
+<p class="sub">The year as a circle — January at the top, spinning clockwise through the seasons. Each month's radius shows average energy, fill follows the seasons. The inner dashed line traces acousticness. Does summer slap harder?</p>
+<div id="chart"></div>
+<div class="legend" id="legend"></div>
+<div class="tooltip" id="tip"></div>
+<script>
+const W = 720, H = 720, cx = W/2, cy = H/2;
+const maxR = 280, minR = 60;
+const svg = d3.select("#chart").append("svg").attr("width",W).attr("height",H);
+
+const defs = svg.append("defs");
+const filt = defs.append("filter").attr("id","glow");
+filt.append("feGaussianBlur").attr("stdDeviation",3).attr("result","b");
+const fm = filt.append("feMerge"); fm.append("feMergeNode").attr("in","b"); fm.append("feMergeNode").attr("in","SourceGraphic");
+
+const g = svg.append("g").attr("transform",`translate(${cx},${cy})`);
+const tip = d3.select("#tip");
+
+const seasonColors = {
+  "Winter": "#58a6ff", "Spring": "#3fb950", "Summer": "#ffd700", "Autumn": "#f0883e"
+};
+const seasonEmoji = { "Winter":"❄️","Spring":"🌱","Summer":"☀️","Autumn":"🍂" };
+function getSeason(m) {
+  if ([12,1,2].includes(m)) return "Winter";
+  if ([3,4,5].includes(m)) return "Spring";
+  if ([6,7,8].includes(m)) return "Summer";
+  return "Autumn";
+}
+
+d3.json("data/monthly_features.json").then(data => {
+  data.sort((a,b) => a.cal_month - b.cal_month);
+
+  const eMin = d3.min(data, d=>d.energy) - 0.02;
+  const eMax = d3.max(data, d=>d.energy) + 0.02;
+  const rScale = d3.scaleLinear().domain([eMin, eMax]).range([minR, maxR]);
+  const rScaleA = d3.scaleLinear().domain([0, d3.max(data,d=>d.acousticness)+0.05]).range([minR, maxR*0.85]);
+
+  const arc = d3.arc();
+  const slice = (2*Math.PI)/12;
+
+  // Background season bands
+  [0,3,6,9].forEach(startMonth => {
+    const season = getSeason(startMonth+1);
+    g.append("path").attr("d", arc({
+      innerRadius: minR - 10,
+      outerRadius: maxR + 10,
+      startAngle: slice * startMonth,
+      endAngle: slice * (startMonth + 3)
+    })).attr("fill", seasonColors[season]).attr("fill-opacity", 0.04);
+  });
+
+  // Grid
+  const levels = d3.ticks(eMin, eMax, 4);
+  levels.forEach(lev => {
+    const r = rScale(lev);
+    g.append("circle").attr("r",r).attr("fill","none").attr("stroke","#21262d").attr("stroke-dasharray","2,4");
+    g.append("text").attr("x",4).attr("y",-r+3).attr("fill","#484f58").attr("font-size","8px").text(lev.toFixed(2));
+  });
+
+  // Energy wedges
+  g.selectAll(".wedge").data(data).join("path")
+    .attr("d", d => arc({
+      innerRadius: minR,
+      outerRadius: rScale(d.energy),
+      startAngle: slice * (d.cal_month - 1),
+      endAngle: slice * d.cal_month - 0.03
+    }))
+    .attr("fill", d => seasonColors[getSeason(d.cal_month)])
+    .attr("opacity", 0.75)
+    .attr("stroke","#0d1117").attr("stroke-width",1)
+    .attr("filter","url(#glow)")
+    .on("mouseover",(e,d) => {
+      d3.select(e.target).attr("opacity",1);
+      const s = getSeason(d.cal_month);
+      tip.style("opacity",1).html(
+        `<b>${seasonEmoji[s]} ${d.month_name}</b> (${s})<br>`+
+        `Energy: <b>${d.energy.toFixed(3)}</b><br>`+
+        `Acousticness: ${d.acousticness.toFixed(3)}<br>`+
+        `Valence: ${d.valence.toFixed(3)}<br>`+
+        `Danceability: ${d.danceability.toFixed(3)}<br>`+
+        `${d3.format(",")(d.streams)} streams`);
+    })
+    .on("mousemove",e=>tip.style("left",(e.pageX+14)+"px").style("top",(e.pageY-24)+"px"))
+    .on("mouseout",(e)=>{ d3.select(e.target).attr("opacity",0.75); tip.style("opacity",0); });
+
+  // Acousticness overlay line
+  const aLine = d3.lineRadial()
+    .angle(d => slice * (d.cal_month - 1) + slice/2)
+    .radius(d => rScaleA(d.acousticness))
+    .curve(d3.curveCardinalClosed);
+  g.append("path").datum(data).attr("d", aLine)
+    .attr("fill","none").attr("stroke","#d2a8ff").attr("stroke-width",2)
+    .attr("stroke-dasharray","6,3").attr("opacity",0.8);
+
+  // Acousticness dots
+  data.forEach(d => {
+    const a = slice*(d.cal_month-1) + slice/2;
+    const r = rScaleA(d.acousticness);
+    g.append("circle").attr("cx",Math.sin(a)*r).attr("cy",-Math.cos(a)*r)
+      .attr("r",3.5).attr("fill","#d2a8ff").attr("opacity",0.8);
+  });
+
+  // Month labels
+  data.forEach(d => {
+    const a = slice*(d.cal_month-1) + slice/2;
+    const r = maxR + 24;
+    g.append("text").attr("x",Math.sin(a)*r).attr("y",-Math.cos(a)*r)
+      .attr("text-anchor","middle").attr("dominant-baseline","middle")
+      .attr("fill","#c9d1d9").attr("font-size","12px").attr("font-weight","bold")
+      .text(d.month_name);
+  });
+
+  // Center label
+  g.append("text").attr("text-anchor","middle").attr("dy","-.3em")
+    .attr("fill","#58a6ff").attr("font-size","13px").attr("font-weight","bold").text("Energy");
+  g.append("text").attr("text-anchor","middle").attr("dy","1.2em")
+    .attr("fill","#8b949e").attr("font-size","10px").text("by month");
+
+  // Legend
+  const leg = d3.select("#legend");
+  Object.entries(seasonColors).forEach(([s,c]) => {
+    leg.append("span").html(`<span class="swatch" style="background:${c}"></span>${seasonEmoji[s]} ${s}`);
+  });
+  leg.append("span").html(`<span class="swatch" style="background:#d2a8ff;border-radius:0;width:20px;height:3px"></span> Acousticness`);
+});
+</script>
+</body>
+</html>

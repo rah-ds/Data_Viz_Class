@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>What Makes Each Key Unique?</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+  h1 { font-size: 1.6rem; color: #58a6ff; margin-bottom: .2rem; text-align: center; }
+  p.sub { color: #8b949e; font-size: .84rem; margin-bottom: 1rem; max-width: 860px; text-align: center; line-height: 1.5; }
+  a.back { color: #58a6ff; font-size: .8rem; margin-bottom: 1rem; text-decoration: none; }
+  .tooltip { position: absolute; background: #1c2128ee; border: 1px solid #30363d; border-radius: 6px; padding: 10px 14px; font-size: .76rem; color: #c9d1d9; pointer-events: none; opacity: 0; line-height: 1.55; z-index: 10; max-width: 300px; }
+
+  /* Piano keyboard (small vertical) */
+  .chart-container { display: flex; gap: 0; width: 100%; max-width: 960px; }
+
+  /* Legend */
+  .legend-wrap { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 1rem; font-size: .74rem; color: #8b949e; }
+  .legend-wrap span { display: flex; align-items: center; gap: 5px; }
+  .ldot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+  /* Song callouts panel */
+  .callout-panel { width: 100%; max-width: 960px; margin-top: 1.5rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  .callout-card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 12px 14px; }
+  .callout-card h3 { font-size: .82rem; margin: 0 0 6px; }
+  .callout-card .song-list { font-size: .72rem; color: #8b949e; line-height: 1.6; }
+  .callout-card .song-list .s-title { color: #c9d1d9; font-weight: 600; }
+  .callout-card .song-list .s-key { font-size: .64rem; }
+
+  /* Glossary */
+  .glossary { width: 100%; max-width: 900px; margin-top: 2rem; border-top: 1px solid #21262d; padding-top: 1.2rem; }
+  .glossary h2 { font-size: 1.1rem; color: #58a6ff; margin: 0 0 .8rem; }
+  .glossary p { font-size: .8rem; color: #8b949e; margin: 0 0 .8rem; line-height: 1.5; }
+  .glossary table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+  .glossary th { text-align: left; color: #58a6ff; font-weight: 600; padding: 6px 10px; border-bottom: 1px solid #30363d; }
+  .glossary td { padding: 6px 10px; border-bottom: 1px solid #21262d; color: #c9d1d9; vertical-align: top; }
+  .glossary td:first-child { font-weight: 600; white-space: nowrap; color: #f0f6fc; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← all visualizations</a>
+<h1>What Makes Each Key Unique?</h1>
+<p class="sub">Focusing on the <b>3 most variable audio features</b> across all 12 keys. Each lollipop shows how far a key deviates from the median — left of centre is below average, right is above. Dot size reflects stream count (more data = more confidence). Colour = key profile.</p>
+
+<div class="chart-container" id="chart-container"></div>
+<div class="legend-wrap" id="legend"></div>
+<div class="callout-panel" id="callouts"></div>
+<div class="glossary" id="glossary"></div>
+<div class="tooltip" id="tip"></div>
+
+<script>
+const allFeats = ["acousticness","danceability","energy","instrumentalness","liveness","speechiness","valence"];
+const allLabels = {"acousticness":"Acousticness","danceability":"Danceability","energy":"Energy",
+  "instrumentalness":"Instrumental","liveness":"Liveness","speechiness":"Speechiness","valence":"Valence"};
+
+const Z_THRESH = 1.0;
+const tip = d3.select("#tip");
+
+const keyShort = ["C","C♯","D","D♯","E","F","F♯","G","G♯","A","A♯","B"];
+const freqs    = [261.6, 277.2, 293.7, 311.1, 329.6, 349.2, 370.0, 392.0, 415.3, 440.0, 466.2, 493.9];
+const isBlack  = [false, true, false, true, false, false, true, false, true, false, true, false];
+
+// Evocative but defensible profile names
+const profiles = {
+  acousticness:     {name:"The Coffeehouse Keys",    color:"#45aaf2", desc:"Real instruments dominate — guitars, pianos, strings over synths and beats."},
+  danceability:     {name:"The Dancefloor Keys",     color:"#26de81", desc:"Steadiest pulse, grooviest rhythms. Made for movement."},
+  energy:           {name:"The Stadium Keys",        color:"#ff6348", desc:"Loud, fast, dense, noisy. Physically intense."},
+  instrumentalness: {name:"The Ambient Keys",        color:"#a55eea", desc:"Vocals step aside — ambient, classical, film scores, lo-fi."},
+  liveness:         {name:"The Concert Hall Keys",   color:"#e84393", desc:"You can hear the crowd. Stage energy, raw performance."},
+  speechiness:      {name:"The Spoken Word Keys",    color:"#ffa502", desc:"More rapping, narrating, and talking. Word-heavy."},
+  valence:          {name:"The Sunshine Keys",       color:"#c4e538", desc:"Happy, cheerful, euphoric. Music that smiles."}
+};
+const UNCAT = {name:"Neutral Key", color:"#484f58"};
+
+d3.json("data/key_features.json").then(data => {
+  data.sort((a,b) => a.key - b.key);
+
+  // Min-max scaling
+  const mins = {}, maxs = {}, ranges = {};
+  allFeats.forEach(f => {
+    const vals = data.map(d => d[f]);
+    mins[f] = d3.min(vals);
+    maxs[f] = d3.max(vals);
+    ranges[f] = maxs[f] - mins[f] || 0.001;
+  });
+  data.forEach(d => {
+    d._raw = {};
+    allFeats.forEach(f => {
+      d._raw[f] = d[f];
+      d[f] = (d[f] - mins[f]) / ranges[f];
+    });
+  });
+
+  // Medians and MAD
+  const medians = {}, mads = {};
+  allFeats.forEach(f => {
+    const vals = data.map(d => d[f]).sort((a,b)=>a-b);
+    medians[f] = d3.median(vals);
+    const absDevs = vals.map(v => Math.abs(v - medians[f])).sort((a,b)=>a-b);
+    mads[f] = d3.median(absDevs) * 1.4826 || 0.001;
+  });
+
+  // Assign profiles
+  data.forEach(d => {
+    d._z = {};
+    let maxZ = -Infinity, best = null;
+    allFeats.forEach(f => {
+      const z = (d[f] - medians[f]) / mads[f];
+      d._z[f] = z;
+      if (z > maxZ) { maxZ = z; best = f; }
+    });
+    if (maxZ >= Z_THRESH) {
+      d._dominant = best;
+      d._profile = profiles[best].name;
+      d._profileColor = profiles[best].color;
+    } else {
+      d._dominant = "_uncategorized";
+      d._profile = UNCAT.name;
+      d._profileColor = UNCAT.color;
+    }
+  });
+
+  // ─── Pick top 3 most variable features ───
+  const featureVariance = allFeats.map(f => {
+    const range = d3.max(data, d => d[f]) - d3.min(data, d => d[f]);
+    return {feat: f, range};
+  }).sort((a,b) => b.range - a.range);
+
+  const topFeats = featureVariance.slice(0, 3).map(d => d.feat);
+
+  // ─── LOLLIPOP CHART ───
+  const margin = {top: 50, right: 20, bottom: 30, left: 70};
+  const colW = 260;
+  const rowH = 40;
+  const svgW = margin.left + topFeats.length * colW + margin.right;
+  const svgH = margin.top + 12 * rowH + margin.bottom;
+
+  const maxStream = d3.max(data, d => d.streams);
+  const sizeScale = d3.scaleSqrt().domain([0, maxStream]).range([4, 12]);
+
+  const svg = d3.select("#chart-container").append("svg")
+    .attr("width", svgW).attr("height", svgH);
+
+  // Feature columns
+  topFeats.forEach((feat, ci) => {
+    const gx = margin.left + ci * colW;
+    const colG = svg.append("g").attr("transform", `translate(${gx}, ${margin.top})`);
+    const xCenter = colW / 2;
+
+    // Deviation scale: -1 to 1 (deviation from median)
+    const maxDev = d3.max(data, d => Math.abs(d[feat] - medians[feat]));
+    const xScale = d3.scaleLinear()
+      .domain([-maxDev * 1.15, maxDev * 1.15])
+      .range([20, colW - 20]);
+
+    // Column header
+    svg.append("text")
+      .attr("x", gx + colW/2).attr("y", margin.top - 20)
+      .attr("text-anchor", "middle")
+      .attr("fill", "#58a6ff").attr("font-size", "13px").attr("font-weight", "700")
+      .text(allLabels[feat]);
+
+    svg.append("text")
+      .attr("x", gx + colW/2).attr("y", margin.top - 6)
+      .attr("text-anchor", "middle")
+      .attr("fill", "#484f58").attr("font-size", "9px")
+      .text(`raw range: ${mins[feat].toFixed(3)} – ${maxs[feat].toFixed(3)}`);
+
+    // Centre line (median)
+    colG.append("line")
+      .attr("x1", xScale(0)).attr("y1", -4)
+      .attr("x2", xScale(0)).attr("y2", 12 * rowH + 4)
+      .attr("stroke", "#30363d").attr("stroke-width", 1.5)
+      .attr("stroke-dasharray", "4,3");
+
+    // "← Below" / "Above →" labels
+    colG.append("text").attr("x", xScale(0) - 8).attr("y", -8)
+      .attr("text-anchor", "end").attr("fill", "#484f58").attr("font-size", "8px").text("← Below median");
+    colG.append("text").attr("x", xScale(0) + 8).attr("y", -8)
+      .attr("text-anchor", "start").attr("fill", "#484f58").attr("font-size", "8px").text("Above median →");
+
+    // Lollipops
+    data.forEach((d, ri) => {
+      const y = ri * rowH + rowH / 2;
+      const dev = d[feat] - medians[feat];
+      const z = d._z[feat];
+      const xEnd = xScale(dev);
+      const xMid = xScale(0);
+      const color = d._profileColor;
+      const dotR = sizeScale(d.streams);
+
+      // Create gradient for stem
+      const gradId = `grad-${feat}-${d.key}`;
+      const defs = svg.append("defs");
+      const lg = defs.append("linearGradient").attr("id", gradId)
+        .attr("x1", dev < 0 ? "100%" : "0%").attr("y1", "0%")
+        .attr("x2", dev < 0 ? "0%" : "100%").attr("y2", "0%");
+      lg.append("stop").attr("offset", "0%").attr("stop-color", "#30363d");
+      lg.append("stop").attr("offset", "100%").attr("stop-color", color).attr("stop-opacity", .8);
+
+      // Stem
+      colG.append("line")
+        .attr("x1", xMid).attr("y1", y)
+        .attr("x2", xEnd).attr("y2", y)
+        .attr("stroke", `url(#${gradId})`).attr("stroke-width", 2.5)
+        .attr("stroke-linecap", "round");
+
+      // Dot
+      colG.append("circle")
+        .attr("cx", xEnd).attr("cy", y)
+        .attr("r", dotR)
+        .attr("fill", color).attr("fill-opacity", .85)
+        .attr("stroke", Math.abs(z) >= Z_THRESH ? "#f0f6fc" : "none")
+        .attr("stroke-width", Math.abs(z) >= Z_THRESH ? 1.5 : 0)
+        .on("mouseover", e => {
+          const zStr = z >= 0 ? `+${z.toFixed(2)}σ` : `${z.toFixed(2)}σ`;
+          const dir = z >= Z_THRESH ? "above" : z <= -Z_THRESH ? "below" : "within";
+          tip.style("opacity",1).html(
+            `<b>${d.key_name}</b> (${d._profile})<br>`+
+            `${feat}: raw ${d._raw[feat].toFixed(4)}, scaled ${d[feat].toFixed(3)}<br>`+
+            `Deviation: ${dev >= 0 ? "+" : ""}${dev.toFixed(3)} from median<br>`+
+            `z: <b style="color:${z>=Z_THRESH?'#3fb950':z<=-Z_THRESH?'#ff7b72':'#8b949e'}">${zStr}</b> (${dir})<br>`+
+            `${d3.format(",")(d.streams)} streams · dot size ∝ streams` +
+            (d.top_track ? `<br>♫ <b>${d.top_track}</b> — ${d.top_artist}` : ""));
+        })
+        .on("mousemove", e => tip.style("left",(e.pageX+12)+"px").style("top",(e.pageY-18)+"px"))
+        .on("mouseout", () => tip.style("opacity",0));
+
+      // Horizontal grid line
+      if (ci === 0) {
+        // Key row labels (only in first column)
+        svg.append("text")
+          .attr("x", margin.left - 10).attr("y", margin.top + y + 1)
+          .attr("text-anchor", "end").attr("dominant-baseline", "middle")
+          .attr("fill", d._profileColor).attr("font-size", "12px").attr("font-weight", "600")
+          .text(keyShort[d.key]);
+
+        // Black key indicator
+        if (isBlack[d.key]) {
+          svg.append("rect")
+            .attr("x", margin.left - 56).attr("y", margin.top + y - 5)
+            .attr("width", 10).attr("height", 10).attr("rx", 2)
+            .attr("fill", "#21262d").attr("stroke", "#484f58").attr("stroke-width", .5);
+        }
+      }
+
+      // Faint row line
+      colG.append("line")
+        .attr("x1", 0).attr("y1", y + rowH/2)
+        .attr("x2", colW).attr("y2", y + rowH/2)
+        .attr("stroke", "#161b22").attr("stroke-width", .5);
+    });
+  });
+
+  // ─── SONG CALLOUT CARDS ───
+  const callouts = d3.select("#callouts");
+  const activeProfiles = new Set();
+  data.forEach(d => { if (d._dominant !== "_uncategorized") activeProfiles.add(d._dominant); });
+
+  // For each profile, find keys that belong to it and list their songs
+  allFeats.forEach(feat => {
+    if (!activeProfiles.has(feat)) return;
+    const p = profiles[feat];
+    const keys = data.filter(d => d._dominant === feat).sort((a,b) => (d3.descending(d3.max(topFeats, f => d3.max([a._z[f]])), d3.max(topFeats, f => d3.max([b._z[f]])))));
+
+    const card = callouts.append("div").attr("class","callout-card");
+    card.append("h3").style("color", p.color).text(p.name);
+
+    const list = card.append("div").attr("class","song-list");
+    keys.forEach(d => {
+      if (d.top_track) {
+        list.append("div").html(
+          `<span class="s-title">♫ ${d.top_track}</span> — ${d.top_artist} <span class="s-key" style="color:${p.color}">(${d.key_name})</span>`
+        );
+      }
+    });
+
+    if (keys.length === 0) {
+      list.append("div").style("color","#484f58").text("No keys in this profile");
+    }
+  });
+
+  // ─── LEGEND ───
+  const leg = d3.select("#legend");
+  allFeats.forEach(f => {
+    if (!activeProfiles.has(f)) return;
+    const p = profiles[f];
+    leg.append("span").html(`<span class="ldot" style="background:${p.color}"></span> ${p.name}`);
+  });
+  leg.append("span").html(`<span class="ldot" style="background:${UNCAT.color}"></span> ${UNCAT.name}`);
+  leg.append("span").html(`<span class="ldot" style="border:1.5px dashed #30363d;background:none"></span> Median baseline`);
+  leg.append("span").text("Dot size ∝ stream count");
+
+  // ─── GLOSSARY ───
+  const glossDiv = d3.select("#glossary");
+  glossDiv.append("h2").text("How to Read This Chart");
+  glossDiv.append("p").html(
+    `Of the 7 standard Spotify audio features, only the <b>${topFeats.length} most variable</b> are shown — the ones where keys actually differ most. ` +
+    `Each key gets a profile label based on its strongest z-score (> 1σ above the rescaled median). ` +
+    `Dot size reflects how many streams support that key's measurement — bigger dots mean more data behind the number.`
+  );
+
+  const table = glossDiv.append("table");
+  table.append("tr").html(`<th>Profile</th><th>Feature</th><th>What It Means</th>`);
+  allFeats.forEach(f => {
+    if (!activeProfiles.has(f)) return;
+    const p = profiles[f];
+    table.append("tr").html(
+      `<td style="color:${p.color}">${p.name}</td><td>${f.charAt(0).toUpperCase()+f.slice(1)}</td><td>${p.desc}</td>`
+    );
+  });
+});
+</script>
+</body>
+</html>

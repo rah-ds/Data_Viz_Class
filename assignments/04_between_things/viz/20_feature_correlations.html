@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>20 — Feature Correlations</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+  h1 { font-size: 1.4rem; color: #58a6ff; margin-bottom: .2rem; }
+  p.sub { color: #8b949e; font-size: .85rem; margin-bottom: 1rem; max-width: 750px; text-align: center; }
+  svg { background: #161b22; border-radius: 8px; }
+  .tooltip { position: absolute; background: #1c2128; border: 1px solid #30363d; border-radius: 6px; padding: 8px 12px; font-size: .75rem; color: #c9d1d9; pointer-events: none; opacity: 0; line-height: 1.5; }
+  a.back { color: #58a6ff; font-size: .8rem; margin-bottom: 1rem; text-decoration: none; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← all visualizations</a>
+<h1>Audio Feature Correlations</h1>
+<p class="sub">How do Spotify's audio features relate to each other? A correlation heatmap reveals the hidden structure — energy and loudness are twins, acousticness and energy are opposites.</p>
+<div id="chart"></div>
+<div class="tooltip" id="tip"></div>
+<script>
+const featureOrder = ["energy","loudness","danceability","valence","tempo","speechiness","liveness","instrumentalness","acousticness"];
+const n = featureOrder.length;
+const cellSize = 72;
+const M = {top: 90, right: 30, bottom: 30, left: 120};
+const W = M.left + n * cellSize + M.right;
+const H = M.top + n * cellSize + M.bottom;
+
+const svg = d3.select("#chart").append("svg").attr("width", W).attr("height", H);
+const g = svg.append("g").attr("transform", `translate(${M.left},${M.top})`);
+const tip = d3.select("#tip");
+
+const colorScale = d3.scaleDiverging(d3.interpolateRdBu).domain([1, 0, -1]);
+
+d3.json("data/feature_correlations.json").then(data => {
+  const lookup = {};
+  data.forEach(d => { lookup[d.feature1 + "|" + d.feature2] = d.r; });
+
+  // Row & col labels
+  featureOrder.forEach((f, i) => {
+    g.append("text")
+      .attr("x", -8)
+      .attr("y", i * cellSize + cellSize/2)
+      .attr("text-anchor", "end")
+      .attr("dominant-baseline", "middle")
+      .attr("fill", "#c9d1d9")
+      .attr("font-size", "11px")
+      .text(f);
+
+    g.append("text")
+      .attr("x", i * cellSize + cellSize/2)
+      .attr("y", -8)
+      .attr("text-anchor", "start")
+      .attr("dominant-baseline", "middle")
+      .attr("transform", `rotate(-45, ${i * cellSize + cellSize/2}, -8)`)
+      .attr("fill", "#c9d1d9")
+      .attr("font-size", "11px")
+      .text(f);
+  });
+
+  // Cells
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < n; j++) {
+      const r = lookup[featureOrder[i] + "|" + featureOrder[j]] || 0;
+      const cell = g.append("g").attr("transform", `translate(${j * cellSize}, ${i * cellSize})`);
+
+      cell.append("rect")
+        .attr("width", cellSize - 2)
+        .attr("height", cellSize - 2)
+        .attr("rx", 4)
+        .attr("fill", colorScale(r))
+        .attr("opacity", 0.85)
+        .on("mouseover", (e) => {
+          tip.style("opacity",1).html(
+            `<b>${featureOrder[i]} × ${featureOrder[j]}</b><br>r = ${r.toFixed(3)}`
+          );
+        })
+        .on("mousemove", e => tip.style("left",(e.pageX+12)+"px").style("top",(e.pageY-20)+"px"))
+        .on("mouseout", () => tip.style("opacity",0));
+
+      // Show r value in cell
+      cell.append("text")
+        .attr("x", (cellSize-2)/2)
+        .attr("y", (cellSize-2)/2)
+        .attr("text-anchor", "middle")
+        .attr("dominant-baseline", "middle")
+        .attr("fill", Math.abs(r) > 0.5 ? "#fff" : "#c9d1d9")
+        .attr("font-size", "12px")
+        .attr("font-weight", Math.abs(r) > 0.3 ? "bold" : "normal")
+        .text(r.toFixed(2));
+    }
+  }
+
+  // Color legend
+  const legendW = 200, legendH = 14;
+  const lg = svg.append("g").attr("transform", `translate(${M.left + n*cellSize - legendW}, ${M.top + n*cellSize + 10})`);
+  const defs = svg.append("defs");
+  const gradient = defs.append("linearGradient").attr("id","corrGrad");
+  [-1, -0.5, 0, 0.5, 1].forEach((v, i, arr) => {
+    gradient.append("stop")
+      .attr("offset", `${(i / (arr.length - 1)) * 100}%`)
+      .attr("stop-color", colorScale(v));
+  });
+  lg.append("rect").attr("width", legendW).attr("height", legendH).attr("fill","url(#corrGrad)").attr("rx",3);
+  lg.append("text").attr("x",0).attr("y",legendH+12).attr("fill","#8b949e").attr("font-size","9px").text("-1.0 (inverse)");
+  lg.append("text").attr("x",legendW/2).attr("y",legendH+12).attr("text-anchor","middle").attr("fill","#8b949e").attr("font-size","9px").text("0");
+  lg.append("text").attr("x",legendW).attr("y",legendH+12).attr("text-anchor","end").attr("fill","#8b949e").attr("font-size","9px").text("+1.0 (positive)");
+});
+</script>
+</body>
+</html>

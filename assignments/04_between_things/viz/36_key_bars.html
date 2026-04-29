@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Do Musical Keys Have Audible Personalities?</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+  h1 { font-size: 1.6rem; color: #58a6ff; margin-bottom: .2rem; text-align: center; }
+  p.sub { color: #8b949e; font-size: .84rem; margin-bottom: 1rem; max-width: 860px; text-align: center; line-height: 1.5; }
+  a.back { color: #58a6ff; font-size: .8rem; margin-bottom: 1rem; text-decoration: none; }
+  .tooltip { position: absolute; background: #1c2128ee; border: 1px solid #30363d; border-radius: 6px; padding: 10px 14px; font-size: .76rem; color: #c9d1d9; pointer-events: none; opacity: 0; line-height: 1.55; z-index: 10; max-width: 280px; }
+
+  /* Piano keyboard */
+  .scale-wrap { width: 100%; max-width: 960px; margin-bottom: 1rem; }
+  .scale-title { font-size: .75rem; color: #484f58; text-align: center; margin-bottom: 6px; }
+  .kb-outer { display: flex; justify-content: center; }
+  .keyboard { position: relative; height: 76px; }
+  .key-white { width: 68px; height: 72px; background: #c9d1d9; border: 1px solid #30363d; border-radius: 0 0 5px 5px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 6px; cursor: pointer; transition: background .15s, box-shadow .15s, filter .15s; position: absolute; z-index: 1; }
+  .key-white:hover, .key-black:hover { filter: brightness(1.25); }
+  .key-white .note { font-size: .78rem; color: #0d1117; font-weight: 700; }
+  .key-white .freq { font-size: .55rem; color: #484f58; }
+  .key-black { width: 42px; height: 46px; background: #21262d; border: 1px solid #484f58; border-radius: 0 0 4px 4px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 4px; cursor: pointer; position: absolute; z-index: 2; transition: background .15s, box-shadow .15s, filter .15s; }
+  .key-black .note { font-size: .68rem; color: #c9d1d9; font-weight: 600; }
+  .key-black .freq { font-size: .5rem; color: #8b949e; }
+  .key-hl { box-shadow: 0 0 0 3px #58a6ff, 0 0 12px #58a6ff66; z-index: 3 !important; }
+
+  /* Bar grid */
+  .grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; width: 100%; max-width: 960px; }
+  @media (max-width: 900px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+  .cell { background: #161b22; border-radius: 10px; border: 1px solid #30363d; display: flex; flex-direction: column; align-items: center; padding: 10px 6px 8px; transition: border-color .2s, background .2s, opacity .25s; cursor: pointer; }
+  .cell:hover, .cell.active { border-color: #58a6ff; background: #1c2128; }
+  .cell h3 { font-size: .88rem; color: #f0f6fc; margin: 0; }
+  .cell .persona { font-size: .66rem; margin: 2px 0 4px; font-weight: 600; }
+  .cell .meta { font-size: .58rem; color: #484f58; margin-bottom: 4px; }
+  .cell .top-song { font-size: .58rem; color: #8b949e; text-align: center; line-height: 1.3; margin-top: 4px; max-width: 140px; }
+  .cell .top-song .ts-title { color: #c9d1d9; font-weight: 600; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cell .top-song .ts-artist { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* Legend */
+  .legend-row { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 1.2rem; font-size: .74rem; color: #8b949e; }
+  .legend-row span { display: flex; align-items: center; gap: 5px; }
+  .ldot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+  /* Glossary */
+  .glossary { width: 100%; max-width: 900px; margin-top: 2rem; border-top: 1px solid #21262d; padding-top: 1.2rem; }
+  .glossary h2 { font-size: 1.1rem; color: #58a6ff; margin: 0 0 .8rem; }
+  .glossary table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+  .glossary th { text-align: left; color: #58a6ff; font-weight: 600; padding: 6px 10px; border-bottom: 1px solid #30363d; }
+  .glossary td { padding: 6px 10px; border-bottom: 1px solid #21262d; color: #c9d1d9; vertical-align: top; }
+  .glossary td:first-child { font-weight: 600; white-space: nowrap; color: #f0f6fc; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← all visualizations</a>
+<h1>Do Musical Keys Have Audible Personalities?</h1>
+<p class="sub">Horizontal bars show each key's min-max rescaled value for 7 audio features. The dashed line marks the <b>median across all 12 keys</b>. Bars that extend past it reveal what makes each key distinctive. Keys run <b>chromatically C → B</b>, left to right.</p>
+
+<!-- Piano keyboard -->
+<div class="scale-wrap">
+  <div class="scale-title">Chromatic Scale, C4 → B4 (coloured by personality label)</div>
+  <div class="kb-outer"><div class="keyboard" id="keyboard"></div></div>
+</div>
+
+<div class="grid" id="grid"></div>
+<div class="legend-row" id="legend"></div>
+<div class="glossary" id="glossary"></div>
+<div class="tooltip" id="tip"></div>
+
+<script>
+const feats  = ["acousticness","danceability","energy","instrumentalness","liveness","speechiness","valence"];
+const labels = ["Acoustic","Dance","Energy","Instr.","Live","Speech","Valence"];
+const nF = feats.length;
+const Z_THRESH = 1.0;
+const tip = d3.select("#tip");
+
+const keyShort = ["C","C♯","D","D♯","E","F","F♯","G","G♯","A","A♯","B"];
+const freqs    = [261.6,277.2,293.7,311.1,329.6,349.2,370.0,392.0,415.3,440.0,466.2,493.9];
+const isBlack  = [false,true,false,true,false,false,true,false,true,false,true,false];
+
+const personalities = {
+  acousticness:     {name:"The Unplugged",    color:"#45aaf2"},
+  danceability:     {name:"The Groover",      color:"#26de81"},
+  energy:           {name:"The Powerhouse",   color:"#ff6348"},
+  instrumentalness: {name:"The Silent Type",  color:"#a55eea"},
+  liveness:         {name:"The Stage Lover",  color:"#e84393"},
+  speechiness:      {name:"The Storyteller",  color:"#ffa502"},
+  valence:          {name:"The Optimist",     color:"#c4e538"}
+};
+const UNCAT = {name:"—", color:"#484f58"};
+
+// Piano
+const KW=68, whiteIdx=[0,2,4,5,7,9,11], blackIdx=[1,3,6,8,10], kbW=whiteIdx.length*KW;
+const kb = d3.select("#keyboard").style("width",kbW+"px");
+whiteIdx.forEach((ki,wi)=>{
+  const el=kb.append("div").attr("class","key-white").attr("data-key",ki).style("left",(wi*KW)+"px");
+  el.append("div").attr("class","note").text(keyShort[ki]);
+  el.append("div").attr("class","freq").text(freqs[ki].toFixed(0)+" Hz");
+});
+const blackLeft={1:KW*1-21,3:KW*2-21,6:KW*4-21,8:KW*5-21,10:KW*6-21};
+blackIdx.forEach(ki=>{
+  const el=kb.append("div").attr("class","key-black").attr("data-key",ki).style("left",blackLeft[ki]+"px");
+  el.append("div").attr("class","note").text(keyShort[ki]);
+  el.append("div").attr("class","freq").text(Math.round(freqs[ki]));
+});
+
+d3.json("data/key_features.json").then(data => {
+  data.sort((a,b)=>a.key-b.key);
+
+  // Min-max scaling
+  const mins={},maxs={},ranges={};
+  feats.forEach(f=>{const v=data.map(d=>d[f]); mins[f]=d3.min(v); maxs[f]=d3.max(v); ranges[f]=maxs[f]-mins[f]||.001;});
+  data.forEach(d=>{d._raw={}; feats.forEach(f=>{d._raw[f]=d[f]; d[f]=(d[f]-mins[f])/ranges[f];});});
+
+  // Medians & MAD
+  const medians={},mads={};
+  feats.forEach(f=>{
+    const v=data.map(d=>d[f]).sort((a,b)=>a-b);
+    medians[f]=d3.median(v);
+    const ad=v.map(x=>Math.abs(x-medians[f])).sort((a,b)=>a-b);
+    mads[f]=d3.median(ad)*1.4826||.001;
+  });
+
+  // Assign personality
+  data.forEach(d=>{
+    d._z={}; let mx=-Infinity,best=null;
+    feats.forEach(f=>{ const z=(d[f]-medians[f])/mads[f]; d._z[f]=z; if(z>mx){mx=z;best=f;}});
+    if(mx>=Z_THRESH){d._dominant=best;d._persona=personalities[best].name;d._personaColor=personalities[best].color;}
+    else{d._dominant="_uncategorized";d._persona=UNCAT.name;d._personaColor=UNCAT.color;}
+  });
+
+  // Colour piano keys
+  data.forEach(d=>{
+    if(d._dominant==="_uncategorized")return;
+    const el=kb.select(`[data-key="${d.key}"]`);
+    if(!el.empty()){
+      el.style("background",d._personaColor);
+      if(!isBlack[d.key]){el.select(".note").style("color","#0d1117");el.select(".freq").style("color","#0d1117").style("opacity",".6");}
+      else{el.select(".note").style("color","#f0f6fc");el.select(".freq").style("color","#c9d1d9");}
+    }
+  });
+
+  // Highlight
+  let activeKey=null;
+  function highlightKey(ki){
+    activeKey=activeKey===ki?null:ki;
+    d3.selectAll(".key-white,.key-black").classed("key-hl",function(){return +this.dataset.key===activeKey;});
+    d3.selectAll(".cell").each(function(){
+      const k=+this.dataset.key;
+      d3.select(this).classed("active",k===activeKey).style("opacity",activeKey===null?1:k===activeKey?1:.3);
+    });
+  }
+  d3.selectAll(".key-white,.key-black").on("click",function(){highlightKey(+this.dataset.key);});
+
+  const grid = d3.select("#grid");
+
+  // Bar chart dimensions inside each cell
+  const BW = 130, BH = 120, barH = 12, barGap = 4, labelW = 42;
+
+  data.forEach(d => {
+    const cell = grid.append("div").attr("class","cell").attr("data-key",d.key)
+      .on("click",()=>highlightKey(d.key));
+
+    cell.append("h3").text(d.key_name);
+    cell.append("div").attr("class","persona").style("color",d._personaColor).text(d._persona);
+    cell.append("div").attr("class","meta").text(`${freqs[d.key].toFixed(0)} Hz · n=${d3.format(",")(d.streams)}`);
+
+    const svg = cell.append("svg").attr("width",BW).attr("height",BH);
+    const g = svg.append("g").attr("transform",`translate(${labelW},4)`);
+    const barArea = BW - labelW - 6;
+    const xScale = d3.scaleLinear().domain([0,1]).range([0, barArea]);
+
+    feats.forEach((f, i) => {
+      const y = i * (barH + barGap);
+      const val = d[f];
+      const z = d._z[f];
+      const absZ = Math.abs(z);
+      const sig = absZ >= Z_THRESH;
+      const color = d._personaColor;
+
+      // Feature label
+      svg.append("text")
+        .attr("x", labelW - 4).attr("y", y + barH/2 + 5)
+        .attr("text-anchor","end").attr("dominant-baseline","middle")
+        .attr("fill", sig ? "#c9d1d9" : "#484f58")
+        .attr("font-size","7.5px").attr("font-weight", sig ? "bold" : "normal")
+        .text(labels[i]);
+
+      // Background track
+      g.append("rect")
+        .attr("x",0).attr("y",y).attr("width",barArea).attr("height",barH)
+        .attr("rx",2).attr("fill","#0d1117");
+
+      // Median line
+      g.append("line")
+        .attr("x1",xScale(medians[f])).attr("y1",y-1)
+        .attr("x2",xScale(medians[f])).attr("y2",y+barH+1)
+        .attr("stroke","#484f58").attr("stroke-width",1).attr("stroke-dasharray","2,2");
+
+      // Value bar
+      const barStart = Math.min(xScale(medians[f]), xScale(val));
+      const barW = Math.abs(xScale(val) - xScale(medians[f]));
+      const above = val >= medians[f];
+
+      g.append("rect")
+        .attr("x", barStart).attr("y", y + 1)
+        .attr("width", barW).attr("height", barH - 2)
+        .attr("rx", 2)
+        .attr("fill", sig ? color : "#30363d")
+        .attr("fill-opacity", sig ? .7 : .4)
+        .on("mouseover", e => {
+          const zStr = z>=0?`+${z.toFixed(2)}σ`:`${z.toFixed(2)}σ`;
+          const dir = z>=Z_THRESH?"above":z<=-Z_THRESH?"below":"within";
+          tip.style("opacity",1).html(
+            `<b>${d.key_name}</b>: ${f}<br>`+
+            `Raw: ${d._raw[f].toFixed(4)} · Scaled: ${val.toFixed(3)}<br>`+
+            `Median: ${medians[f].toFixed(3)}<br>`+
+            `z: <b style="color:${z>=Z_THRESH?'#3fb950':z<=-Z_THRESH?'#ff7b72':'#8b949e'}">${zStr}</b> (${dir})<br>`+
+            `${d3.format(",")(d.streams)} streams`);
+        })
+        .on("mousemove", e => tip.style("left",(e.pageX+12)+"px").style("top",(e.pageY-18)+"px"))
+        .on("mouseout", () => tip.style("opacity",0));
+
+      // Value dot at end of bar
+      g.append("circle")
+        .attr("cx",xScale(val)).attr("cy",y+barH/2)
+        .attr("r", sig ? 3.5 : 2)
+        .attr("fill", sig ? color : "#484f58");
+
+      // Value label
+      if (sig) {
+        g.append("text")
+          .attr("x", xScale(val) + (above ? 5 : -5))
+          .attr("y", y + barH/2 + 1)
+          .attr("text-anchor", above ? "start" : "end")
+          .attr("dominant-baseline","middle")
+          .attr("fill", color).attr("font-size","6.5px").attr("font-weight","bold")
+          .text(val.toFixed(2));
+      }
+    });
+
+    // Top song
+    if (d.top_track) {
+      const songDiv = cell.append("div").attr("class","top-song")
+        .attr("title",`${d.top_track}, ${d.top_artist} (${d3.format(",")(d.top_plays)} plays)`);
+      songDiv.append("span").attr("class","ts-title").text(`♫ ${d.top_track}`);
+      songDiv.append("span").attr("class","ts-artist").text(d.top_artist);
+    }
+  });
+
+  // Legend
+  const leg = d3.select("#legend");
+  leg.append("span").html(`<span class="ldot" style="border:1.5px dashed #484f58;background:none"></span> Median (dashed line)`);
+  leg.append("span").html(`<span class="ldot" style="background:#58a6ff"></span> Coloured bar = significant (|z| ≥ 1)`);
+  leg.append("span").html(`<span class="ldot" style="background:#30363d"></span> Grey bar = within normal range`);
+
+  // Glossary
+  const activeP = new Set(); data.forEach(d=>{if(d._dominant!=="_uncategorized")activeP.add(d._dominant);});
+  const glossDiv = d3.select("#glossary");
+  glossDiv.append("h2").text("Personality Label Glossary");
+  glossDiv.append("p").style("font-size",".8rem").style("color","#8b949e").style("margin","0 0 .8rem")
+    .html("Each feature is <b>min-max rescaled</b> (lowest key = 0, highest = 1). Personality = the feature with the highest z-score above 1. Bars extend left/right of the median to show direction.");
+  const table = glossDiv.append("table");
+  table.append("tr").html(`<th style="width:28%">Label</th><th style="width:22%">Feature</th><th>What It Means</th>`);
+  const descs = {
+    acousticness:"Real instruments dominate: guitars, pianos, strings.",
+    danceability:"Steadiest beat and groove-friendly rhythms.",
+    energy:"Loud, fast, dense, noisy — physically intense.",
+    instrumentalness:"Vocals take a backseat — ambient, classical, lo-fi.",
+    liveness:"Audience noise, stage energy, raw performance feel.",
+    speechiness:"More spoken or rapped content, word-heavy.",
+    valence:"Happy, cheerful, euphoric — positive emotional tone."
+  };
+  feats.forEach(f=>{
+    if(!activeP.has(f))return;
+    const p=personalities[f];
+    table.append("tr").html(`<td style="color:${p.color}">${p.name}</td><td>${f.charAt(0).toUpperCase()+f.slice(1)}</td><td>${descs[f]}</td>`);
+  });
+});
+</script>
+</body>
+</html>

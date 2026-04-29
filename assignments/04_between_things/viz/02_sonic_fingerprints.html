@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>2 — Sonic Fingerprints</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+  h1 { font-size: 1.4rem; color: #58a6ff; margin-bottom: .2rem; }
+  p.sub { color: #8b949e; font-size: .85rem; margin-bottom: 1rem; max-width: 700px; text-align: center; }
+  svg { background: #161b22; border-radius: 8px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 1rem; font-size: .75rem; }
+  .legend span { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+  .legend .swatch { width: 10px; height: 10px; border-radius: 50%; }
+  a.back { color: #58a6ff; font-size: .8rem; margin-bottom: 1rem; text-decoration: none; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← all options</a>
+<h1>Sonic Fingerprints — Audio Feature Radar</h1>
+<p class="sub">Each person's mean audio profile as a radar polygon. Click legend items to toggle. The shape difference IS the story.</p>
+<div id="chart"></div>
+<div class="legend" id="legend"></div>
+<script>
+const W = 750, H = 750;
+const cx = W/2, cy = H/2, R = 300;
+
+const svg = d3.select("#chart").append("svg").attr("width",W).attr("height",H);
+const g = svg.append("g").attr("transform",`translate(${cx},${cy})`);
+
+const features = ["danceability","energy","speechiness","acousticness","instrumentalness","liveness","valence"];
+const n = features.length;
+const angleSlice = (2 * Math.PI) / n;
+const color = d3.scaleOrdinal(d3.schemeTableau10);
+const rScale = d3.scaleLinear().domain([0,1]).range([0, R]);
+
+// Grid circles
+[0.2,0.4,0.6,0.8,1.0].forEach(v => {
+  g.append("circle").attr("r", rScale(v)).attr("fill","none").attr("stroke","#30363d").attr("stroke-dasharray", v===1?"0":"2,3");
+  g.append("text").attr("x",4).attr("y",-rScale(v)-2).attr("font-size","9px").attr("fill","#484f58").text(v);
+});
+
+// Axis lines & labels
+features.forEach((f,i) => {
+  const angle = angleSlice*i - Math.PI/2;
+  const lx = Math.cos(angle) * R;
+  const ly = Math.sin(angle) * R;
+  g.append("line").attr("x1",0).attr("y1",0).attr("x2",lx).attr("y2",ly).attr("stroke","#30363d");
+  g.append("text")
+    .attr("x", Math.cos(angle) * (R+22))
+    .attr("y", Math.sin(angle) * (R+22))
+    .attr("text-anchor","middle")
+    .attr("dominant-baseline","middle")
+    .attr("fill","#8b949e")
+    .attr("font-size","11px")
+    .text(f);
+});
+
+const radarLine = d3.lineRadial()
+  .radius(d => rScale(d))
+  .angle((d,i) => i * angleSlice)
+  .curve(d3.curveLinearClosed);
+
+d3.json("data/sonic_fingerprints.json").then(data => {
+  const persons = data.map(d => d.personID).sort((a,b)=>a-b);
+  color.domain(persons);
+
+  const visible = new Set(persons);
+
+  const paths = g.selectAll("path.radar")
+    .data(data)
+    .join("path")
+    .attr("class","radar")
+    .attr("d", d => radarLine(features.map(f => d[f])))
+    .attr("fill", d => color(d.personID))
+    .attr("fill-opacity", 0.08)
+    .attr("stroke", d => color(d.personID))
+    .attr("stroke-width", 2)
+    .attr("stroke-opacity", 0.85);
+
+  // Legend with toggle
+  const leg = d3.select("#legend");
+  persons.forEach(p => {
+    const span = leg.append("span")
+      .html(`<span class="swatch" style="background:${color(p)}"></span>P${p}`)
+      .on("click", () => {
+        if (visible.has(p)) visible.delete(p); else visible.add(p);
+        span.style("opacity", visible.has(p) ? 1 : 0.3);
+        paths.attr("display", d => visible.has(d.personID) ? null : "none");
+      });
+  });
+});
+</script>
+</body>
+</html>

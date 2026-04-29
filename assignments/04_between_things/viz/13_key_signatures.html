@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>13 — Key Signatures</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+  h1 { font-size: 1.4rem; color: #58a6ff; margin-bottom: .2rem; }
+  p.sub { color: #8b949e; font-size: .85rem; margin-bottom: 1rem; max-width: 750px; text-align: center; }
+  svg { background: #161b22; border-radius: 8px; }
+  .tooltip { position: absolute; background: #1c2128; border: 1px solid #30363d; border-radius: 6px; padding: 8px 12px; font-size: .75rem; color: #c9d1d9; pointer-events: none; opacity: 0; line-height: 1.5; }
+  a.back { color: #58a6ff; font-size: .8rem; margin-bottom: 1rem; text-decoration: none; }
+  .legend { display: flex; gap: 20px; margin-top: 1rem; font-size: .8rem; }
+  .legend .swatch { display: inline-block; width: 14px; height: 14px; border-radius: 3px; vertical-align: middle; margin-right: 4px; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← all visualizations</a>
+<h1>Key Signatures of Streaming</h1>
+<p class="sub">A polar bar chart of musical keys — the 12 pitch classes arranged like a clock face. Major (bright) vs Minor (dark) reveals the harmonic palette of all listening.</p>
+<div id="chart"></div>
+<div class="legend" id="legend"></div>
+<div class="tooltip" id="tip"></div>
+<script>
+const W = 700, H = 700;
+const cx = W/2, cy = H/2, outerR = 280, innerR = 60;
+
+const svg = d3.select("#chart").append("svg").attr("width", W).attr("height", H);
+const g = svg.append("g").attr("transform", `translate(${cx},${cy})`);
+const tip = d3.select("#tip");
+
+const keys = ["C","C♯/D♭","D","D♯/E♭","E","F","F♯/G♭","G","G♯/A♭","A","A♯/B♭","B"];
+
+d3.json("data/key_signatures.json").then(data => {
+  const majorColor = "#58a6ff";
+  const minorColor = "#da3633";
+
+  const maxStreams = d3.max(data, d => d.streams);
+  const rScale = d3.scaleLinear().domain([0, maxStreams]).range([innerR, outerR]);
+  const angleSlice = (2 * Math.PI) / 12;
+
+  // Grid circles
+  [0.25, 0.5, 0.75, 1.0].forEach(pct => {
+    const r = innerR + (outerR - innerR) * pct;
+    g.append("circle").attr("r", r).attr("fill","none").attr("stroke","#21262d").attr("stroke-dasharray","2,3");
+  });
+
+  // Key labels
+  keys.forEach((k, i) => {
+    const angle = angleSlice * i - Math.PI/2;
+    const labelR = outerR + 24;
+    g.append("text")
+      .attr("x", Math.cos(angle) * labelR)
+      .attr("y", Math.sin(angle) * labelR)
+      .attr("text-anchor", "middle")
+      .attr("dominant-baseline", "middle")
+      .attr("fill", "#c9d1d9")
+      .attr("font-size", "13px")
+      .attr("font-weight", "bold")
+      .text(k);
+    // Spoke lines
+    g.append("line")
+      .attr("x1", Math.cos(angle) * innerR).attr("y1", Math.sin(angle) * innerR)
+      .attr("x2", Math.cos(angle) * outerR).attr("y2", Math.sin(angle) * outerR)
+      .attr("stroke", "#21262d").attr("stroke-width", 0.5);
+  });
+
+  // Draw arcs for each key × mode
+  const arc = d3.arc();
+  const barWidth = angleSlice * 0.35;
+
+  data.forEach(d => {
+    const keyIdx = d.key;
+    const baseAngle = angleSlice * keyIdx - Math.PI/2;
+    const offset = d.mode === 1 ? -barWidth/2 - 0.01 : barWidth/2 + 0.01;
+
+    g.append("path")
+      .attr("d", arc({
+        innerRadius: innerR,
+        outerRadius: rScale(d.streams),
+        startAngle: baseAngle + offset - barWidth/2 + Math.PI/2,
+        endAngle: baseAngle + offset + barWidth/2 + Math.PI/2,
+      }))
+      .attr("fill", d.mode === 1 ? majorColor : minorColor)
+      .attr("opacity", 0.8)
+      .attr("stroke", "#0d1117")
+      .attr("stroke-width", 0.5)
+      .on("mouseover", (e) => {
+        tip.style("opacity",1).html(
+          `<b>${d.key_name} ${d.mode_name}</b><br>` +
+          `${d3.format(",")(d.streams)} streams<br>` +
+          `Avg Energy: ${d.avg_energy}<br>` +
+          `Avg Valence: ${d.avg_valence}`
+        );
+      })
+      .on("mousemove", e => tip.style("left",(e.pageX+12)+"px").style("top",(e.pageY-20)+"px"))
+      .on("mouseout", () => tip.style("opacity",0));
+  });
+
+  // Center label
+  g.append("text").attr("text-anchor","middle").attr("dy","-.2em").attr("fill","#58a6ff").attr("font-size","14px").attr("font-weight","bold").text("Musical");
+  g.append("text").attr("text-anchor","middle").attr("dy","1.1em").attr("fill","#58a6ff").attr("font-size","14px").attr("font-weight","bold").text("Keys");
+
+  // Legend
+  const leg = d3.select("#legend");
+  leg.append("span").html(`<span class="swatch" style="background:${majorColor}"></span> Major`);
+  leg.append("span").html(`<span class="swatch" style="background:${minorColor}"></span> Minor`);
+});
+</script>
+</body>
+</html>

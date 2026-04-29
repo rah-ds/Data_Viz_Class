@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>12 — Tempo Landscape</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+  h1 { font-size: 1.4rem; color: #58a6ff; margin-bottom: .2rem; }
+  p.sub { color: #8b949e; font-size: .85rem; margin-bottom: 1rem; max-width: 750px; text-align: center; }
+  svg { background: #161b22; border-radius: 8px; }
+  .tooltip { position: absolute; background: #1c2128; border: 1px solid #30363d; border-radius: 6px; padding: 8px 12px; font-size: .75rem; color: #c9d1d9; pointer-events: none; opacity: 0; line-height: 1.5; }
+  a.back { color: #58a6ff; font-size: .8rem; margin-bottom: 1rem; text-decoration: none; }
+  .annotation { font-size: 10px; fill: #8b949e; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← all visualizations</a>
+<h1>The Tempo Landscape</h1>
+<p class="sub">BPM distribution of every streamed track. Color encodes average energy at that tempo — revealing the danceable sweet spots and the meditative valleys.</p>
+<div id="chart"></div>
+<div class="tooltip" id="tip"></div>
+<script>
+const W = 960, H = 480, M = {top: 40, right: 30, bottom: 50, left: 60};
+const w = W - M.left - M.right, h = H - M.top - M.bottom;
+
+const svg = d3.select("#chart").append("svg").attr("width", W).attr("height", H);
+const g = svg.append("g").attr("transform", `translate(${M.left},${M.top})`);
+const tip = d3.select("#tip");
+
+d3.json("data/tempo_landscape.json").then(data => {
+  const x = d3.scaleLinear().domain([40, 220]).range([0, w]);
+  const y = d3.scaleLinear().domain([0, d3.max(data, d => d.count) * 1.1]).range([h, 0]);
+  const colorScale = d3.scaleSequential(d3.interpolatePlasma).domain([0.3, 0.85]);
+
+  g.append("g").attr("transform", `translate(0,${h})`).call(d3.axisBottom(x).ticks(18))
+    .selectAll("text").style("fill","#8b949e");
+  g.append("g").call(d3.axisLeft(y).ticks(8).tickFormat(d3.format(",.0f")))
+    .selectAll("text").style("fill","#8b949e");
+  g.selectAll(".domain, .tick line").attr("stroke","#30363d");
+
+  svg.append("text").attr("x", M.left + w/2).attr("y", H - 4).attr("text-anchor","middle").attr("fill","#8b949e").attr("font-size","12px").text("Tempo (BPM)");
+  svg.append("text").attr("transform","rotate(-90)").attr("x", -(M.top + h/2)).attr("y", 14).attr("text-anchor","middle").attr("fill","#8b949e").attr("font-size","12px").text("Stream Count");
+
+  // Area fill
+  const area = d3.area()
+    .x(d => x(d.tempo_bin))
+    .y0(h)
+    .y1(d => y(d.count))
+    .curve(d3.curveBasis);
+
+  g.append("path")
+    .datum(data)
+    .attr("d", area)
+    .attr("fill", "#58a6ff")
+    .attr("fill-opacity", 0.15);
+
+  // Colored bars
+  const barW = Math.max(1, w / 90);
+  g.selectAll("rect.bar")
+    .data(data)
+    .join("rect")
+    .attr("x", d => x(d.tempo_bin) - barW/2)
+    .attr("y", d => y(d.count))
+    .attr("width", barW)
+    .attr("height", d => h - y(d.count))
+    .attr("fill", d => colorScale(d.energy))
+    .attr("opacity", 0.9)
+    .on("mouseover", (e,d) => {
+      tip.style("opacity",1).html(
+        `<b>${d.tempo_bin} BPM</b><br>` +
+        `${d3.format(",")(d.count)} streams<br>` +
+        `Energy: ${d.energy.toFixed(3)}<br>` +
+        `Danceability: ${d.danceability.toFixed(3)}<br>` +
+        `Valence: ${d.valence.toFixed(3)}`
+      );
+    })
+    .on("mousemove", e => tip.style("left",(e.pageX+12)+"px").style("top",(e.pageY-20)+"px"))
+    .on("mouseout", () => tip.style("opacity",0));
+
+  // Genre tempo annotations
+  const annotations = [
+    {bpm: 70, label: "← Hip-Hop / R&B"},
+    {bpm: 90, label: "← Reggaeton"},
+    {bpm: 120, label: "← House / EDM"},
+    {bpm: 128, label: "← Dance Pop"},
+    {bpm: 140, label: "← Drum & Bass"},
+    {bpm: 170, label: "← DnB / Jungle"},
+  ];
+  annotations.forEach(a => {
+    const binData = data.find(d => Math.abs(d.tempo_bin - a.bpm) <= 2);
+    const yPos = binData ? y(binData.count) - 8 : 20;
+    g.append("text")
+      .attr("class", "annotation")
+      .attr("x", x(a.bpm))
+      .attr("y", Math.max(15, yPos))
+      .text(a.label);
+    g.append("line")
+      .attr("x1", x(a.bpm)).attr("x2", x(a.bpm))
+      .attr("y1", Math.max(20, yPos + 3)).attr("y2", h)
+      .attr("stroke", "#484f58").attr("stroke-dasharray", "2,3").attr("stroke-width", 0.5);
+  });
+
+  // Color legend
+  const legendW = 200, legendH = 12;
+  const lg = svg.append("g").attr("transform", `translate(${W - M.right - legendW - 10}, ${M.top + 5})`);
+  const defs = svg.append("defs");
+  const gradient = defs.append("linearGradient").attr("id", "energyGrad");
+  gradient.append("stop").attr("offset", "0%").attr("stop-color", colorScale(0.3));
+  gradient.append("stop").attr("offset", "100%").attr("stop-color", colorScale(0.85));
+  lg.append("rect").attr("width", legendW).attr("height", legendH).attr("fill", "url(#energyGrad)").attr("rx", 3);
+  lg.append("text").attr("x", 0).attr("y", legendH + 12).attr("fill", "#8b949e").attr("font-size", "9px").text("Low Energy");
+  lg.append("text").attr("x", legendW).attr("y", legendH + 12).attr("fill", "#8b949e").attr("font-size", "9px").attr("text-anchor", "end").text("High Energy");
+});
+</script>
+</body>
+</html>

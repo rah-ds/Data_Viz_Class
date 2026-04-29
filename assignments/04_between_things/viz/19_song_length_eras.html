@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>19 — Song Length Eras</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body { font-family: "Helvetica Neue", sans-serif; background: #0d1117; color: #c9d1d9; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
+  h1 { font-size: 1.4rem; color: #58a6ff; margin-bottom: .2rem; }
+  p.sub { color: #8b949e; font-size: .85rem; margin-bottom: 1rem; max-width: 750px; text-align: center; }
+  svg { background: #161b22; border-radius: 8px; }
+  .tooltip { position: absolute; background: #1c2128; border: 1px solid #30363d; border-radius: 6px; padding: 8px 12px; font-size: .75rem; color: #c9d1d9; pointer-events: none; opacity: 0; line-height: 1.5; }
+  a.back { color: #58a6ff; font-size: .8rem; margin-bottom: 1rem; text-decoration: none; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← all visualizations</a>
+<h1>Song Length Through the Eras</h1>
+<p class="sub">Are songs getting shorter? Median track duration (with IQR band) for every release year in the streaming history. The streaming economy's incentives — skip-friendly, playlist-ready — may be reshaping song structure.</p>
+<div id="chart"></div>
+<div class="tooltip" id="tip"></div>
+<script>
+const W = 960, H = 500, M = {top: 30, right: 30, bottom: 50, left: 65};
+const w = W - M.left - M.right, h = H - M.top - M.bottom;
+
+const svg = d3.select("#chart").append("svg").attr("width", W).attr("height", H);
+const g = svg.append("g").attr("transform", `translate(${M.left},${M.top})`);
+const tip = d3.select("#tip");
+
+const fmtTime = sec => {
+  const m = Math.floor(sec / 60);
+  const s = Math.round(sec % 60);
+  return `${m}:${s.toString().padStart(2,'0')}`;
+};
+
+d3.json("data/song_length_eras.json").then(data => {
+  data = data.filter(d => d.count >= 10).sort((a,b) => a.release_year - b.release_year);
+
+  const x = d3.scaleLinear().domain(d3.extent(data, d => d.release_year)).range([0, w]);
+  const yMax = d3.max(data, d => d.p75) * 1.1;
+  const y = d3.scaleLinear().domain([0, yMax]).range([h, 0]);
+
+  // Axes
+  g.append("g").attr("transform", `translate(0,${h})`).call(d3.axisBottom(x).tickFormat(d3.format("d")).ticks(12))
+    .selectAll("text").style("fill","#8b949e");
+  g.append("g").call(d3.axisLeft(y).ticks(8).tickFormat(d => fmtTime(d)))
+    .selectAll("text").style("fill","#8b949e");
+  g.selectAll(".domain, .tick line").attr("stroke","#30363d");
+
+  svg.append("text").attr("x", M.left + w/2).attr("y", H - 8).attr("text-anchor","middle").attr("fill","#8b949e").attr("font-size","12px").text("Album Release Year");
+  svg.append("text").attr("transform","rotate(-90)").attr("x", -(M.top + h/2)).attr("y", 14).attr("text-anchor","middle").attr("fill","#8b949e").attr("font-size","12px").text("Track Duration");
+
+  // IQR band (p25–p75)
+  const areaIQR = d3.area()
+    .x(d => x(d.release_year))
+    .y0(d => y(d.p25))
+    .y1(d => y(d.p75))
+    .curve(d3.curveMonotoneX);
+
+  g.append("path").datum(data).attr("d", areaIQR)
+    .attr("fill", "#58a6ff").attr("fill-opacity", 0.15);
+
+  // Median line
+  const medLine = d3.line().x(d => x(d.release_year)).y(d => y(d.median_sec)).curve(d3.curveMonotoneX);
+  g.append("path").datum(data).attr("d", medLine)
+    .attr("fill","none").attr("stroke","#58a6ff").attr("stroke-width",2.5);
+
+  // Mean line (dashed)
+  const meanLine = d3.line().x(d => x(d.release_year)).y(d => y(d.mean_sec)).curve(d3.curveMonotoneX);
+  g.append("path").datum(data).attr("d", meanLine)
+    .attr("fill","none").attr("stroke","#f0883e").attr("stroke-width",1.5).attr("stroke-dasharray","5,4");
+
+  // Stream count as subtle bar
+  const barY = d3.scaleLinear().domain([0, d3.max(data, d => d.count)]).range([0, 30]);
+  g.selectAll("rect.count")
+    .data(data)
+    .join("rect")
+    .attr("class","count")
+    .attr("x", d => x(d.release_year) - 2)
+    .attr("y", h + 2)
+    .attr("width", 4)
+    .attr("height", d => barY(d.count))
+    .attr("fill","#30363d");
+
+  // Reference lines
+  [180, 210, 240].forEach(sec => {
+    g.append("line")
+      .attr("x1", 0).attr("x2", w)
+      .attr("y1", y(sec)).attr("y2", y(sec))
+      .attr("stroke","#21262d").attr("stroke-dasharray","2,4");
+    g.append("text").attr("x", w + 4).attr("y", y(sec) + 4)
+      .attr("fill","#484f58").attr("font-size","9px").text(fmtTime(sec));
+  });
+
+  // Hover dots
+  g.selectAll("circle.dot")
+    .data(data)
+    .join("circle")
+    .attr("class","dot")
+    .attr("cx", d => x(d.release_year))
+    .attr("cy", d => y(d.median_sec))
+    .attr("r", 4)
+    .attr("fill", "#58a6ff")
+    .attr("opacity", 0)
+    .on("mouseover", (e,d) => {
+      d3.select(e.target).attr("opacity", 1);
+      tip.style("opacity",1).html(
+        `<b>${d.release_year}</b> (${d3.format(",")(d.count)} streams)<br>` +
+        `Median: ${fmtTime(d.median_sec)}<br>` +
+        `Mean: ${fmtTime(d.mean_sec)}<br>` +
+        `IQR: ${fmtTime(d.p25)} – ${fmtTime(d.p75)}`
+      );
+    })
+    .on("mousemove", e => tip.style("left",(e.pageX+12)+"px").style("top",(e.pageY-20)+"px"))
+    .on("mouseout", (e) => { d3.select(e.target).attr("opacity",0); tip.style("opacity",0); });
+
+  // Legend
+  const lg = g.append("g").attr("transform","translate(10,10)");
+  lg.append("line").attr("x1",0).attr("x2",20).attr("y1",0).attr("y2",0).attr("stroke","#58a6ff").attr("stroke-width",2.5);
+  lg.append("text").attr("x",24).attr("y",4).attr("fill","#c9d1d9").attr("font-size","10px").text("Median");
+  lg.append("line").attr("x1",0).attr("x2",20).attr("y1",16).attr("y2",16).attr("stroke","#f0883e").attr("stroke-width",1.5).attr("stroke-dasharray","5,4");
+  lg.append("text").attr("x",24).attr("y",20).attr("fill","#c9d1d9").attr("font-size","10px").text("Mean");
+  lg.append("rect").attr("y",28).attr("width",20).attr("height",10).attr("fill","#58a6ff").attr("opacity",0.15);
+  lg.append("text").attr("x",24).attr("y",37).attr("fill","#c9d1d9").attr("font-size","10px").text("IQR (25th–75th)");
+});
+</script>
+</body>
+</html>
