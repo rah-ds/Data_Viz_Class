@@ -1,4 +1,13 @@
-.PHONY: help install export-svgs serve-vda serve-btw prepare-vda notebook lint fmt-py fmt-md clean
+.PHONY: help install export-svgs serve-vda serve-btw serve-lg prepare-vda notebook lint fmt-py fmt-md clean
+
+# ──────────────────────────────────────────────
+#  Colors (only when stdout is a terminal)
+# ──────────────────────────────────────────────
+BOLD   := $(shell tput bold   2>/dev/null || true)
+CYAN   := $(shell tput setaf 6 2>/dev/null || true)
+GREEN  := $(shell tput setaf 2 2>/dev/null || true)
+YELLOW := $(shell tput setaf 3 2>/dev/null || true)
+RESET  := $(shell tput sgr0   2>/dev/null || true)
 
 # Default port for the dev server
 PORT ?= 8000
@@ -6,18 +15,29 @@ PORT ?= 8000
 ## help: show this help message
 help:
 	@echo ""
-	@echo "Usage: make <target>"
+	@echo "  $(BOLD)📊 Data Viz Class$(RESET)  —  make targets"
+	@echo "  ─────────────────────────────────────────"
 	@echo ""
-	@echo "  install        Bootstrap uv (if missing) and sync all Python packages"
-	@echo "  export-svgs    Export the 3 key D3 vizs to labelled SVGs in viz/to_refine/"
-	@echo "  serve-vda      Serve the visual_data_analysis D3 files (viz/raw/) in a browser"
-	@echo "  serve-btw      Serve the between_things D3 viz files on port 8080"
-	@echo "  prepare-vda    Run the data-prep script for visual_data_analysis"
-	@echo "  notebook       Launch Jupyter Notebook from the notebooks/ directory"
-	@echo "  lint           Run proselint on all markdown writeups"
-	@echo "  fmt-py         Auto-format all Python files with ruff"
-	@echo "  fmt-md         Auto-format all Markdown files with prettier"
-	@echo "  clean          Remove .DS_Store files and Python cache dirs"
+	@echo "  $(CYAN)Setup$(RESET)"
+	@echo "    $(GREEN)install$(RESET)        Bootstrap uv, sync packages & install git hooks"
+	@echo ""
+	@echo "  $(CYAN)Dev Servers$(RESET)"
+	@echo "    $(GREEN)serve-vda$(RESET)      Serve assignment 03 D3 visualizations  (port $(PORT))"
+	@echo "    $(GREEN)serve-btw$(RESET)      Serve assignment 04 D3 visualizations  (port 8080)"
+	@echo "    $(GREEN)serve-lg$(RESET)       Serve assignment 05 Observable Framework (port 3000)"
+	@echo "    $(GREEN)notebook$(RESET)       Launch Jupyter Notebook"
+	@echo ""
+	@echo "  $(CYAN)Data & Export$(RESET)"
+	@echo "    $(GREEN)prepare-vda$(RESET)    Run data-prep pipeline for assignment 03"
+	@echo "    $(GREEN)export-svgs$(RESET)    Render D3 vizs → SVG files"
+	@echo ""
+	@echo "  $(CYAN)Code Quality$(RESET)"
+	@echo "    $(GREEN)fmt-py$(RESET)         Auto-format Python with ruff"
+	@echo "    $(GREEN)fmt-md$(RESET)         Auto-format Markdown with prettier"
+	@echo "    $(GREEN)lint$(RESET)           Proselint on markdown write-ups"
+	@echo ""
+	@echo "  $(CYAN)Maintenance$(RESET)"
+	@echo "    $(GREEN)clean$(RESET)          Remove .DS_Store & __pycache__"
 	@echo ""
 
 ## export-svgs: export the three key D3 visualisations to labelled SVG files in viz/to_refine/
@@ -31,6 +51,10 @@ serve-vda:
 ## serve-btw: serve the between_things D3 viz files
 serve-btw:
 	uv run python assignments/04_between_things/scripts/serve_viz.py
+
+## serve-lg: serve the land_guzzlers Observable Framework project
+serve-lg:
+	cd assignments/05_land_guzzlers && npm run dev
 
 ## prepare-vda: run the data preparation script for visual_data_analysis
 prepare-vda:
@@ -49,17 +73,22 @@ lint:
 
 ## install: bootstrap uv (if missing) then sync all Python packages from pyproject.toml
 install:
-	@echo "→ Checking for uv..."
+	@echo "$(BOLD)→ Checking for uv...$(RESET)"
 	@if ! command -v uv > /dev/null 2>&1; then \
 		echo "  uv not found — installing via official installer..."; \
 		curl -LsSf https://astral.sh/uv/install.sh | sh; \
 		echo "  Reload your shell or run: source $$HOME/.local/bin/env"; \
 	else \
-		echo "  uv $$(uv --version) already installed."; \
+		echo "  $(GREEN)✓$(RESET) uv $$(uv --version) already installed."; \
 	fi
-	@echo "→ Syncing Python packages..."
+	@echo "$(BOLD)→ Syncing Python packages...$(RESET)"
 	uv sync
-	@echo "✓ Done. All packages installed."
+	@echo "$(BOLD)→ Installing git hooks...$(RESET)"
+	@cp scripts/pre-commit .git/hooks/pre-commit
+	@chmod +x .git/hooks/pre-commit
+	@echo "  $(GREEN)✓$(RESET) pre-commit hook installed (blocks files > 10 MB)"
+	@echo ""
+	@echo "$(GREEN)$(BOLD)✓ All done!$(RESET) Packages synced & hooks installed."
 
 ## fmt-py: auto-format all Python files with ruff
 fmt-py:

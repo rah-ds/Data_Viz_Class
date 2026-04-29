@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Land Guzzlers</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body { font-family: sans-serif; }
+        svg { background-color: #f9f9f9; border: 1px solid #ccc; }
+        .rect-title { font-weight: bold; font-size: 14px; text-anchor: end; }
+        .rect-subtitle { font-size: 10px; color: #555; text-anchor: end; }
+        .rect-rotated { font-size: 10px; text-anchor: end; fill: #fff; }
+    </style>
+</head>
+<body>
+    <h1>Land Guzzlers</h1>
+    <div id="viz"></div>
+
+    <script>
+        const data = [
+            { "title": "LARGE DOG", "footprint": 1.1, "subtitle": "", "subtitle2": "", "subtitle3": "" },
+            { "title": "MEDIUM-SIZED DOG", "footprint": 0.84, "subtitle": "CONSUMPTION PER YEAR", "subtitle2": "164kg of meat, 95kg or cereals", "subtitle3": "43.3m2 of land per 1kg of chicken (more for beef and lamb), 13.4m2 of land per 1kg of cereals" },
+            { "title": "TOYOTA LAND CRUISER", "footprint": 0.41, "subtitle": "10,000km DRIVEN PER YEAR", "subtitle2": "55.1 gigajoules (includes energy required to fuel and construct)", "subtitle3": "" },
+            { "title": "VOLKSWAGEN GOLF", "footprint": 0.18, "subtitle": "", "subtitle2": "", "subtitle3": "" },
+            { "title": "CAT", "footprint": 0.15, "subtitle": "", "subtitle2": "", "subtitle3": "" },
+            { "title": "HAMSTER", "footprint": 0.014, "subtitle": "", "subtitle2": "", "subtitle3": "" }
+        ];
+
+        const width = 900;
+        const height = 400;
+        const margins = { top: 50, right: 50, bottom: 50, left: 200 };
+        
+        // Since area = footprint, the side length is proportional to sqrt(footprint)
+        // Let's multiply by a scaling factor to make it fit well on screen
+        const scaleFactor = 150;
+        
+        // Colors for each item
+        const colors = ["#4D4D4D", "#8DA0CB", "#FC8D62", "#E78AC3", "#A6D854", "#FFD92F"];
+        
+        const svg = d3.select("#viz")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+            
+        // 1. Start with the rectangles
+        // The instructions say: Get that first d3.selectAll().data().join().attr().attr().attr() statement
+        // Set "calculation_or_value" based on data or index
+        svg.selectAll("rect")
+            .data(data)
+            .join("rect")
+            .attr("width", d => Math.sqrt(d.footprint) * scaleFactor)
+            .attr("height", d => Math.sqrt(d.footprint) * scaleFactor)
+            // Stagger them along the x-axis, using index `i` to push them over
+            .attr("x", (d, i) => margins.left + (i * 100))
+            // Align bottoms by taking the total height minus the rectangle's height
+            .attr("y", d => height - margins.bottom - (Math.sqrt(d.footprint) * scaleFactor))
+            .attr("fill", (d, i) => colors[i % colors.length])
+            .attr("opacity", 0.8);
+            
+        // 2. Add titles using a second selectAll
+        // (LARGE DOG, MEDIUM-SIZED DOG, ...)
+        svg.selectAll(".rect-title")
+            .data(data)
+            .join("text")
+            .attr("class", "rect-title")
+            // Position near the top-left corner of each rectangle.
+            .attr("x", (d, i) => margins.left + (i * 100) - 10)
+            .attr("y", d => height - margins.bottom - (Math.sqrt(d.footprint) * scaleFactor) + 10)
+            .text(d => d.title);
+            
+        // 3. then subtitles ...
+        svg.selectAll(".rect-subtitle")
+            .data(data)
+            .join("text")
+            .attr("class", "rect-subtitle")
+            .attr("x", (d, i) => margins.left + (i * 100) - 10)
+            .attr("y", d => height - margins.bottom - (Math.sqrt(d.footprint) * scaleFactor) + 25)
+            .text(d => d.subtitle);
+            
+        svg.selectAll(".rect-subtitle2")
+            .data(data)
+            .join("text")
+            .attr("class", "rect-subtitle")
+            .attr("x", (d, i) => margins.left + (i * 100) - 10)
+            .attr("y", d => height - margins.bottom - (Math.sqrt(d.footprint) * scaleFactor) + 38)
+            .text(d => d.subtitle2);
+
+        // 4. then rotated text ...
+        svg.selectAll(".rect-rotated")
+            .data(data)
+            .join("text")
+            .attr("class", "rect-rotated")
+            // "override the quirks and exceptions (that pesky HAMSTER!)"
+            // For the hamster, we'll keep the text outside the rect or hide it, since it's too small
+            .attr("transform", (d, i) => {
+                const x = margins.left + (i * 100) + 15;
+                const y = height - margins.bottom - 10;
+                return `translate(${x}, ${y}) rotate(-90)`;
+            })
+            // Only show rotated text when footprint is large enough
+            .text(d => d.footprint > 0.05 ? d.footprint + ' ha' : '')
+            .style("fill", d => d.title === "HAMSTER" ? "black" : "white");
+            
+    </script>
+</body>
+</html>

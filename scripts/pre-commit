@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+#
+# Pre-commit hook: reject staged files larger than 10 MB
+#
+
+MAX_SIZE=$((10 * 1024 * 1024))  # 10 MB in bytes
+MAX_DISPLAY="10 MB"
+
+status=0
+
+while IFS= read -r -d '' file; do
+    # Get the size of the staged blob (not the working-tree file)
+    sha=$(git ls-files -s -- "$file" | awk '{print $2}')
+    if [[ -n "$sha" ]]; then
+        size=$(git cat-file -s "$sha")
+        if (( size > MAX_SIZE )); then
+            size_mb=$(awk "BEGIN {printf \"%.1f\", $size / 1048576}")
+            printf "BLOCKED: %s is %s MB (limit: %s)\n" "$file" "$size_mb" "$MAX_DISPLAY" >&2
+            status=1
+        fi
+    fi
+done < <(git diff --cached --name-only -z --diff-filter=ACM)
+
+if (( status != 0 )); then
+    echo >&2
+    echo "Commit rejected — remove or .gitignore the file(s) above." >&2
+    echo "To bypass this check: git commit --no-verify" >&2
+fi
+
+exit $status
