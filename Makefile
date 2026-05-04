@@ -24,8 +24,8 @@ help:
 	@echo "  $(CYAN)Dev Servers$(RESET)"
 	@echo "    $(GREEN)serve-vda$(RESET)      Serve assignment 03 D3 visualizations  (port $(PORT))"
 	@echo "    $(GREEN)serve-btw$(RESET)      Serve assignment 04 D3 visualizations  (port 8080)"
-	@echo "    $(GREEN)serve-lg$(RESET)       Serve assignment 05 Observable Framework (port 3000)
-    $(GREEN)serve-wiki$(RESET)     Serve assignment 06 Wikipedia edit-conflict viz (port 8888)"
+	@echo "    $(GREEN)serve-lg$(RESET)       Serve assignment 05 Observable Framework (port 3000)"
+	@echo "    $(GREEN)serve-wiki$(RESET)     Serve assignment 06 Wikipedia edit-conflict viz (port 8888)"
 	@echo "    $(GREEN)notebook$(RESET)       Launch Jupyter Notebook"
 	@echo ""
 	@echo "  $(CYAN)Data & Export$(RESET)"
