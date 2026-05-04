@@ -1,4 +1,4 @@
-.PHONY: help install export-svgs serve-vda serve-btw serve-lg prepare-vda notebook lint fmt-py fmt-md clean
+.PHONY: help install export-svgs serve-vda serve-btw serve-lg serve-wiki prepare-vda notebook lint fmt-py fmt-md clean
 
 # ──────────────────────────────────────────────
 #  Colors (only when stdout is a terminal)
@@ -24,7 +24,8 @@ help:
 	@echo "  $(CYAN)Dev Servers$(RESET)"
 	@echo "    $(GREEN)serve-vda$(RESET)      Serve assignment 03 D3 visualizations  (port $(PORT))"
 	@echo "    $(GREEN)serve-btw$(RESET)      Serve assignment 04 D3 visualizations  (port 8080)"
-	@echo "    $(GREEN)serve-lg$(RESET)       Serve assignment 05 Observable Framework (port 3000)"
+	@echo "    $(GREEN)serve-lg$(RESET)       Serve assignment 05 Observable Framework (port 3000)
+    $(GREEN)serve-wiki$(RESET)     Serve assignment 06 Wikipedia edit-conflict viz (port 8888)"
 	@echo "    $(GREEN)notebook$(RESET)       Launch Jupyter Notebook"
 	@echo ""
 	@echo "  $(CYAN)Data & Export$(RESET)"
@@ -55,6 +56,10 @@ serve-btw:
 ## serve-lg: serve the land_guzzlers Observable Framework project
 serve-lg:
 	cd assignments/05_land_guzzlers && npm run dev
+
+## serve-wiki: serve the Wikipedia edit-conflict visualization (assignment 06)
+serve-wiki:
+	uv run python assignments/06_reinventing_playfaire/scripts/serve.py
 
 ## prepare-vda: run the data preparation script for visual_data_analysis
 prepare-vda:
