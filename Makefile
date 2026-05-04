@@ -1,4 +1,4 @@
-.PHONY: help install export-svgs serve-vda serve-btw serve-lg serve-wiki prepare-vda notebook lint fmt-py fmt-md clean
+.PHONY: help install export-svgs serve-vda serve-btw serve-lg serve-wiki serve-wiki-ideas serve-wiki-ideas2 prepare-vda notebook lint fmt-py fmt-md clean
 
 # ──────────────────────────────────────────────
 #  Colors (only when stdout is a terminal)
@@ -25,7 +25,9 @@ help:
 	@echo "    $(GREEN)serve-vda$(RESET)      Serve assignment 03 D3 visualizations  (port $(PORT))"
 	@echo "    $(GREEN)serve-btw$(RESET)      Serve assignment 04 D3 visualizations  (port 8080)"
 	@echo "    $(GREEN)serve-lg$(RESET)       Serve assignment 05 Observable Framework (port 3000)"
-	@echo "    $(GREEN)serve-wiki$(RESET)     Serve assignment 06 Wikipedia edit-conflict viz (port 8888)"
+	@echo "    $(GREEN)serve-wiki$(RESET)     Serve assignment 06 Wikipedia edit-conflict viz (port 8888)
+    $(GREEN)serve-wiki-ideas$(RESET)  Open Volume I experimental viz ideas
+    $(GREEN)serve-wiki-ideas2$(RESET) Open Volume II experimental viz ideas (new)"
 	@echo "    $(GREEN)notebook$(RESET)       Launch Jupyter Notebook"
 	@echo ""
 	@echo "  $(CYAN)Data & Export$(RESET)"
@@ -60,6 +62,14 @@ serve-lg:
 ## serve-wiki: serve the Wikipedia edit-conflict visualization (assignment 06)
 serve-wiki:
 	uv run python assignments/06_reinventing_playfaire/scripts/serve.py
+
+## serve-wiki-ideas: open Volume I experimental ideas page
+serve-wiki-ideas:
+	uv run python assignments/06_reinventing_playfaire/scripts/serve.py --open viz/ideas.html
+
+## serve-wiki-ideas2: open Volume II experimental ideas page
+serve-wiki-ideas2:
+	uv run python assignments/06_reinventing_playfaire/scripts/serve.py --open viz/ideas2.html
 
 ## prepare-vda: run the data preparation script for visual_data_analysis
 prepare-vda:

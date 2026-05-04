@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Conflict Decoded — 5 More Lenses · Wikipedia Arbitration</title>
+<style>
+:root {
+  --text:#202122; --muted:#72777d; --faint:#A2A9B1; --link:#3366CC;
+  --surface:#FFFFFF; --surface2:#F8F9FA; --border:#C8CCD1;
+  --border-light:#EAECF0; --red:#B60000;
+  --green:#006733; --orange:#E97500; --purple:#5B2D8E;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#EBEBEB;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Linux Libertine',Georgia,serif;}
+a{color:var(--link);}
+
+.page-header{background:#0F111A;color:#E8E8F2;padding:52px 64px;border-bottom:3px solid #3366CC;}
+.page-header .eyebrow{font-size:.65rem;text-transform:uppercase;letter-spacing:.15em;color:#8899CC;margin-bottom:10px;}
+.page-header h1{font-size:2.4rem;font-weight:300;letter-spacing:-.03em;margin-bottom:14px;line-height:1.1;}
+.page-header h1 em{font-style:normal;color:#8899CC;}
+.page-header .mission{font-size:.9rem;color:#A0A8C0;line-height:1.7;max-width:660px;}
+.nav-links{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;}
+.nav-link{display:inline-block;font-size:.7rem;color:#8899CC;border:1px solid #2a3055;
+  border-radius:4px;padding:5px 12px;text-decoration:none;}
+.nav-link:hover{background:#1a2040;}
+
+.viz-section{background:var(--surface2);border-bottom:1px solid #D4D4D4;padding:52px 64px;}
+.section-num{font-size:.6rem;text-transform:uppercase;letter-spacing:.18em;color:var(--faint);margin-bottom:4px;}
+.section-title{font-size:1.8rem;font-weight:300;letter-spacing:-.02em;color:var(--text);margin-bottom:6px;}
+.section-subtitle{font-size:.82rem;font-weight:600;color:var(--muted);margin-bottom:10px;}
+.section-why{
+  font-size:.83rem;color:var(--muted);line-height:1.65;max-width:700px;
+  margin-bottom:32px;padding:10px 16px;
+  border-left:3px solid var(--border-light);background:var(--surface);
+  border-radius:0 4px 4px 0;
+}
+.viz-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.viz-card svg{display:block;}
+.viz-legend{
+  display:flex;gap:14px;flex-wrap:wrap;
+  padding:10px 16px;border-top:1px solid var(--border-light);
+  font-size:.64rem;color:var(--muted);background:var(--surface);
+  border-radius:0 0 8px 8px;
+}
+.leg-item{display:flex;align-items:center;gap:5px;}
+.leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.leg-sq{width:10px;height:10px;flex-shrink:0;}
+.loading{padding:60px;text-align:center;color:var(--muted);font-size:.85rem;}
+.err{padding:20px;color:var(--red);font-size:.82rem;}
+
+/* Controls */
+.controls{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+.controls label{font-size:.75rem;color:var(--muted);font-weight:600;}
+.controls select{
+  font-size:.75rem;padding:5px 10px;border:1px solid var(--border);
+  border-radius:4px;background:var(--surface);color:var(--text);cursor:pointer;
+}
+.case-label{
+  display:inline-block;font-size:.68rem;background:#F0F3FF;color:#3366CC;
+  border:1px solid #C0CCF0;border-radius:12px;padding:2px 9px;margin-left:4px;
+}
+
+#tip{
+  position:fixed;background:rgba(15,17,26,.93);color:#E8E8F2;
+  padding:9px 13px;border-radius:5px;font-size:.71rem;line-height:1.55;
+  pointer-events:none;display:none;z-index:9999;max-width:260px;
+  border:1px solid #2a3055;box-shadow:0 4px 16px rgba(0,0,0,.3);
+}
+#tip strong{color:#D0D8F0;}
+
+/* Global loading overlay */
+#global-load{
+  position:fixed;inset:0;background:rgba(248,249,250,.92);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:10000;gap:14px;
+}
+#global-load .spinner{width:40px;height:40px;border:3px solid #C8CCD1;
+  border-top-color:#3366CC;border-radius:50%;animation:spin .7s linear infinite;}
+#global-load p{font-size:.85rem;color:var(--muted);}
+@keyframes spin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+
+<div id="global-load">
+  <div class="spinner"></div>
+  <p id="load-status">Loading case data…</p>
+</div>
+
+<div id="tip"></div>
+
+<div class="page-header">
+  <div class="eyebrow">Wikipedia Arbitration · SARC 5400 Final Project · Volume II</div>
+  <h1>Conflict <em>Decoded</em></h1>
+  <p class="mission">
+    Five more ways to read the same 101 arbitration cases — now going deeper into the mechanics:
+    who fought whom in the edit trenches, at what hour of day the battles peaked, which cases
+    burned fast and which smoldered for years, how each role gradually abandoned the field,
+    and what the raw edit rhythm of each case sounds like as a visual score.
+  </p>
+  <div class="nav-links">
+    <a class="nav-link" href="dashboard.html">← Main dashboard</a>
+    <a class="nav-link" href="ideas.html">Volume I →</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     VIZ 1 — THE REVERT WEB
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<div class="viz-section" id="s1">
+  <div class="section-num">01</div>
+  <div class="section-title">The Revert Web</div>
+  <div class="section-subtitle">Who undid whom — the social graph of reversal</div>
+  <p class="section-why">
+    A revert is not just a technical undo — it's a declaration of conflict.
+    When editor A reverts editor B's work, they are saying: <em>your contribution does not belong here.</em>
+    This force-directed graph maps every revert in a single arbitration case as a directed edge between
+    editors. Nodes sized by total edits; edges weighted by revert count. Cases with the most reverts
+    tend to show a cluster-and-periphery pattern: a few combatants at the center, surrounded by
+    bystanders who tried to intervene. Select from the cases below — all have at least 5 reversal events.
+  </p>
+  <div class="controls">
+    <label for="case-sel">Select case:</label>
+    <select id="case-sel"></select>
+    <span id="revert-stats" style="font-size:.72rem;color:var(--muted)"></span>
+  </div>
+  <div class="viz-card">
+    <div id="v1-container" style="height:520px;"></div>
+    <div class="viz-legend" id="v1-legend">
+      <div class="leg-item"><div class="leg-dot" style="background:#C05A00;"></div>participant</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#006733;"></div>arbitrator</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#5B2D8E;"></div>observer</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#4A90D9;"></div>candidate</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#666;"></div>unknown</div>
+      <span style="margin-left:auto;color:var(--faint)">→ edge = revert direction · thickness = count · node size = edit volume</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     VIZ 2 — THE EDIT PULSE
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<div class="viz-section" id="s2">
+  <div class="section-num">02</div>
+  <div class="section-title">The Edit Pulse</div>
+  <div class="section-subtitle">When do editors fight? Hour of day × stage of conflict</div>
+  <p class="section-why">
+    Wikipedia runs on UTC and its editors span every timezone, but conflict isn't evenly distributed
+    across the clock. This heatmap maps every edit event in every case to two dimensions: its UTC hour
+    (rows, 0–23) and its normalized position in the case lifecycle (columns, 0–100%). Darker cells mean
+    more editing activity at that hour during that stage. The emerging pattern reveals not just <em>when</em>
+    Wikipedia is busiest, but whether early conflict (left) and late resolution (right) happen at different
+    times of day — and whether late-night editing is correlated with the most contentious moments.
+  </p>
+  <div class="viz-card">
+    <div id="v2-container"></div>
+    <div class="viz-legend">
+      <span style="color:var(--faint)">Rows = UTC hour (0–23) · Columns = normalized case progress (0–100%) · Color intensity = edit density</span>
+      <div class="leg-item" style="margin-left:auto;">
+        <div class="leg-sq" style="background:#FFF5EE;border:1px solid #ddd;"></div> low
+        <div class="leg-sq" style="background:#FDAE6B;margin-left:3px;"></div>
+        <div class="leg-sq" style="background:#D94701;margin-left:3px;"></div> high
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     VIZ 3 — CASE METABOLISM
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<div class="viz-section" id="s3">
+  <div class="section-num">03</div>
+  <div class="section-title">Case Metabolism</div>
+  <div class="section-subtitle">Fast & explosive vs slow & smoldering — mapping case tempo</div>
+  <p class="section-why">
+    Not all arbitration cases are equal in pace. Some erupt quickly — dozens of reverts compressed into
+    days — while others drag on for years as editors grind through procedure. This scatter plots each case
+    by its duration (x-axis, log scale) against its "conflict density" — reverts per 1,000 edits (y-axis).
+    Bubble size encodes the number of editors involved; color encodes the primary topic. Top-left cases
+    are the flash-fires: short, hot, and turbulent. Bottom-right are the long sieges: months of slow
+    attrition. Hover to read the case name and key stats.
+  </p>
+  <div class="viz-card">
+    <div id="v3-container"></div>
+    <div class="viz-legend" id="v3-legend"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     VIZ 4 — THE DEPARTURE WAVE
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<div class="viz-section" id="s4">
+  <div class="section-num">04</div>
+  <div class="section-title">The Departure Wave</div>
+  <div class="section-subtitle">Role by role, who leaves — and when</div>
+  <p class="section-why">
+    Every arbitration case starts with a crowd and ends with a committee. Participants file their evidence
+    then vanish; observers comment and drift away; arbitrators alone persist through to the final decision.
+    This stacked area chart tracks the fraction of editors in each role who remain active at each normalized
+    stage of the case, averaged across all 101 cases. The shape reveals the social physics of arbitration:
+    the early surge of participation, the thinning of the middle game, and the quiet of the verdict phase
+    where only the arbitrators are left speaking.
+  </p>
+  <div class="viz-card">
+    <div id="v4-container"></div>
+    <div class="viz-legend">
+      <div class="leg-item"><div class="leg-sq" style="background:#C05A00;opacity:.8;"></div>participants</div>
+      <div class="leg-item"><div class="leg-sq" style="background:#5B2D8E;opacity:.8;"></div>observers</div>
+      <div class="leg-item"><div class="leg-sq" style="background:#4A90D9;opacity:.8;"></div>candidates</div>
+      <div class="leg-item"><div class="leg-sq" style="background:#006733;opacity:.8;"></div>arbitrators</div>
+      <span style="margin-left:auto;color:var(--faint)">X = normalized case time (0–100%) · Y = % of role still active · averaged across 101 cases</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     VIZ 5 — THE EDIT SCORE
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<div class="viz-section" id="s5" style="border-bottom:none;">
+  <div class="section-num">05</div>
+  <div class="section-title">The Edit Score</div>
+  <div class="section-subtitle">Each case as a musical score — reading the rhythm of conflict</div>
+  <p class="section-why">
+    A musical score shows when instruments enter, when they play loudly, and when they fall silent.
+    This view renders the 20 most edit-dense arbitration cases as stacked bar "scores" — each row is a
+    case, each column is a 5%-wide slice of normalized case time, and bar height encodes edit volume.
+    Reverts are marked in red; sanctions in gold. Reading horizontally, you hear the rhythm of each case:
+    a steady hum, a sudden burst, a long silence, then a flurry near the end as arbitrators finalize.
+    Cases are sorted top-to-bottom by their peak conflict intensity — the loudest cases at the top.
+  </p>
+  <div class="viz-card">
+    <div id="v5-container"></div>
+    <div class="viz-legend">
+      <div class="leg-item"><div class="leg-sq" style="background:#3366CC;opacity:.8;"></div>edits</div>
+      <div class="leg-item"><div class="leg-sq" style="background:#B60000;opacity:.8;"></div>reverts</div>
+      <div class="leg-item"><div class="leg-sq" style="background:#E97500;opacity:.8;"></div>sanctions</div>
+      <span style="margin-left:auto;color:var(--faint)">Each row = one case · Columns = 5% slices of normalized case time · Height = event count</span>
+    </div>
+  </div>
+</div>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+/* ============================================================
+   CONSTANTS & HELPERS
+   ============================================================ */
+const ROLE_COLOR = {
+  participant:         '#C05A00',
+  arbitrator:          '#006733',
+  observer:            '#5B2D8E',
+  arbitrator_candidate:'#4A90D9',
+};
+const roleColor = r => ROLE_COLOR[r] || '#888';
+
+const TOPIC_COLOR = {
+  Science:'#0057AF', Geopolitics:'#006733', Religion:'#9E5400',
+  Social:'#B60000', Policy:'#5B2D8E', Conduct:'#595959',
+};
+const TOPICS_RE = [
+  [/climat|evolution|vaccine|COVID|pseudosci|physics|astrono|biolog/i,'Science'],
+  [/iran|iraq|israel|palestin|russia|ukrain|china|india|pakistan|armenian|azerbaij|balkan|serbia|croat/i,'Geopolitics'],
+  [/islam|muslim|cathol|church|christian|jewish|hindu|buddh|scientol|mormon|religio/i,'Religion'],
+  [/gender|race|ethnic|feminism|lgbt|disability|civil right|indigenous/i,'Social'],
+  [/administrat|enforcem|noticeBoard|ANI|arbcom|policy|guideline/i,'Policy'],
+];
+function guessTopic(name) {
+  for (const [re, t] of TOPICS_RE) if (re.test(name)) return t;
+  return 'Conduct';
+}
+function topicColor(name) { return TOPIC_COLOR[guessTopic(name)] || '#595959'; }
+
+const tip = document.getElementById('tip');
+function showTip(ev, html) {
+  tip.innerHTML = html; tip.style.display = 'block';
+  moveTip(ev);
+}
+function moveTip(ev) {
+  let x = ev.clientX + 14, y = ev.clientY - 10;
+  if (x + 270 > window.innerWidth) x = ev.clientX - 270;
+  tip.style.left = x + 'px'; tip.style.top = y + 'px';
+}
+function hideTip() { tip.style.display = 'none'; }
+
+/* ============================================================
+   DATA LOADING
+   ============================================================ */
+async function loadAll() {
+  const statusEl = document.getElementById('load-status');
+  const manifest = await d3.json('../data/processed/d3/manifest.json');
+  const valid = manifest.filter(d => d.has_data);
+  let loaded = 0;
+  const cases = await Promise.all(valid.map(async m => {
+    try {
+      const d = await d3.json(`../data/processed/d3/${m.slug}.json`);
+      loaded++;
+      if (loaded % 10 === 0) statusEl.textContent = `Loading cases… ${loaded}/${valid.length}`;
+      return d;
+    } catch(e) { return null; }
+  }));
+  return cases.filter(Boolean);
+}
+
+/* ============================================================
+   VIZ 1 — THE REVERT WEB
+   ============================================================ */
+function drawRevertWeb(allCases) {
+  // Only cases with ≥5 reverts
+  const eligibleCases = allCases
+    .filter(c => c.events.filter(e => e.type==='revert').length >= 5)
+    .sort((a,b) => b.events.filter(e=>e.type==='revert').length - a.events.filter(e=>e.type==='revert').length);
+
+  const sel = document.getElementById('case-sel');
+  eligibleCases.forEach((c,i) => {
+    const opt = document.createElement('option');
+    opt.value = i;
+    const nRev = c.events.filter(e=>e.type==='revert').length;
+    opt.textContent = `${c.meta.case_name}  (${nRev} reverts)`;
+    sel.appendChild(opt);
+  });
+
+  function render(idx) {
+    const c = eligibleCases[idx];
+    const reverts = c.events.filter(e => e.type === 'revert');
+    document.getElementById('revert-stats').textContent =
+      `${reverts.length} revert events · ${c.nodes.length} editors · ${c.meta.case_duration_days}d duration`;
+
+    // Build node map from username → node data
+    const nodeMap = {};
+    c.nodes.forEach(n => { nodeMap[n.username] = n; });
+
+    // Build edge weights
+    const edgeKey = {};
+    reverts.forEach(e => {
+      if (!e.actor || !e.reverted) return;
+      const k = `${e.actor}||${e.reverted}`;
+      edgeKey[k] = (edgeKey[k]||0) + 1;
+    });
+
+    // Collect nodes that appear in reverts
+    const nodeNames = new Set();
+    Object.keys(edgeKey).forEach(k => {
+      const [a,b] = k.split('||');
+      nodeNames.add(a); nodeNames.add(b);
+    });
+
+    const nodes = Array.from(nodeNames).map(name => {
+      const nd = nodeMap[name] || {};
+      return {
+        id: name,
+        role: nd.role || 'participant',
+        edits: nd.total_edits || 1,
+        is_admin: nd.is_admin || false,
+      };
+    });
+
+    const links = Object.entries(edgeKey).map(([k, count]) => {
+      const [source, target] = k.split('||');
+      return {source, target, count};
+    });
+
+    // Clear & draw
+    const container = document.getElementById('v1-container');
+    container.innerHTML = '';
+    const W = container.getBoundingClientRect().width || 900;
+    const H = 520;
+
+    const svg = d3.select(container).append('svg')
+      .attr('width', W).attr('height', H);
+
+    // Arrow marker
+    const defs = svg.append('defs');
+    ['participant','arbitrator','observer','arbitrator_candidate','unknown'].forEach(role => {
+      defs.append('marker')
+        .attr('id', `arrow-${role}`)
+        .attr('viewBox','0 -5 10 10').attr('refX',18).attr('refY',0)
+        .attr('markerWidth',6).attr('markerHeight',6).attr('orient','auto')
+        .append('path').attr('d','M0,-5L10,0L0,5')
+        .attr('fill', roleColor(role)).attr('opacity',.7);
+    });
+
+    const maxCount = d3.max(links, d => d.count) || 1;
+    const rScale = d3.scaleSqrt().domain([1, d3.max(nodes, d => d.edits)||1]).range([4, 20]);
+    const wScale = d3.scaleLinear().domain([1, maxCount]).range([1, 5]);
+
+    const sim = d3.forceSimulation(nodes)
+      .force('link', d3.forceLink(links).id(d=>d.id).distance(d => 80 + (3-d.count)*10))
+      .force('charge', d3.forceManyBody().strength(-220))
+      .force('center', d3.forceCenter(W/2, H/2))
+      .force('collide', d3.forceCollide().radius(d => rScale(d.edits)+4));
+
+    const link = svg.append('g').selectAll('line').data(links).join('line')
+      .attr('stroke', d => {
+        const src = nodes.find(n=>n.id===d.source.id||n.id===d.source);
+        return src ? roleColor(src.role) : '#aaa';
+      })
+      .attr('stroke-opacity', .6)
+      .attr('stroke-width', d => wScale(d.count))
+      .attr('marker-end', d => {
+        const src = nodes.find(n=>n.id===d.source.id||n.id===d.source);
+        return `url(#arrow-${src?src.role:'unknown'})`;
+      });
+
+    const node = svg.append('g').selectAll('g').data(nodes).join('g')
+      .call(d3.drag()
+        .on('start', (ev,d) => { if(!ev.active) sim.alphaTarget(.3).restart(); d.fx=d.x;d.fy=d.y; })
+        .on('drag', (ev,d) => { d.fx=ev.x; d.fy=ev.y; })
+        .on('end', (ev,d) => { if(!ev.active) sim.alphaTarget(0); d.fx=null;d.fy=null; }));
+
+    node.append('circle')
+      .attr('r', d => rScale(d.edits))
+      .attr('fill', d => roleColor(d.role))
+      .attr('stroke', d => d.is_admin ? '#FFD700' : '#fff')
+      .attr('stroke-width', d => d.is_admin ? 2 : 1)
+      .attr('opacity', .88)
+      .on('mouseover', (ev, d) => {
+        const nd = nodeMap[d.id] || {};
+        showTip(ev, `<strong>${d.id}</strong><br>
+          Role: ${d.role}${d.is_admin?' · admin':''}<br>
+          Edits: ${nd.total_edits||'?'} · Reverts given: ${nd.revert_count||0}<br>
+          Days active: ${nd.days_active||'?'}`);
+      })
+      .on('mousemove', moveTip)
+      .on('mouseout', hideTip);
+
+    node.append('text')
+      .attr('dy', d => -rScale(d.edits)-3)
+      .attr('text-anchor','middle')
+      .attr('font-size', '9px')
+      .attr('fill', '#444')
+      .attr('pointer-events','none')
+      .text(d => d.id.length > 14 ? d.id.slice(0,13)+'…' : d.id);
+
+    link.on('mouseover', (ev,d) => {
+      showTip(ev, `<strong>${d.source.id||d.source} → ${d.target.id||d.target}</strong><br>${d.count} revert${d.count>1?'s':''}`);
+    }).on('mousemove', moveTip).on('mouseout', hideTip);
+
+    sim.on('tick', () => {
+      link
+        .attr('x1', d => d.source.x).attr('y1', d => d.source.y)
+        .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
+      node.attr('transform', d => `translate(${d.x},${d.y})`);
+    });
+  }
+
+  render(0);
+  sel.addEventListener('change', () => render(+sel.value));
+}
+
+/* ============================================================
+   VIZ 2 — THE EDIT PULSE
+   ============================================================ */
+function drawEditPulse(allCases) {
+  const N_COLS = 20, N_ROWS = 24;
+  const grid = Array.from({length:N_ROWS}, () => new Array(N_COLS).fill(0));
+  let total = 0;
+
+  allCases.forEach(c => {
+    const start = new Date(c.meta.case_start).getTime();
+    const end   = new Date(c.meta.case_end).getTime();
+    const dur = end - start;
+    if (dur <= 0) return;
+    c.events.filter(e => e.type === 'edit').forEach(e => {
+      const t = new Date(e.timestamp);
+      const pct = (t.getTime() - start) / dur;
+      if (pct < 0 || pct > 1) return;
+      const col = Math.min(N_COLS-1, Math.floor(pct * N_COLS));
+      const row = t.getUTCHours();
+      grid[row][col]++;
+      total++;
+    });
+  });
+
+  const W = Math.min(900, document.getElementById('s2').getBoundingClientRect().width - 128);
+  const cellW = Math.floor((W - 60) / N_COLS);
+  const cellH = 22;
+  const marginL = 44, marginT = 36, marginB = 30;
+  const H = N_ROWS * cellH + marginT + marginB;
+
+  const svg = d3.select('#v2-container').append('svg')
+    .attr('width', W).attr('height', H);
+
+  const maxVal = d3.max(grid.flat()) || 1;
+  const color = d3.scaleSequential(d3.interpolateOranges).domain([0, maxVal]);
+
+  // Cells
+  grid.forEach((row, ri) => {
+    row.forEach((val, ci) => {
+      svg.append('rect')
+        .attr('x', marginL + ci * cellW)
+        .attr('y', marginT + ri * cellH)
+        .attr('width', cellW - 1)
+        .attr('height', cellH - 1)
+        .attr('fill', val === 0 ? '#F8F9FA' : color(val))
+        .attr('rx', 1)
+        .on('mouseover', ev => {
+          const hourLabel = `${ri.toString().padStart(2,'0')}:00–${ri.toString().padStart(2,'0')}:59 UTC`;
+          const pctStart = Math.round(ci * 100 / N_COLS);
+          const pctEnd = Math.round((ci+1) * 100 / N_COLS);
+          showTip(ev, `<strong>${hourLabel}</strong><br>
+            Case progress: ${pctStart}–${pctEnd}%<br>
+            Edits in bucket: <strong>${val}</strong> (${((val/total)*100).toFixed(2)}% of all)`);
+        })
+        .on('mousemove', moveTip).on('mouseout', hideTip);
+    });
+  });
+
+  // Y axis: hours
+  [0,3,6,9,12,15,18,21].forEach(h => {
+    svg.append('text')
+      .attr('x', marginL - 4).attr('y', marginT + h * cellH + cellH/2 + 4)
+      .attr('text-anchor','end').attr('font-size','9px').attr('fill','#888')
+      .text(`${h.toString().padStart(2,'0')}h`);
+  });
+
+  // X axis: case progress
+  [0,25,50,75,100].forEach(pct => {
+    const ci = Math.round(pct / 100 * N_COLS);
+    svg.append('text')
+      .attr('x', marginL + ci * cellW).attr('y', H - 8)
+      .attr('text-anchor','middle').attr('font-size','9px').attr('fill','#888')
+      .text(pct === 0 ? 'Case open' : pct === 100 ? 'Case close' : `${pct}%`);
+  });
+
+  // Axis labels
+  svg.append('text').attr('x', 8).attr('y', marginT + N_ROWS*cellH/2)
+    .attr('text-anchor','middle').attr('font-size','9px').attr('fill','#aaa')
+    .attr('transform', `rotate(-90, 8, ${marginT + N_ROWS*cellH/2})`)
+    .text('UTC Hour');
+  svg.append('text').attr('x', marginL + N_COLS*cellW/2).attr('y', marginT - 14)
+    .attr('text-anchor','middle').attr('font-size','9px').attr('fill','#aaa')
+    .text('Normalized case progress →');
+}
+
+/* ============================================================
+   VIZ 3 — CASE METABOLISM
+   ============================================================ */
+function drawMetabolism(allCases) {
+  const data = allCases.map(c => {
+    const nEdits  = c.events.filter(e=>e.type==='edit').length || 1;
+    const nReverts = c.events.filter(e=>e.type==='revert').length;
+    const dur = c.meta.case_duration_days || 1;
+    return {
+      name: c.meta.case_name,
+      duration: dur,
+      revertDensity: (nReverts / nEdits) * 1000,
+      nEditors: c.nodes.length,
+      nReverts,
+      nEdits,
+      topic: guessTopic(c.meta.case_name),
+    };
+  }).filter(d => d.duration > 0);
+
+  const W = Math.min(900, document.getElementById('s3').getBoundingClientRect().width - 128);
+  const H = 480;
+  const ml=70, mr=30, mt=30, mb=60;
+  const iw = W - ml - mr, ih = H - mt - mb;
+
+  const svg = d3.select('#v3-container').append('svg').attr('width',W).attr('height',H);
+  const g = svg.append('g').attr('transform',`translate(${ml},${mt})`);
+
+  const xScale = d3.scaleLog().domain([
+    d3.max([1, d3.min(data, d=>d.duration)*0.8]),
+    d3.max(data, d=>d.duration)*1.2
+  ]).range([0, iw]);
+
+  const yScale = d3.scaleLinear()
+    .domain([0, d3.max(data, d=>d.revertDensity)*1.1]).range([ih, 0]);
+
+  const rScale = d3.scaleSqrt()
+    .domain([0, d3.max(data, d=>d.nEditors)]).range([4, 28]);
+
+  // Grid lines
+  g.append('g').call(d3.axisLeft(yScale).ticks(6).tickSize(-iw))
+    .call(ax => { ax.select('.domain').remove(); ax.selectAll('.tick line').attr('stroke','#EEE'); });
+  g.append('g').attr('transform',`translate(0,${ih})`)
+    .call(d3.axisBottom(xScale).ticks(5, 'd').tickSize(-ih))
+    .call(ax => { ax.select('.domain').remove(); ax.selectAll('.tick line').attr('stroke','#EEE'); });
+
+  // Axis labels
+  g.append('text').attr('x', iw/2).attr('y', ih+48)
+    .attr('text-anchor','middle').attr('font-size','11px').attr('fill','#666')
+    .text('Case duration (days, log scale)');
+  g.append('text').attr('transform','rotate(-90)').attr('x',-ih/2).attr('y',-52)
+    .attr('text-anchor','middle').attr('font-size','11px').attr('fill','#666')
+    .text('Revert density (reverts per 1,000 edits)');
+
+  // Bubbles
+  g.selectAll('circle').data(data).join('circle')
+    .attr('cx', d => xScale(d.duration))
+    .attr('cy', d => yScale(d.revertDensity))
+    .attr('r', d => rScale(d.nEditors))
+    .attr('fill', d => topicColor(d.name))
+    .attr('opacity', .65)
+    .attr('stroke', '#fff').attr('stroke-width', 1)
+    .on('mouseover', (ev, d) => {
+      showTip(ev, `<strong>${d.name}</strong><br>
+        Topic: ${d.topic}<br>
+        Duration: ${d.duration}d · Editors: ${d.nEditors}<br>
+        Edits: ${d.nEdits} · Reverts: ${d.nReverts}<br>
+        Revert density: ${d.revertDensity.toFixed(1)} / 1k edits`);
+    })
+    .on('mousemove', moveTip).on('mouseout', hideTip);
+
+  // Legend
+  const legEl = document.getElementById('v3-legend');
+  Object.entries(TOPIC_COLOR).forEach(([t, c]) => {
+    legEl.innerHTML += `<div class="leg-item"><div class="leg-dot" style="background:${c};"></div>${t}</div>`;
+  });
+  legEl.innerHTML += `<span style="margin-left:auto;color:var(--faint)">Bubble size = editor count</span>`;
+}
+
+/* ============================================================
+   VIZ 4 — THE DEPARTURE WAVE
+   ============================================================ */
+function drawDepartureWave(allCases) {
+  const N = 20;
+  const roles = ['participant','observer','arbitrator_candidate','arbitrator'];
+  const roleCounts = {}; // role → [N buckets] = total editors active in that bucket
+  const caseCount  = {}; // role → [N buckets] = num cases contributing
+  roles.forEach(r => {
+    roleCounts[r] = new Array(N).fill(0);
+    caseCount[r]  = new Array(N).fill(0);
+  });
+
+  allCases.forEach(c => {
+    const cStart = new Date(c.meta.case_start).getTime();
+    const cEnd   = new Date(c.meta.case_end).getTime();
+    const dur = cEnd - cStart;
+    if (dur <= 0) return;
+
+    c.nodes.forEach(n => {
+      const role = n.role;
+      if (!roles.includes(role)) return;
+      const fa = n.first_active ? new Date(n.first_active).getTime() : cStart;
+      const la = n.last_active  ? new Date(n.last_active ).getTime() : cEnd;
+
+      for (let b = 0; b < N; b++) {
+        const bS = cStart + (b/N)*dur;
+        const bE = cStart + ((b+1)/N)*dur;
+        if (fa <= bE && la >= bS) {
+          roleCounts[role][b]++;
+          caseCount[role][b]++;
+        }
+      }
+    });
+  });
+
+  // Normalize: for each bucket, compute fraction of peak for each role
+  const normalised = roles.map(role => {
+    const peak = d3.max(roleCounts[role]) || 1;
+    return {
+      role,
+      values: roleCounts[role].map(v => v / peak),
+    };
+  });
+
+  const W = Math.min(900, document.getElementById('s4').getBoundingClientRect().width - 128);
+  const H = 340;
+  const ml=50, mr=20, mt=20, mb=50;
+  const iw = W-ml-mr, ih = H-mt-mb;
+
+  const svg = d3.select('#v4-container').append('svg').attr('width',W).attr('height',H);
+  const g = svg.append('g').attr('transform',`translate(${ml},${mt})`);
+
+  const x = d3.scaleLinear().domain([0, N-1]).range([0, iw]);
+  const y = d3.scaleLinear().domain([0, 1]).range([ih, 0]);
+
+  const area = d3.area()
+    .x((d,i) => x(i))
+    .y0(ih)
+    .y1(d => y(d))
+    .curve(d3.curveMonotoneX);
+
+  const line = d3.line()
+    .x((d,i) => x(i))
+    .y(d => y(d))
+    .curve(d3.curveMonotoneX);
+
+  // Grid
+  g.append('g').call(d3.axisLeft(y).ticks(5).tickSize(-iw).tickFormat(d=>d3.format('.0%')(d)))
+    .call(ax => { ax.select('.domain').remove(); ax.selectAll('.tick line').attr('stroke','#EEE'); });
+
+  const roleLabels = {
+    participant:'Participants', observer:'Observers',
+    arbitrator_candidate:'Candidates', arbitrator:'Arbitrators'
+  };
+
+  normalised.forEach(({role, values}) => {
+    g.append('path')
+      .datum(values)
+      .attr('d', area)
+      .attr('fill', ROLE_COLOR[role])
+      .attr('opacity', .2);
+
+    g.append('path')
+      .datum(values)
+      .attr('d', line)
+      .attr('fill','none')
+      .attr('stroke', ROLE_COLOR[role])
+      .attr('stroke-width', 2.5)
+      .attr('opacity', .9);
+
+    // End label
+    const last = values[N-1];
+    g.append('text')
+      .attr('x', iw + 5)
+      .attr('y', y(last))
+      .attr('dy', '0.35em')
+      .attr('font-size','9px')
+      .attr('fill', ROLE_COLOR[role])
+      .text(roleLabels[role]);
+  });
+
+  // X axis
+  g.append('g').attr('transform',`translate(0,${ih})`)
+    .call(d3.axisBottom(x).tickValues([0,4,9,14,19]).tickFormat(d => ['Open','25%','50%','75%','Close'][([0,4,9,14,19]).indexOf(d)]))
+    .call(ax => ax.select('.domain').attr('stroke','#CCC'));
+
+  g.append('text').attr('x',iw/2).attr('y',ih+44)
+    .attr('text-anchor','middle').attr('font-size','11px').attr('fill','#666')
+    .text('Normalized case progress →');
+  g.append('text').attr('transform','rotate(-90)').attr('x',-ih/2).attr('y',-40)
+    .attr('text-anchor','middle').attr('font-size','11px').attr('fill','#666')
+    .text('% of peak role activity');
+
+  // Hover overlay
+  const bisect = d3.bisector((_,i)=>i).left;
+  const overlay = g.append('rect').attr('width',iw).attr('height',ih).attr('fill','none').attr('pointer-events','all');
+  const vline = g.append('line').attr('y1',0).attr('y2',ih).attr('stroke','#999').attr('stroke-dasharray','4 3').attr('display','none');
+
+  overlay
+    .on('mousemove', ev => {
+      const mx = d3.pointer(ev)[0];
+      const bucket = Math.round(x.invert(mx));
+      if (bucket < 0 || bucket >= N) return;
+      vline.attr('display',null).attr('x1',x(bucket)).attr('x2',x(bucket));
+      const pct = Math.round(bucket / (N-1) * 100);
+      const lines = normalised.map(({role,values}) =>
+        `${roleLabels[role]}: <strong>${(values[bucket]*100).toFixed(0)}%</strong>`
+      ).join('<br>');
+      showTip(ev, `<strong>Case progress: ${pct}%</strong><br>${lines}`);
+    })
+    .on('mouseout', () => { vline.attr('display','none'); hideTip(); });
+}
+
+/* ============================================================
+   VIZ 5 — THE EDIT SCORE
+   ============================================================ */
+function drawEditScore(allCases) {
+  const N_COLS = 20; // 5% slices
+
+  // Build score data per case
+  const scores = allCases.map(c => {
+    const start = new Date(c.meta.case_start).getTime();
+    const end   = new Date(c.meta.case_end).getTime();
+    const dur = end - start;
+    if (dur <= 0) return null;
+
+    const edits    = new Array(N_COLS).fill(0);
+    const reverts  = new Array(N_COLS).fill(0);
+    const sanctions= new Array(N_COLS).fill(0);
+
+    c.events.forEach(e => {
+      const t = new Date(e.timestamp).getTime();
+      const pct = (t - start) / dur;
+      if (pct < 0 || pct > 1) return;
+      const col = Math.min(N_COLS-1, Math.floor(pct * N_COLS));
+      if (e.type === 'edit')     edits[col]++;
+      if (e.type === 'revert')   reverts[col]++;
+      if (e.type === 'sanction') sanctions[col]++;
+    });
+
+    const peak = d3.max(edits) || 1;
+    return {
+      name: c.meta.case_name,
+      edits, reverts, sanctions, peak,
+      totalEdits: d3.sum(edits),
+    };
+  }).filter(Boolean);
+
+  // Sort by peak conflict, take top 22
+  scores.sort((a,b) => b.peak - a.peak);
+  const top = scores.slice(0, 22);
+
+  const rowH = 26, padY = 2;
+  const ml = 180, mr = 20, mt = 36, mb = 24;
+  const W = Math.min(960, document.getElementById('s5').getBoundingClientRect().width - 128);
+  const colW = Math.floor((W - ml - mr) / N_COLS);
+  const H = top.length * (rowH + padY) + mt + mb;
+
+  const svg = d3.select('#v5-container').append('svg').attr('width',W).attr('height',H);
+  const g = svg.append('g').attr('transform',`translate(${ml},${mt})`);
+
+  // Column header: progress marks
+  [0,5,10,15,19].forEach(ci => {
+    const pct = Math.round(ci / N_COLS * 100);
+    g.append('text')
+      .attr('x', ci * colW + colW/2).attr('y',-8)
+      .attr('text-anchor','middle').attr('font-size','8px').attr('fill','#AAA')
+      .text(ci===0 ? 'Open' : ci===19 ? 'Close' : `${pct}%`);
+  });
+
+  top.forEach((score, ri) => {
+    const y0 = ri * (rowH + padY);
+    const maxBar = rowH - 4;
+    const peakAll = d3.max(top, s => s.peak) || 1;
+
+    // Case label
+    g.append('text')
+      .attr('x', -6).attr('y', y0 + rowH/2 + 4)
+      .attr('text-anchor','end').attr('font-size','9px').attr('fill','#444')
+      .text(score.name.length > 24 ? score.name.slice(0,23)+'…' : score.name);
+
+    // Row background
+    g.append('rect')
+      .attr('x',0).attr('y',y0).attr('width',N_COLS*colW).attr('height',rowH)
+      .attr('fill', ri%2===0 ? '#F8F9FA' : '#FFF').attr('rx',1);
+
+    score.edits.forEach((v, ci) => {
+      const bH = Math.max(1, (v / peakAll) * maxBar);
+      g.append('rect')
+        .attr('x', ci*colW+1).attr('y', y0 + rowH - bH - 1)
+        .attr('width', colW-2).attr('height', bH)
+        .attr('fill', '#3366CC').attr('opacity', .55)
+        .on('mouseover', ev => {
+          showTip(ev, `<strong>${score.name}</strong><br>
+            Progress: ${Math.round(ci/N_COLS*100)}–${Math.round((ci+1)/N_COLS*100)}%<br>
+            Edits: ${v} · Reverts: ${score.reverts[ci]} · Sanctions: ${score.sanctions[ci]}`);
+        }).on('mousemove', moveTip).on('mouseout', hideTip);
+
+      if (score.reverts[ci] > 0) {
+        const rH = Math.max(2, (score.reverts[ci] / peakAll) * maxBar);
+        g.append('rect')
+          .attr('x', ci*colW+1).attr('y', y0 + rowH - rH - 1)
+          .attr('width', colW-2).attr('height', rH)
+          .attr('fill','#B60000').attr('opacity',.8);
+      }
+      if (score.sanctions[ci] > 0) {
+        g.append('rect')
+          .attr('x', ci*colW+1).attr('y', y0 + 2)
+          .attr('width', colW-2).attr('height', 3)
+          .attr('fill','#E97500').attr('opacity',1);
+      }
+    });
+  });
+
+  // X axis
+  g.append('g').attr('transform',`translate(0,${top.length*(rowH+padY)})`)
+    .append('line').attr('x2',N_COLS*colW).attr('stroke','#CCC');
+  g.append('text').attr('x',N_COLS*colW/2).attr('y',top.length*(rowH+padY)+18)
+    .attr('text-anchor','middle').attr('font-size','9px').attr('fill','#AAA')
+    .text('Normalized case progress (each column = 5%) →');
+}
+
+/* ============================================================
+   MAIN
+   ============================================================ */
+window.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const allCases = await loadAll();
+    document.getElementById('global-load').style.display = 'none';
+
+    drawRevertWeb(allCases);
+    drawEditPulse(allCases);
+    drawMetabolism(allCases);
+    drawDepartureWave(allCases);
+    drawEditScore(allCases);
+  } catch(err) {
+    document.getElementById('global-load').innerHTML =
+      `<p style="color:#B60000">Error loading data: ${err.message}</p>`;
+    console.error(err);
+  }
+});
+</script>
+</body>
+</html>
