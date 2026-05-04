@@ -287,7 +287,8 @@ function hideTip() { tip.style.display = 'none'; }
    ============================================================ */
 async function loadAll() {
   const statusEl = document.getElementById('load-status');
-  const manifest = await d3.json('../data/processed/d3/manifest.json');
+  const manifestData = await d3.json('../data/processed/d3/manifest.json');
+  const manifest = Array.isArray(manifestData) ? manifestData : (manifestData.cases || []);
   const valid = manifest.filter(d => d.has_data);
   let loaded = 0;
   const cases = await Promise.all(valid.map(async m => {
