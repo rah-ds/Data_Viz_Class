@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-05-04T21:52:43.541367Z",
+  "generated_at": "2026-05-04T22:30:27.624769Z",
   "total_cases": 481,
-  "cases_with_data": 321,
-  "cases_no_data": 160,
+  "cases_with_data": 465,
+  "cases_no_data": 16,
   "cases": [
     {
       "case_name": "-Ril-",
@@ -2578,6 +2578,31 @@
       }
     },
     {
+      "case_name": "Copperchair",
+      "slug": "copperchair",
+      "has_data": true,
+      "error": null,
+      "case_start": "2005-10-31",
+      "case_end": "2006-02-01",
+      "case_duration_days": 92,
+      "total_editors": 23,
+      "total_events": 155,
+      "outcome_status": "closed",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 8,
+      "departure_rate": 0.3478,
+      "starters": 9,
+      "saw_through": 3,
+      "retention_rate": 0.3333,
+      "phase_edits": {
+        "main": 16,
+        "evidence": 43,
+        "workshop": 52,
+        "proposed_decision": 44
+      }
+    },
+    {
       "case_name": "COVID-19",
       "slug": "covid-19",
       "has_data": true,
@@ -2598,6 +2623,726 @@
       "phase_edits": {
         "main": 15,
         "article": 31
+      }
+    },
+    {
+      "case_name": "Dalmatia",
+      "slug": "dalmatia",
+      "has_data": true,
+      "error": null,
+      "case_start": "2007-08-29",
+      "case_end": "2007-10-18",
+      "case_duration_days": 50,
+      "total_editors": 13,
+      "total_events": 89,
+      "outcome_status": "closed",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 4,
+      "departure_rate": 0.3077,
+      "starters": 6,
+      "saw_through": 1,
+      "retention_rate": 0.1667,
+      "phase_edits": {
+        "main": 23,
+        "workshop": 1,
+        "proposed_decision": 26,
+        "evidence": 39
+      }
+    },
+    {
+      "case_name": "DangerousPanda",
+      "slug": "dangerouspanda",
+      "has_data": true,
+      "error": null,
+      "case_start": "2014-11-19",
+      "case_end": "2015-02-01",
+      "case_duration_days": 73,
+      "total_editors": 36,
+      "total_events": 217,
+      "outcome_status": "closed",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 24,
+      "departure_rate": 0.6667,
+      "starters": 9,
+      "saw_through": 1,
+      "retention_rate": 0.1111,
+      "phase_edits": {
+        "main": 8,
+        "proposed_decision": 63,
+        "evidence": 73,
+        "workshop": 73
+      }
+    },
+    {
+      "case_name": "DarrenRay and 2006BC",
+      "slug": "darrenray_and_2006bc",
+      "has_data": true,
+      "error": null,
+      "case_start": "2006-03-23",
+      "case_end": "2006-06-08",
+      "case_duration_days": 77,
+      "total_editors": 19,
+      "total_events": 57,
+      "outcome_status": "closed",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 10,
+      "departure_rate": 0.5263,
+      "starters": 9,
+      "saw_through": 1,
+      "retention_rate": 0.1111,
+      "phase_edits": {
+        "main": 3,
+        "evidence": 21,
+        "workshop": 12,
+        "proposed_decision": 21
+      }
+    },
+    {
+      "case_name": "Date delinking",
+      "slug": "date_delinking",
+      "has_data": true,
+      "error": null,
+      "case_start": "2010-10-31",
+      "case_end": "2010-10-31",
+      "case_duration_days": 0,
+      "total_editors": 1,
+      "total_events": 1,
+      "outcome_status": "closed",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 0,
+      "departure_rate": 0.0,
+      "starters": 0,
+      "saw_through": 0,
+      "retention_rate": 0,
+      "phase_edits": {
+        "main": 1
+      }
+    },
+    {
+      "case_name": "Deathrocker",
+      "slug": "deathrocker",
+      "has_data": true,
+      "error": null,
+      "case_start": "2006-05-08",
+      "case_end": "2006-06-27",
+      "case_duration_days": 49,
+      "total_editors": 18,
+      "total_events": 130,
+      "outcome_status": "closed",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 4,
+      "departure_rate": 0.2222,
+      "starters": 6,
+      "saw_through": 2,
+      "retention_rate": 0.3333,
+      "phase_edits": {
+        "main": 5,
+        "evidence": 66,
+        "workshop": 42,
+        "proposed_decision": 17
+      }
+    },
+    {
+      "case_name": "Deeceevoice",
+      "slug": "deeceevoice",
+      "has_data": true,
+      "error": null,
+      "case_start": "2005-12-23",
+      "case_end": "2006-02-06",
+      "case_duration_days": 44,
+      "total_editors": 31,
+      "total_events": 231,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 10,
+      "departure_rate": 0.3226,
+      "starters": 4,
+      "saw_through": 2,
+      "retention_rate": 0.5,
+      "phase_edits": {
+        "main": 25,
+        "evidence": 61,
+        "proposed_decision": 73,
+        "workshop": 72
+      }
+    },
+    {
+      "case_name": "Deir Yassin massacre",
+      "slug": "deir_yassin_massacre",
+      "has_data": true,
+      "error": null,
+      "case_start": "2006-08-08",
+      "case_end": "2006-10-14",
+      "case_duration_days": 67,
+      "total_editors": 18,
+      "total_events": 131,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 8,
+      "departure_rate": 0.4444,
+      "starters": 6,
+      "saw_through": 2,
+      "retention_rate": 0.3333,
+      "phase_edits": {
+        "main": 1,
+        "evidence": 33,
+        "workshop": 71,
+        "proposed_decision": 26
+      }
+    },
+    {
+      "case_name": "Depleted uranium",
+      "slug": "depleted_uranium",
+      "has_data": true,
+      "error": null,
+      "case_start": "2006-03-05",
+      "case_end": "2006-05-05",
+      "case_duration_days": 61,
+      "total_editors": 28,
+      "total_events": 193,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 12,
+      "departure_rate": 0.4286,
+      "starters": 7,
+      "saw_through": 1,
+      "retention_rate": 0.1429,
+      "phase_edits": {
+        "main": 17,
+        "proposed_decision": 29,
+        "evidence": 74,
+        "workshop": 73
+      }
+    },
+    {
+      "case_name": "Dionyseus",
+      "slug": "dionyseus",
+      "has_data": true,
+      "error": null,
+      "case_start": "2006-06-20",
+      "case_end": "2006-08-26",
+      "case_duration_days": 67,
+      "total_editors": 16,
+      "total_events": 108,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 2,
+      "departure_rate": 0.125,
+      "starters": 5,
+      "saw_through": 3,
+      "retention_rate": 0.6,
+      "phase_edits": {
+        "main": 5,
+        "evidence": 21,
+        "workshop": 54,
+        "proposed_decision": 28
+      }
+    },
+    {
+      "case_name": "DotSix",
+      "slug": "dotsix",
+      "has_data": true,
+      "error": null,
+      "case_start": "2005-08-15",
+      "case_end": "2005-10-27",
+      "case_duration_days": 73,
+      "total_editors": 42,
+      "total_events": 209,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 20,
+      "departure_rate": 0.4762,
+      "starters": 24,
+      "saw_through": 5,
+      "retention_rate": 0.2083,
+      "phase_edits": {
+        "workshop": 18,
+        "proposed_decision": 49,
+        "evidence": 74,
+        "main": 68
+      }
+    },
+    {
+      "case_name": "Dr Zen",
+      "slug": "dr_zen",
+      "has_data": true,
+      "error": null,
+      "case_start": "2005-03-10",
+      "case_end": "2005-03-26",
+      "case_duration_days": 16,
+      "total_editors": 13,
+      "total_events": 110,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 1,
+      "departure_rate": 0.0769,
+      "starters": 4,
+      "saw_through": 1,
+      "retention_rate": 0.25,
+      "phase_edits": {
+        "main": 8,
+        "proposed_decision": 30,
+        "evidence": 72
+      }
+    },
+    {
+      "case_name": "DreamGuy",
+      "slug": "dreamguy",
+      "has_data": true,
+      "error": null,
+      "case_start": "2005-09-21",
+      "case_end": "2005-11-07",
+      "case_duration_days": 46,
+      "total_editors": 17,
+      "total_events": 46,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 2,
+      "departure_rate": 0.1176,
+      "starters": 3,
+      "saw_through": 2,
+      "retention_rate": 0.6667,
+      "phase_edits": {
+        "main": 11,
+        "evidence": 12,
+        "workshop": 14,
+        "proposed_decision": 9
+      }
+    },
+    {
+      "case_name": "DreamGuy 2",
+      "slug": "dreamguy_2",
+      "has_data": true,
+      "error": null,
+      "case_start": "2007-08-28",
+      "case_end": "2007-10-15",
+      "case_duration_days": 47,
+      "total_editors": 10,
+      "total_events": 43,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 3,
+      "departure_rate": 0.3,
+      "starters": 3,
+      "saw_through": 1,
+      "retention_rate": 0.3333,
+      "phase_edits": {
+        "main": 9,
+        "evidence": 13,
+        "workshop": 4,
+        "proposed_decision": 17
+      }
+    },
+    {
+      "case_name": "Durova",
+      "slug": "durova",
+      "has_data": true,
+      "error": null,
+      "case_start": "2007-11-25",
+      "case_end": "2014-04-05",
+      "case_duration_days": 2322,
+      "total_editors": 72,
+      "total_events": 231,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 41,
+      "departure_rate": 0.5694,
+      "starters": 41,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 19,
+        "evidence": 71,
+        "workshop": 69,
+        "proposed_decision": 72
+      }
+    },
+    {
+      "case_name": "Dyslexic Agnostic",
+      "slug": "dyslexic_agnostic",
+      "has_data": true,
+      "error": null,
+      "case_start": "2006-01-26",
+      "case_end": "2006-03-17",
+      "case_duration_days": 50,
+      "total_editors": 27,
+      "total_events": 202,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 10,
+      "departure_rate": 0.3704,
+      "starters": 10,
+      "saw_through": 3,
+      "retention_rate": 0.3,
+      "phase_edits": {
+        "main": 11,
+        "proposed_decision": 52,
+        "workshop": 70,
+        "evidence": 69
+      }
+    },
+    {
+      "case_name": "E104421-Tajik",
+      "slug": "e104421-tajik",
+      "has_data": true,
+      "error": null,
+      "case_start": "2007-04-04",
+      "case_end": "2007-06-29",
+      "case_duration_days": 85,
+      "total_editors": 16,
+      "total_events": 78,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 6,
+      "departure_rate": 0.375,
+      "starters": 7,
+      "saw_through": 5,
+      "retention_rate": 0.7143,
+      "phase_edits": {
+        "main": 5,
+        "evidence": 4,
+        "workshop": 18,
+        "proposed_decision": 51
+      }
+    },
+    {
+      "case_name": "Eastern Europe",
+      "slug": "eastern_europe",
+      "has_data": true,
+      "error": null,
+      "case_start": "2007-09-06",
+      "case_end": "2012-03-20",
+      "case_duration_days": 1656,
+      "total_editors": 32,
+      "total_events": 214,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 26,
+      "departure_rate": 0.8125,
+      "starters": 25,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "proposed_decision": 73,
+        "evidence": 72,
+        "workshop": 69
+      }
+    },
+    {
+      "case_name": "Eastern European disputes",
+      "slug": "eastern_european_disputes",
+      "has_data": true,
+      "error": null,
+      "case_start": "2008-08-29",
+      "case_end": "2022-05-29",
+      "case_duration_days": 5020,
+      "total_editors": 56,
+      "total_events": 241,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 38,
+      "departure_rate": 0.6786,
+      "starters": 38,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 26,
+        "evidence": 72,
+        "workshop": 69,
+        "proposed_decision": 74
+      }
+    },
+    {
+      "case_name": "Eastern European mailing list",
+      "slug": "eastern_european_mailing_list",
+      "has_data": true,
+      "error": null,
+      "case_start": "2009-10-12",
+      "case_end": "2025-10-10",
+      "case_duration_days": 5842,
+      "total_editors": 50,
+      "total_events": 233,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 33,
+      "departure_rate": 0.66,
+      "starters": 31,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "workshop": 18,
+        "evidence": 71,
+        "proposed_decision": 73,
+        "main": 71
+      }
+    },
+    {
+      "case_name": "Ebionites",
+      "slug": "ebionites",
+      "has_data": true,
+      "error": null,
+      "case_start": "2007-10-08",
+      "case_end": "2007-11-09",
+      "case_duration_days": 32,
+      "total_editors": 14,
+      "total_events": 116,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 0,
+      "departure_rate": 0.0,
+      "starters": 2,
+      "saw_through": 2,
+      "retention_rate": 1.0,
+      "phase_edits": {
+        "main": 1,
+        "workshop": 23,
+        "proposed_decision": 21,
+        "evidence": 71
+      }
+    },
+    {
+      "case_name": "Ebionites 3",
+      "slug": "ebionites_3",
+      "has_data": true,
+      "error": null,
+      "case_start": "2013-09-17",
+      "case_end": "2013-11-04",
+      "case_duration_days": 48,
+      "total_editors": 20,
+      "total_events": 224,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 1,
+      "departure_rate": 0.05,
+      "starters": 4,
+      "saw_through": 2,
+      "retention_rate": 0.5,
+      "phase_edits": {
+        "main": 11,
+        "evidence": 66,
+        "workshop": 74,
+        "proposed_decision": 73
+      }
+    },
+    {
+      "case_name": "Ed Poor",
+      "slug": "ed_poor",
+      "has_data": true,
+      "error": null,
+      "case_start": "2005-09-07",
+      "case_end": "2005-09-13",
+      "case_duration_days": 6,
+      "total_editors": 7,
+      "total_events": 16,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 0,
+      "departure_rate": 0.0,
+      "starters": 2,
+      "saw_through": 1,
+      "retention_rate": 0.5,
+      "phase_edits": {
+        "main": 2,
+        "evidence": 8,
+        "workshop": 1,
+        "proposed_decision": 5
+      }
+    },
+    {
+      "case_name": "Ed Poor 2",
+      "slug": "ed_poor_2",
+      "has_data": true,
+      "error": null,
+      "case_start": "2006-08-21",
+      "case_end": "2006-10-11",
+      "case_duration_days": 51,
+      "total_editors": 24,
+      "total_events": 173,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 11,
+      "departure_rate": 0.4583,
+      "starters": 12,
+      "saw_through": 3,
+      "retention_rate": 0.25,
+      "phase_edits": {
+        "main": 7,
+        "evidence": 59,
+        "proposed_decision": 34,
+        "workshop": 73
+      }
+    },
+    {
+      "case_name": "Editing of Biographies of Living Persons",
+      "slug": "editing_of_biographies_of_living_persons",
+      "has_data": true,
+      "error": null,
+      "case_start": "2008-05-04",
+      "case_end": "2015-01-27",
+      "case_duration_days": 2458,
+      "total_editors": 44,
+      "total_events": 258,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 24,
+      "departure_rate": 0.5455,
+      "starters": 24,
+      "saw_through": 1,
+      "retention_rate": 0.0417,
+      "phase_edits": {
+        "main": 44,
+        "evidence": 70,
+        "workshop": 71,
+        "proposed_decision": 73
+      }
+    },
+    {
+      "case_name": "Editor conduct in e-cigs articles",
+      "slug": "editor_conduct_in_e-cigs_articles",
+      "has_data": true,
+      "error": null,
+      "case_start": "2015-08-04",
+      "case_end": "2015-11-17",
+      "case_duration_days": 105,
+      "total_editors": 31,
+      "total_events": 228,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 14,
+      "departure_rate": 0.4516,
+      "starters": 14,
+      "saw_through": 2,
+      "retention_rate": 0.1429,
+      "phase_edits": {
+        "main": 8,
+        "evidence": 73,
+        "workshop": 74,
+        "proposed_decision": 73
+      }
+    },
+    {
+      "case_name": "EffK",
+      "slug": "effk",
+      "has_data": true,
+      "error": null,
+      "case_start": "2005-11-28",
+      "case_end": "2006-02-07",
+      "case_duration_days": 70,
+      "total_editors": 15,
+      "total_events": 184,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 2,
+      "departure_rate": 0.1333,
+      "starters": 5,
+      "saw_through": 4,
+      "retention_rate": 0.8,
+      "phase_edits": {
+        "main": 4,
+        "proposed_decision": 33,
+        "workshop": 73,
+        "evidence": 74
+      }
+    },
+    {
+      "case_name": "Ehud Lesar",
+      "slug": "ehud_lesar",
+      "has_data": true,
+      "error": null,
+      "case_start": "2008-01-30",
+      "case_end": "2008-03-12",
+      "case_duration_days": 42,
+      "total_editors": 25,
+      "total_events": 224,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 7,
+      "departure_rate": 0.28,
+      "starters": 10,
+      "saw_through": 2,
+      "retention_rate": 0.2,
+      "phase_edits": {
+        "main": 11,
+        "evidence": 68,
+        "workshop": 72,
+        "proposed_decision": 73
+      }
+    },
+    {
+      "case_name": "Election",
+      "slug": "election",
+      "has_data": true,
+      "error": null,
+      "case_start": "2006-05-16",
+      "case_end": "2006-07-01",
+      "case_duration_days": 46,
+      "total_editors": 26,
+      "total_events": 223,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 8,
+      "departure_rate": 0.3077,
+      "starters": 7,
+      "saw_through": 2,
+      "retention_rate": 0.2857,
+      "phase_edits": {
+        "main": 6,
+        "evidence": 73,
+        "workshop": 71,
+        "proposed_decision": 73
+      }
+    },
+    {
+      "case_name": "Emico",
+      "slug": "emico",
+      "has_data": true,
+      "error": null,
+      "case_start": "2005-06-26",
+      "case_end": "2005-08-20",
+      "case_duration_days": 54,
+      "total_editors": 9,
+      "total_events": 103,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 3,
+      "departure_rate": 0.3333,
+      "starters": 5,
+      "saw_through": 2,
+      "retention_rate": 0.4,
+      "phase_edits": {
+        "main": 8,
+        "evidence": 14,
+        "proposed_decision": 51,
+        "workshop": 30
       }
     },
     {
@@ -3054,6 +3799,106 @@
       }
     },
     {
+      "case_name": "Fæ",
+      "slug": "fæ",
+      "has_data": true,
+      "error": null,
+      "case_start": "2012-05-29",
+      "case_end": "2012-08-09",
+      "case_duration_days": 72,
+      "total_editors": 39,
+      "total_events": 225,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 28,
+      "departure_rate": 0.7179,
+      "starters": 8,
+      "saw_through": 1,
+      "retention_rate": 0.125,
+      "phase_edits": {
+        "main": 16,
+        "evidence": 59,
+        "workshop": 75,
+        "proposed_decision": 75
+      }
+    },
+    {
+      "case_name": "G.-M. Cupertino",
+      "slug": "g.-m._cupertino",
+      "has_data": true,
+      "error": null,
+      "case_start": "2009-01-02",
+      "case_end": "2009-01-16",
+      "case_duration_days": 13,
+      "total_editors": 24,
+      "total_events": 111,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 0,
+      "departure_rate": 0.0,
+      "starters": 2,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 2,
+        "evidence": 15,
+        "workshop": 21,
+        "proposed_decision": 73
+      }
+    },
+    {
+      "case_name": "Gabrielsimon",
+      "slug": "gabrielsimon",
+      "has_data": true,
+      "error": null,
+      "case_start": "2005-08-04",
+      "case_end": "2005-09-04",
+      "case_duration_days": 30,
+      "total_editors": 27,
+      "total_events": 146,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 2,
+      "departure_rate": 0.0741,
+      "starters": 10,
+      "saw_through": 8,
+      "retention_rate": 0.8,
+      "phase_edits": {
+        "main": 3,
+        "evidence": 55,
+        "proposed_decision": 21,
+        "workshop": 67
+      }
+    },
+    {
+      "case_name": "Gamaliel and others",
+      "slug": "gamaliel_and_others",
+      "has_data": true,
+      "error": null,
+      "case_start": "2016-04-18",
+      "case_end": "2016-06-04",
+      "case_duration_days": 46,
+      "total_editors": 44,
+      "total_events": 232,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 16,
+      "departure_rate": 0.3636,
+      "starters": 12,
+      "saw_through": 4,
+      "retention_rate": 0.3333,
+      "phase_edits": {
+        "main": 17,
+        "evidence": 73,
+        "workshop": 69,
+        "proposed_decision": 73
+      }
+    },
+    {
       "case_name": "GamerGate",
       "slug": "gamergate",
       "has_data": true,
@@ -3073,6 +3918,77 @@
       "retention_rate": 0,
       "phase_edits": {
         "main": 1
+      }
+    },
+    {
+      "case_name": "Gender and sexuality",
+      "slug": "gender_and_sexuality",
+      "has_data": true,
+      "error": null,
+      "case_start": "2021-02-22",
+      "case_end": "2025-10-29",
+      "case_duration_days": 1709,
+      "total_editors": 4,
+      "total_events": 16,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 1,
+      "departure_rate": 0.25,
+      "starters": 1,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 16
+      }
+    },
+    {
+      "case_name": "Gene Poole vs. Samboy",
+      "slug": "gene_poole_vs._samboy",
+      "has_data": true,
+      "error": null,
+      "case_start": "2004-09-11",
+      "case_end": "2008-04-06",
+      "case_duration_days": 1303,
+      "total_editors": 16,
+      "total_events": 117,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 12,
+      "departure_rate": 0.75,
+      "starters": 12,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "proposed_decision": 47,
+        "evidence": 52,
+        "main": 18
+      }
+    },
+    {
+      "case_name": "Genetically modified organisms",
+      "slug": "genetically_modified_organisms",
+      "has_data": true,
+      "error": null,
+      "case_start": "2015-09-28",
+      "case_end": "2024-02-28",
+      "case_duration_days": 3074,
+      "total_editors": 49,
+      "total_events": 257,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 34,
+      "departure_rate": 0.6939,
+      "starters": 35,
+      "saw_through": 1,
+      "retention_rate": 0.0286,
+      "phase_edits": {
+        "main": 40,
+        "evidence": 75,
+        "workshop": 69,
+        "proposed_decision": 73
       }
     },
     {
@@ -3119,6 +4035,30 @@
       "retention_rate": 0.0,
       "phase_edits": {
         "main": 8
+      }
+    },
+    {
+      "case_name": "Giano",
+      "slug": "giano",
+      "has_data": true,
+      "error": null,
+      "case_start": "2006-09-24",
+      "case_end": "2006-10-27",
+      "case_duration_days": 33,
+      "total_editors": 29,
+      "total_events": 154,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 6,
+      "departure_rate": 0.2069,
+      "starters": 3,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 14,
+        "evidence": 68,
+        "proposed_decision": 72
       }
     },
     {
@@ -3319,6 +4259,30 @@
         "evidence": 23,
         "workshop": 5,
         "proposed_decision": 26
+      }
+    },
+    {
+      "case_name": "GRider",
+      "slug": "grider",
+      "has_data": true,
+      "error": null,
+      "case_start": "2005-03-26",
+      "case_end": "2005-04-09",
+      "case_duration_days": 13,
+      "total_editors": 17,
+      "total_events": 93,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 0,
+      "departure_rate": 0.0,
+      "starters": 10,
+      "saw_through": 5,
+      "retention_rate": 0.5,
+      "phase_edits": {
+        "main": 4,
+        "evidence": 61,
+        "proposed_decision": 28
       }
     },
     {
@@ -3543,6 +4507,201 @@
       }
     },
     {
+      "case_name": "His excellency",
+      "slug": "his_excellency",
+      "has_data": true,
+      "error": null,
+      "case_start": "2006-08-03",
+      "case_end": "2008-04-27",
+      "case_duration_days": 632,
+      "total_editors": 10,
+      "total_events": 77,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 5,
+      "departure_rate": 0.5,
+      "starters": 5,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "workshop": 74,
+        "evidence": 1,
+        "main": 1,
+        "proposed_decision": 1
+      }
+    },
+    {
+      "case_name": "HistoryBuffEr and Jayjg",
+      "slug": "historybuffer_and_jayjg",
+      "has_data": true,
+      "error": null,
+      "case_start": "2004-11-08",
+      "case_end": "2005-01-16",
+      "case_duration_days": 68,
+      "total_editors": 16,
+      "total_events": 149,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 5,
+      "departure_rate": 0.3125,
+      "starters": 1,
+      "saw_through": 1,
+      "retention_rate": 1.0,
+      "phase_edits": {
+        "main": 5,
+        "proposed_decision": 73,
+        "evidence": 71
+      }
+    },
+    {
+      "case_name": "Hkelkar 2",
+      "slug": "hkelkar_2",
+      "has_data": true,
+      "error": null,
+      "case_start": "2007-05-01",
+      "case_end": "2007-07-11",
+      "case_duration_days": 71,
+      "total_editors": 39,
+      "total_events": 223,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 17,
+      "departure_rate": 0.4359,
+      "starters": 4,
+      "saw_through": 1,
+      "retention_rate": 0.25,
+      "phase_edits": {
+        "main": 11,
+        "evidence": 69,
+        "workshop": 70,
+        "proposed_decision": 73
+      }
+    },
+    {
+      "case_name": "Honda S2000",
+      "slug": "honda_s2000",
+      "has_data": true,
+      "error": null,
+      "case_start": "2006-09-09",
+      "case_end": "2006-10-22",
+      "case_duration_days": 42,
+      "total_editors": 21,
+      "total_events": 128,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 11,
+      "departure_rate": 0.5238,
+      "starters": 13,
+      "saw_through": 3,
+      "retention_rate": 0.2308,
+      "phase_edits": {
+        "main": 5,
+        "evidence": 55,
+        "workshop": 52,
+        "proposed_decision": 16
+      }
+    },
+    {
+      "case_name": "Horn of Africa",
+      "slug": "horn_of_africa",
+      "has_data": true,
+      "error": null,
+      "case_start": "2020-12-09",
+      "case_end": "2026-03-27",
+      "case_duration_days": 1933,
+      "total_editors": 6,
+      "total_events": 13,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 3,
+      "departure_rate": 0.5,
+      "starters": 3,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 13
+      }
+    },
+    {
+      "case_name": "Hunger",
+      "slug": "hunger",
+      "has_data": true,
+      "error": null,
+      "case_start": "2006-06-30",
+      "case_end": "2006-08-22",
+      "case_duration_days": 53,
+      "total_editors": 17,
+      "total_events": 128,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 9,
+      "departure_rate": 0.5294,
+      "starters": 7,
+      "saw_through": 1,
+      "retention_rate": 0.1429,
+      "phase_edits": {
+        "main": 2,
+        "evidence": 43,
+        "workshop": 66,
+        "proposed_decision": 17
+      }
+    },
+    {
+      "case_name": "Iloveminun",
+      "slug": "iloveminun",
+      "has_data": true,
+      "error": null,
+      "case_start": "2006-06-17",
+      "case_end": "2006-08-10",
+      "case_duration_days": 53,
+      "total_editors": 20,
+      "total_events": 90,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 9,
+      "departure_rate": 0.45,
+      "starters": 7,
+      "saw_through": 1,
+      "retention_rate": 0.1429,
+      "phase_edits": {
+        "main": 8,
+        "evidence": 30,
+        "workshop": 26,
+        "proposed_decision": 26
+      }
+    },
+    {
+      "case_name": "India-Pakistan",
+      "slug": "india-pakistan",
+      "has_data": true,
+      "error": null,
+      "case_start": "2007-02-14",
+      "case_end": "2007-03-04",
+      "case_duration_days": 17,
+      "total_editors": 27,
+      "total_events": 175,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 0,
+      "departure_rate": 0.0,
+      "starters": 9,
+      "saw_through": 6,
+      "retention_rate": 0.6667,
+      "phase_edits": {
+        "proposed_decision": 36,
+        "evidence": 70,
+        "workshop": 69
+      }
+    },
+    {
       "case_name": "Indian military history",
       "slug": "indian_military_history",
       "has_data": true,
@@ -3585,6 +4744,31 @@
       "retention_rate": 0.6,
       "phase_edits": {
         "proposed_decision": 75
+      }
+    },
+    {
+      "case_name": "Infinity0",
+      "slug": "infinity0",
+      "has_data": true,
+      "error": null,
+      "case_start": "2006-05-07",
+      "case_end": "2006-06-30",
+      "case_duration_days": 54,
+      "total_editors": 20,
+      "total_events": 165,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 7,
+      "departure_rate": 0.35,
+      "starters": 7,
+      "saw_through": 2,
+      "retention_rate": 0.2857,
+      "phase_edits": {
+        "main": 4,
+        "evidence": 43,
+        "proposed_decision": 47,
+        "workshop": 71
       }
     },
     {
@@ -3810,6 +4994,31 @@
       }
     },
     {
+      "case_name": "IRC",
+      "slug": "irc",
+      "has_data": true,
+      "error": null,
+      "case_start": "2007-12-26",
+      "case_end": "2022-04-15",
+      "case_duration_days": 5223,
+      "total_editors": 59,
+      "total_events": 266,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 34,
+      "departure_rate": 0.5763,
+      "starters": 34,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 50,
+        "evidence": 72,
+        "workshop": 69,
+        "proposed_decision": 75
+      }
+    },
+    {
       "case_name": "Irishpunktom",
       "slug": "irishpunktom",
       "has_data": true,
@@ -3956,6 +5165,203 @@
       }
     },
     {
+      "case_name": "Israeli apartheid",
+      "slug": "israeli_apartheid",
+      "has_data": true,
+      "error": null,
+      "case_start": "2006-07-09",
+      "case_end": "2007-05-31",
+      "case_duration_days": 326,
+      "total_editors": 37,
+      "total_events": 180,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 28,
+      "departure_rate": 0.7568,
+      "starters": 27,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 12,
+        "proposed_decision": 36,
+        "evidence": 69,
+        "workshop": 63
+      }
+    },
+    {
+      "case_name": "IZAK",
+      "slug": "izak",
+      "has_data": true,
+      "error": null,
+      "case_start": "2004-11-06",
+      "case_end": "2005-01-18",
+      "case_duration_days": 72,
+      "total_editors": 20,
+      "total_events": 176,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 7,
+      "departure_rate": 0.35,
+      "starters": 7,
+      "saw_through": 1,
+      "retention_rate": 0.1429,
+      "phase_edits": {
+        "main": 31,
+        "evidence": 72,
+        "proposed_decision": 73
+      }
+    },
+    {
+      "case_name": "Jacrosse",
+      "slug": "jacrosse",
+      "has_data": true,
+      "error": null,
+      "case_start": "2006-04-06",
+      "case_end": "2006-05-18",
+      "case_duration_days": 41,
+      "total_editors": 14,
+      "total_events": 97,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 6,
+      "departure_rate": 0.4286,
+      "starters": 7,
+      "saw_through": 2,
+      "retention_rate": 0.2857,
+      "phase_edits": {
+        "main": 15,
+        "evidence": 47,
+        "workshop": 17,
+        "proposed_decision": 18
+      }
+    },
+    {
+      "case_name": "JarlaxleArtemis",
+      "slug": "jarlaxleartemis",
+      "has_data": true,
+      "error": null,
+      "case_start": "2005-03-03",
+      "case_end": "2005-03-19",
+      "case_duration_days": 15,
+      "total_editors": 13,
+      "total_events": 52,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 1,
+      "departure_rate": 0.0769,
+      "starters": 4,
+      "saw_through": 2,
+      "retention_rate": 0.5,
+      "phase_edits": {
+        "evidence": 5,
+        "main": 5,
+        "proposed_decision": 42
+      }
+    },
+    {
+      "case_name": "JarlaxleArtemis 2",
+      "slug": "jarlaxleartemis_2",
+      "has_data": true,
+      "error": null,
+      "case_start": "2005-06-29",
+      "case_end": "2005-09-24",
+      "case_duration_days": 86,
+      "total_editors": 19,
+      "total_events": 70,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 8,
+      "departure_rate": 0.4211,
+      "starters": 8,
+      "saw_through": 4,
+      "retention_rate": 0.5,
+      "phase_edits": {
+        "main": 15,
+        "proposed_decision": 18,
+        "evidence": 36,
+        "workshop": 1
+      }
+    },
+    {
+      "case_name": "Jeffrey O. Gustafson",
+      "slug": "jeffrey_o._gustafson",
+      "has_data": true,
+      "error": null,
+      "case_start": "2007-07-24",
+      "case_end": "2007-09-04",
+      "case_duration_days": 41,
+      "total_editors": 35,
+      "total_events": 156,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 17,
+      "departure_rate": 0.4857,
+      "starters": 18,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 5,
+        "evidence": 20,
+        "proposed_decision": 58,
+        "workshop": 73
+      }
+    },
+    {
+      "case_name": "Jeffrey Vernon Merkey",
+      "slug": "jeffrey_vernon_merkey",
+      "has_data": true,
+      "error": null,
+      "case_start": "2007-07-24",
+      "case_end": "2007-07-30",
+      "case_duration_days": 5,
+      "total_editors": 32,
+      "total_events": 164,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 0,
+      "departure_rate": 0.0,
+      "starters": 15,
+      "saw_through": 5,
+      "retention_rate": 0.3333,
+      "phase_edits": {
+        "main": 8,
+        "evidence": 29,
+        "proposed_decision": 55,
+        "workshop": 72
+      }
+    },
+    {
+      "case_name": "Jguk",
+      "slug": "jguk",
+      "has_data": true,
+      "error": null,
+      "case_start": "2005-05-25",
+      "case_end": "2005-06-29",
+      "case_duration_days": 35,
+      "total_editors": 27,
+      "total_events": 145,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 10,
+      "departure_rate": 0.3704,
+      "starters": 8,
+      "saw_through": 1,
+      "retention_rate": 0.125,
+      "phase_edits": {
+        "evidence": 61,
+        "main": 10,
+        "proposed_decision": 74
+      }
+    },
+    {
       "case_name": "jguk 2",
       "slug": "jguk_2",
       "has_data": true,
@@ -3978,6 +5384,105 @@
         "evidence": 30,
         "workshop": 60,
         "proposed_decision": 66
+      }
+    },
+    {
+      "case_name": "Jim62sch",
+      "slug": "jim62sch",
+      "has_data": true,
+      "error": null,
+      "case_start": "2008-01-02",
+      "case_end": "2008-01-09",
+      "case_duration_days": 6,
+      "total_editors": 30,
+      "total_events": 220,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 0,
+      "departure_rate": 0.0,
+      "starters": 2,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 12,
+        "proposed_decision": 64,
+        "evidence": 73,
+        "workshop": 71
+      }
+    },
+    {
+      "case_name": "Jimmyvanthach",
+      "slug": "jimmyvanthach",
+      "has_data": true,
+      "error": null,
+      "case_start": "2004-09-20",
+      "case_end": "2004-11-12",
+      "case_duration_days": 52,
+      "total_editors": 9,
+      "total_events": 46,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 0,
+      "departure_rate": 0.0,
+      "starters": 2,
+      "saw_through": 2,
+      "retention_rate": 1.0,
+      "phase_edits": {
+        "main": 11,
+        "evidence": 3,
+        "proposed_decision": 32
+      }
+    },
+    {
+      "case_name": "Jmfangio-Chrisjnelson",
+      "slug": "jmfangio-chrisjnelson",
+      "has_data": true,
+      "error": null,
+      "case_start": "2007-08-24",
+      "case_end": "2007-09-25",
+      "case_duration_days": 32,
+      "total_editors": 19,
+      "total_events": 201,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 8,
+      "departure_rate": 0.4211,
+      "starters": 7,
+      "saw_through": 1,
+      "retention_rate": 0.1429,
+      "phase_edits": {
+        "main": 4,
+        "proposed_decision": 54,
+        "evidence": 72,
+        "workshop": 71
+      }
+    },
+    {
+      "case_name": "Joefromrandb and others",
+      "slug": "joefromrandb_and_others",
+      "has_data": true,
+      "error": null,
+      "case_start": "2018-01-28",
+      "case_end": "2018-09-01",
+      "case_duration_days": 215,
+      "total_editors": 29,
+      "total_events": 181,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 21,
+      "departure_rate": 0.7241,
+      "starters": 22,
+      "saw_through": 1,
+      "retention_rate": 0.0455,
+      "phase_edits": {
+        "main": 8,
+        "evidence": 24,
+        "workshop": 75,
+        "proposed_decision": 74
       }
     },
     {
@@ -4123,6 +5628,29 @@
         "main": 15,
         "evidence": 10,
         "proposed_decision": 32
+      }
+    },
+    {
+      "case_name": "JRR Trollkien",
+      "slug": "jrr_trollkien",
+      "has_data": true,
+      "error": null,
+      "case_start": "2004-04-21",
+      "case_end": "2004-07-03",
+      "case_duration_days": 73,
+      "total_editors": 16,
+      "total_events": 86,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 6,
+      "departure_rate": 0.375,
+      "starters": 10,
+      "saw_through": 6,
+      "retention_rate": 0.6,
+      "phase_edits": {
+        "evidence": 23,
+        "main": 63
       }
     },
     {
@@ -4442,6 +5970,180 @@
       }
     },
     {
+      "case_name": "Kosovo",
+      "slug": "kosovo",
+      "has_data": true,
+      "error": null,
+      "case_start": "2006-09-04",
+      "case_end": "2006-10-21",
+      "case_duration_days": 46,
+      "total_editors": 33,
+      "total_events": 211,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 10,
+      "departure_rate": 0.303,
+      "starters": 11,
+      "saw_through": 5,
+      "retention_rate": 0.4545,
+      "phase_edits": {
+        "evidence": 64,
+        "proposed_decision": 53,
+        "main": 24,
+        "workshop": 70
+      }
+    },
+    {
+      "case_name": "Kuban kazak",
+      "slug": "kuban_kazak",
+      "has_data": true,
+      "error": null,
+      "case_start": "2008-11-05",
+      "case_end": "2022-05-29",
+      "case_duration_days": 4953,
+      "total_editors": 30,
+      "total_events": 194,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 17,
+      "departure_rate": 0.5667,
+      "starters": 17,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 14,
+        "proposed_decision": 33,
+        "workshop": 74,
+        "evidence": 73
+      }
+    },
+    {
+      "case_name": "Kudpung",
+      "slug": "kudpung",
+      "has_data": true,
+      "error": null,
+      "case_start": "2020-01-14",
+      "case_end": "2023-07-09",
+      "case_duration_days": 1272,
+      "total_editors": 43,
+      "total_events": 251,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 27,
+      "departure_rate": 0.6279,
+      "starters": 26,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 27,
+        "evidence": 75,
+        "workshop": 75,
+        "proposed_decision": 74
+      }
+    },
+    {
+      "case_name": "Kurds and Kurdistan",
+      "slug": "kurds_and_kurdistan",
+      "has_data": true,
+      "error": null,
+      "case_start": "2021-01-22",
+      "case_end": "2021-02-23",
+      "case_duration_days": 31,
+      "total_editors": 23,
+      "total_events": 223,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 0,
+      "departure_rate": 0.0,
+      "starters": 1,
+      "saw_through": 1,
+      "retention_rate": 1.0,
+      "phase_edits": {
+        "main": 4,
+        "evidence": 75,
+        "workshop": 70,
+        "proposed_decision": 74
+      }
+    },
+    {
+      "case_name": "Kven",
+      "slug": "kven",
+      "has_data": true,
+      "error": null,
+      "case_start": "2006-09-14",
+      "case_end": "2006-11-03",
+      "case_duration_days": 49,
+      "total_editors": 19,
+      "total_events": 142,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 6,
+      "departure_rate": 0.3158,
+      "starters": 8,
+      "saw_through": 2,
+      "retention_rate": 0.25,
+      "phase_edits": {
+        "main": 17,
+        "workshop": 29,
+        "proposed_decision": 23,
+        "evidence": 73
+      }
+    },
+    {
+      "case_name": "Kww and The Rambling Man",
+      "slug": "kww_and_the_rambling_man",
+      "has_data": true,
+      "error": null,
+      "case_start": "2015-06-29",
+      "case_end": "2016-10-24",
+      "case_duration_days": 482,
+      "total_editors": 36,
+      "total_events": 226,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 22,
+      "departure_rate": 0.6111,
+      "starters": 22,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 11,
+        "evidence": 69,
+        "workshop": 72,
+        "proposed_decision": 74
+      }
+    },
+    {
+      "case_name": "Lance6wins",
+      "slug": "lance6wins",
+      "has_data": true,
+      "error": null,
+      "case_start": "2004-08-08",
+      "case_end": "2004-11-20",
+      "case_duration_days": 104,
+      "total_editors": 15,
+      "total_events": 90,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 4,
+      "departure_rate": 0.2667,
+      "starters": 5,
+      "saw_through": 1,
+      "retention_rate": 0.2,
+      "phase_edits": {
+        "main": 9,
+        "evidence": 37,
+        "proposed_decision": 44
+      }
+    },
+    {
       "case_name": "Landmark Worldwide",
       "slug": "landmark_worldwide",
       "has_data": true,
@@ -4462,6 +6164,31 @@
       "phase_edits": {
         "workshop": 67,
         "proposed_decision": 72
+      }
+    },
+    {
+      "case_name": "Lapsed Pacifist",
+      "slug": "lapsed_pacifist",
+      "has_data": true,
+      "error": null,
+      "case_start": "2006-02-08",
+      "case_end": "2006-04-04",
+      "case_duration_days": 54,
+      "total_editors": 11,
+      "total_events": 30,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 2,
+      "departure_rate": 0.1818,
+      "starters": 2,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 4,
+        "evidence": 4,
+        "proposed_decision": 16,
+        "workshop": 6
       }
     },
     {
@@ -4832,6 +6559,303 @@
         "main": 25,
         "evidence": 74,
         "proposed_decision": 72
+      }
+    },
+    {
+      "case_name": "Macedonia 2",
+      "slug": "macedonia_2",
+      "has_data": true,
+      "error": null,
+      "case_start": "2009-04-22",
+      "case_end": "2012-02-23",
+      "case_duration_days": 1036,
+      "total_editors": 43,
+      "total_events": 255,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 32,
+      "departure_rate": 0.7442,
+      "starters": 31,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 49,
+        "evidence": 71,
+        "workshop": 62,
+        "proposed_decision": 73
+      }
+    },
+    {
+      "case_name": "Magioladitis",
+      "slug": "magioladitis",
+      "has_data": true,
+      "error": null,
+      "case_start": "2017-01-03",
+      "case_end": "2017-03-24",
+      "case_duration_days": 79,
+      "total_editors": 36,
+      "total_events": 226,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 12,
+      "departure_rate": 0.3333,
+      "starters": 8,
+      "saw_through": 1,
+      "retention_rate": 0.125,
+      "phase_edits": {
+        "main": 10,
+        "evidence": 72,
+        "workshop": 70,
+        "proposed_decision": 74
+      }
+    },
+    {
+      "case_name": "Magioladitis 2",
+      "slug": "magioladitis_2",
+      "has_data": true,
+      "error": null,
+      "case_start": "2017-07-23",
+      "case_end": "2017-09-04",
+      "case_duration_days": 43,
+      "total_editors": 22,
+      "total_events": 232,
+      "outcome_status": "closed",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 1,
+      "departure_rate": 0.0455,
+      "starters": 5,
+      "saw_through": 2,
+      "retention_rate": 0.4,
+      "phase_edits": {
+        "main": 10,
+        "evidence": 75,
+        "workshop": 72,
+        "proposed_decision": 75
+      }
+    },
+    {
+      "case_name": "Manipulation of BLPs",
+      "slug": "manipulation_of_blps",
+      "has_data": true,
+      "error": null,
+      "case_start": "2011-08-02",
+      "case_end": "2011-09-05",
+      "case_duration_days": 33,
+      "total_editors": 31,
+      "total_events": 201,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 1,
+      "departure_rate": 0.0323,
+      "starters": 3,
+      "saw_through": 2,
+      "retention_rate": 0.6667,
+      "phase_edits": {
+        "main": 12,
+        "proposed_decision": 71,
+        "evidence": 48,
+        "workshop": 70
+      }
+    },
+    {
+      "case_name": "Manning naming dispute",
+      "slug": "manning_naming_dispute",
+      "has_data": true,
+      "error": null,
+      "case_start": "2013-09-05",
+      "case_end": "2013-10-16",
+      "case_duration_days": 40,
+      "total_editors": 43,
+      "total_events": 205,
+      "outcome_status": "closed",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 16,
+      "departure_rate": 0.3721,
+      "starters": 5,
+      "saw_through": 1,
+      "retention_rate": 0.2,
+      "phase_edits": {
+        "main": 31,
+        "evidence": 35,
+        "workshop": 68,
+        "proposed_decision": 71
+      }
+    },
+    {
+      "case_name": "Mantanmoreland",
+      "slug": "mantanmoreland",
+      "has_data": true,
+      "error": null,
+      "case_start": "2008-02-14",
+      "case_end": "2008-03-13",
+      "case_duration_days": 27,
+      "total_editors": 36,
+      "total_events": 212,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 0,
+      "departure_rate": 0.0,
+      "starters": 1,
+      "saw_through": 1,
+      "retention_rate": 1.0,
+      "phase_edits": {
+        "main": 3,
+        "evidence": 67,
+        "workshop": 69,
+        "proposed_decision": 73
+      }
+    },
+    {
+      "case_name": "Maoririder",
+      "slug": "maoririder",
+      "has_data": true,
+      "error": null,
+      "case_start": "2005-09-26",
+      "case_end": "2005-11-26",
+      "case_duration_days": 61,
+      "total_editors": 19,
+      "total_events": 200,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 3,
+      "departure_rate": 0.1579,
+      "starters": 6,
+      "saw_through": 4,
+      "retention_rate": 0.6667,
+      "phase_edits": {
+        "proposed_decision": 35,
+        "main": 19,
+        "evidence": 72,
+        "workshop": 74
+      }
+    },
+    {
+      "case_name": "Marcosantezana",
+      "slug": "marcosantezana",
+      "has_data": true,
+      "error": null,
+      "case_start": "2006-03-26",
+      "case_end": "2006-06-05",
+      "case_duration_days": 70,
+      "total_editors": 17,
+      "total_events": 90,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 6,
+      "departure_rate": 0.3529,
+      "starters": 7,
+      "saw_through": 3,
+      "retention_rate": 0.4286,
+      "phase_edits": {
+        "main": 7,
+        "evidence": 30,
+        "workshop": 21,
+        "proposed_decision": 32
+      }
+    },
+    {
+      "case_name": "Martinphi-ScienceApologist",
+      "slug": "martinphi-scienceapologist",
+      "has_data": true,
+      "error": null,
+      "case_start": "2007-10-15",
+      "case_end": "2007-11-18",
+      "case_duration_days": 34,
+      "total_editors": 29,
+      "total_events": 160,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 1,
+      "departure_rate": 0.0345,
+      "starters": 1,
+      "saw_through": 1,
+      "retention_rate": 1.0,
+      "phase_edits": {
+        "proposed_decision": 21,
+        "evidence": 71,
+        "workshop": 68
+      }
+    },
+    {
+      "case_name": "Marudubshinki",
+      "slug": "marudubshinki",
+      "has_data": true,
+      "error": null,
+      "case_start": "2006-08-27",
+      "case_end": "2007-04-11",
+      "case_duration_days": 226,
+      "total_editors": 29,
+      "total_events": 90,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 19,
+      "departure_rate": 0.6552,
+      "starters": 19,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 7,
+        "evidence": 29,
+        "workshop": 35,
+        "proposed_decision": 19
+      }
+    },
+    {
+      "case_name": "Mattisse",
+      "slug": "mattisse",
+      "has_data": true,
+      "error": null,
+      "case_start": "2009-05-11",
+      "case_end": "2011-08-17",
+      "case_duration_days": 828,
+      "total_editors": 40,
+      "total_events": 238,
+      "outcome_status": "closed",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 31,
+      "departure_rate": 0.775,
+      "starters": 30,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 25,
+        "evidence": 69,
+        "workshop": 70,
+        "proposed_decision": 74
+      }
+    },
+    {
+      "case_name": "Mav v. 168",
+      "slug": "mav_v._168",
+      "has_data": true,
+      "error": null,
+      "case_start": "2004-04-20",
+      "case_end": "2004-04-25",
+      "case_duration_days": 4,
+      "total_editors": 7,
+      "total_events": 50,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 0,
+      "departure_rate": 0.0,
+      "starters": 4,
+      "saw_through": 1,
+      "retention_rate": 0.25,
+      "phase_edits": {
+        "main": 35,
+        "evidence": 15
       }
     },
     {
@@ -5323,6 +7347,179 @@
       }
     },
     {
+      "case_name": "Netoholic 2",
+      "slug": "netoholic_2",
+      "has_data": true,
+      "error": null,
+      "case_start": "2005-03-20",
+      "case_end": "2005-05-04",
+      "case_duration_days": 45,
+      "total_editors": 20,
+      "total_events": 158,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 6,
+      "departure_rate": 0.3,
+      "starters": 2,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 20,
+        "evidence": 64,
+        "proposed_decision": 74
+      }
+    },
+    {
+      "case_name": "Neuro-linguistic programming",
+      "slug": "neuro-linguistic_programming",
+      "has_data": true,
+      "error": null,
+      "case_start": "2005-11-22",
+      "case_end": "2006-02-06",
+      "case_duration_days": 75,
+      "total_editors": 22,
+      "total_events": 214,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 5,
+      "departure_rate": 0.2273,
+      "starters": 2,
+      "saw_through": 1,
+      "retention_rate": 0.5,
+      "phase_edits": {
+        "proposed_decision": 60,
+        "evidence": 74,
+        "main": 7,
+        "workshop": 73
+      }
+    },
+    {
+      "case_name": "New World Translation",
+      "slug": "new_world_translation",
+      "has_data": true,
+      "error": null,
+      "case_start": "2008-02-22",
+      "case_end": "2008-03-01",
+      "case_duration_days": 7,
+      "total_editors": 8,
+      "total_events": 19,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 0,
+      "departure_rate": 0.0,
+      "starters": 1,
+      "saw_through": 1,
+      "retention_rate": 1.0,
+      "phase_edits": {
+        "main": 7,
+        "evidence": 1,
+        "workshop": 1,
+        "proposed_decision": 10
+      }
+    },
+    {
+      "case_name": "Nightscream",
+      "slug": "nightscream",
+      "has_data": true,
+      "error": null,
+      "case_start": "2013-12-15",
+      "case_end": "2014-01-18",
+      "case_duration_days": 33,
+      "total_editors": 24,
+      "total_events": 153,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 2,
+      "departure_rate": 0.0833,
+      "starters": 5,
+      "saw_through": 3,
+      "retention_rate": 0.6,
+      "phase_edits": {
+        "main": 2,
+        "evidence": 28,
+        "workshop": 51,
+        "proposed_decision": 72
+      }
+    },
+    {
+      "case_name": "Njyoder",
+      "slug": "njyoder",
+      "has_data": true,
+      "error": null,
+      "case_start": "2005-05-28",
+      "case_end": "2005-06-29",
+      "case_duration_days": 31,
+      "total_editors": 13,
+      "total_events": 81,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 6,
+      "departure_rate": 0.4615,
+      "starters": 10,
+      "saw_through": 3,
+      "retention_rate": 0.3,
+      "phase_edits": {
+        "main": 5,
+        "evidence": 25,
+        "proposed_decision": 51
+      }
+    },
+    {
+      "case_name": "Nobs01 and others",
+      "slug": "nobs01_and_others",
+      "has_data": true,
+      "error": null,
+      "case_start": "2005-11-20",
+      "case_end": "2007-10-26",
+      "case_duration_days": 704,
+      "total_editors": 23,
+      "total_events": 234,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 18,
+      "departure_rate": 0.7826,
+      "starters": 18,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 16,
+        "evidence": 74,
+        "proposed_decision": 73,
+        "workshop": 71
+      }
+    },
+    {
+      "case_name": "Noloop",
+      "slug": "noloop",
+      "has_data": true,
+      "error": null,
+      "case_start": "2009-08-23",
+      "case_end": "2011-08-17",
+      "case_duration_days": 723,
+      "total_editors": 17,
+      "total_events": 104,
+      "outcome_status": "closed",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 8,
+      "departure_rate": 0.4706,
+      "starters": 8,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 6,
+        "evidence": 64,
+        "workshop": 15,
+        "proposed_decision": 19
+      }
+    },
+    {
       "case_name": "NYScholar",
       "slug": "nyscholar",
       "has_data": true,
@@ -5345,6 +7542,81 @@
         "proposed_decision": 38,
         "evidence": 74,
         "workshop": 72
+      }
+    },
+    {
+      "case_name": "OccultZone and others",
+      "slug": "occultzone_and_others",
+      "has_data": true,
+      "error": null,
+      "case_start": "2015-04-30",
+      "case_end": "2015-06-03",
+      "case_duration_days": 33,
+      "total_editors": 28,
+      "total_events": 239,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 4,
+      "departure_rate": 0.1429,
+      "starters": 4,
+      "saw_through": 1,
+      "retention_rate": 0.25,
+      "phase_edits": {
+        "main": 17,
+        "evidence": 75,
+        "workshop": 74,
+        "proposed_decision": 73
+      }
+    },
+    {
+      "case_name": "OldRight",
+      "slug": "oldright",
+      "has_data": true,
+      "error": null,
+      "case_start": "2005-06-26",
+      "case_end": "2006-06-13",
+      "case_duration_days": 351,
+      "total_editors": 12,
+      "total_events": 63,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 10,
+      "departure_rate": 0.8333,
+      "starters": 9,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 10,
+        "evidence": 9,
+        "proposed_decision": 29,
+        "workshop": 15
+      }
+    },
+    {
+      "case_name": "Onefortyone",
+      "slug": "onefortyone",
+      "has_data": true,
+      "error": null,
+      "case_start": "2005-09-26",
+      "case_end": "2005-11-01",
+      "case_duration_days": 36,
+      "total_editors": 12,
+      "total_events": 119,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 4,
+      "departure_rate": 0.3333,
+      "starters": 5,
+      "saw_through": 1,
+      "retention_rate": 0.2,
+      "phase_edits": {
+        "main": 4,
+        "evidence": 49,
+        "workshop": 50,
+        "proposed_decision": 16
       }
     },
     {
@@ -5811,6 +8083,156 @@
       }
     },
     {
+      "case_name": "PoolGuy",
+      "slug": "poolguy",
+      "has_data": true,
+      "error": null,
+      "case_start": "2006-05-02",
+      "case_end": "2006-06-23",
+      "case_duration_days": 51,
+      "total_editors": 19,
+      "total_events": 142,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 5,
+      "departure_rate": 0.2632,
+      "starters": 5,
+      "saw_through": 2,
+      "retention_rate": 0.4,
+      "phase_edits": {
+        "main": 6,
+        "evidence": 40,
+        "proposed_decision": 25,
+        "workshop": 71
+      }
+    },
+    {
+      "case_name": "Portals",
+      "slug": "portals",
+      "has_data": true,
+      "error": null,
+      "case_start": "2019-11-26",
+      "case_end": "2020-05-19",
+      "case_duration_days": 175,
+      "total_editors": 43,
+      "total_events": 245,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 32,
+      "departure_rate": 0.7442,
+      "starters": 17,
+      "saw_through": 1,
+      "retention_rate": 0.0588,
+      "phase_edits": {
+        "main": 22,
+        "evidence": 75,
+        "workshop": 74,
+        "proposed_decision": 74
+      }
+    },
+    {
+      "case_name": "Prem Rawat",
+      "slug": "prem_rawat",
+      "has_data": true,
+      "error": null,
+      "case_start": "2008-03-18",
+      "case_end": "2008-05-11",
+      "case_duration_days": 54,
+      "total_editors": 31,
+      "total_events": 231,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 17,
+      "departure_rate": 0.5484,
+      "starters": 3,
+      "saw_through": 1,
+      "retention_rate": 0.3333,
+      "phase_edits": {
+        "main": 20,
+        "evidence": 69,
+        "workshop": 69,
+        "proposed_decision": 73
+      }
+    },
+    {
+      "case_name": "Prem Rawat 2",
+      "slug": "prem_rawat_2",
+      "has_data": true,
+      "error": null,
+      "case_start": "2009-02-20",
+      "case_end": "2009-04-20",
+      "case_duration_days": 59,
+      "total_editors": 24,
+      "total_events": 223,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 2,
+      "departure_rate": 0.0833,
+      "starters": 1,
+      "saw_through": 1,
+      "retention_rate": 1.0,
+      "phase_edits": {
+        "main": 6,
+        "evidence": 72,
+        "workshop": 72,
+        "proposed_decision": 73
+      }
+    },
+    {
+      "case_name": "Privatemusings",
+      "slug": "privatemusings",
+      "has_data": true,
+      "error": null,
+      "case_start": "2007-11-21",
+      "case_end": "2007-12-02",
+      "case_duration_days": 10,
+      "total_editors": 22,
+      "total_events": 213,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 0,
+      "departure_rate": 0.0,
+      "starters": 8,
+      "saw_through": 2,
+      "retention_rate": 0.25,
+      "phase_edits": {
+        "main": 10,
+        "proposed_decision": 61,
+        "evidence": 71,
+        "workshop": 71
+      }
+    },
+    {
+      "case_name": "Pseudoscience",
+      "slug": "pseudoscience",
+      "has_data": true,
+      "error": null,
+      "case_start": "2006-10-29",
+      "case_end": "2022-03-04",
+      "case_duration_days": 5605,
+      "total_editors": 52,
+      "total_events": 273,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 27,
+      "departure_rate": 0.5192,
+      "starters": 19,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "evidence": 68,
+        "proposed_decision": 73,
+        "workshop": 70,
+        "main": 62
+      }
+    },
+    {
       "case_name": "PSYCH",
       "slug": "psych",
       "has_data": true,
@@ -6156,6 +8578,76 @@
       }
     },
     {
+      "case_name": "Reithy",
+      "slug": "reithy",
+      "has_data": true,
+      "error": null,
+      "case_start": "2004-10-22",
+      "case_end": "2004-12-03",
+      "case_duration_days": 42,
+      "total_editors": 26,
+      "total_events": 170,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 4,
+      "departure_rate": 0.1538,
+      "starters": 4,
+      "saw_through": 3,
+      "retention_rate": 0.75,
+      "phase_edits": {
+        "main": 56,
+        "evidence": 72,
+        "proposed_decision": 42
+      }
+    },
+    {
+      "case_name": "Reversal and reinstatement of Athaenara's block",
+      "slug": "reversal_and_reinstatement_of_athaenara's_block",
+      "has_data": true,
+      "error": null,
+      "case_start": "2022-10-16",
+      "case_end": "2022-11-02",
+      "case_duration_days": 16,
+      "total_editors": 29,
+      "total_events": 139,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 2,
+      "departure_rate": 0.069,
+      "starters": 9,
+      "saw_through": 2,
+      "retention_rate": 0.2222,
+      "phase_edits": {
+        "main": 5,
+        "evidence": 59,
+        "proposed_decision": 75
+      }
+    },
+    {
+      "case_name": "Reversion of office actions",
+      "slug": "reversion_of_office_actions",
+      "has_data": true,
+      "error": null,
+      "case_start": "2019-07-05",
+      "case_end": "2025-10-29",
+      "case_duration_days": 2308,
+      "total_editors": 2,
+      "total_events": 5,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 1,
+      "departure_rate": 0.5,
+      "starters": 1,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 5
+      }
+    },
+    {
       "case_name": "REX",
       "slug": "rex",
       "has_data": true,
@@ -6178,6 +8670,103 @@
         "evidence": 17,
         "workshop": 52,
         "proposed_decision": 22
+      }
+    },
+    {
+      "case_name": "Rex071404",
+      "slug": "rex071404",
+      "has_data": true,
+      "error": null,
+      "case_start": "2004-08-09",
+      "case_end": "2004-11-13",
+      "case_duration_days": 95,
+      "total_editors": 21,
+      "total_events": 175,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 7,
+      "departure_rate": 0.3333,
+      "starters": 5,
+      "saw_through": 2,
+      "retention_rate": 0.4,
+      "phase_edits": {
+        "main": 48,
+        "proposed_decision": 74,
+        "evidence": 53
+      }
+    },
+    {
+      "case_name": "Rex071404 2",
+      "slug": "rex071404_2",
+      "has_data": true,
+      "error": null,
+      "case_start": "2004-09-09",
+      "case_end": "2004-11-16",
+      "case_duration_days": 67,
+      "total_editors": 12,
+      "total_events": 46,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 4,
+      "departure_rate": 0.3333,
+      "starters": 5,
+      "saw_through": 1,
+      "retention_rate": 0.2,
+      "phase_edits": {
+        "evidence": 33,
+        "proposed_decision": 11,
+        "main": 2
+      }
+    },
+    {
+      "case_name": "Rex071404 3",
+      "slug": "rex071404_3",
+      "has_data": true,
+      "error": null,
+      "case_start": "2005-03-27",
+      "case_end": "2005-04-23",
+      "case_duration_days": 27,
+      "total_editors": 10,
+      "total_events": 38,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 3,
+      "departure_rate": 0.3,
+      "starters": 4,
+      "saw_through": 2,
+      "retention_rate": 0.5,
+      "phase_edits": {
+        "main": 1,
+        "evidence": 9,
+        "proposed_decision": 28
+      }
+    },
+    {
+      "case_name": "Rex071404 4",
+      "slug": "rex071404_4",
+      "has_data": true,
+      "error": null,
+      "case_start": "2005-11-16",
+      "case_end": "2005-12-04",
+      "case_duration_days": 17,
+      "total_editors": 15,
+      "total_events": 69,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 3,
+      "departure_rate": 0.2,
+      "starters": 8,
+      "saw_through": 1,
+      "retention_rate": 0.125,
+      "phase_edits": {
+        "main": 4,
+        "evidence": 16,
+        "workshop": 23,
+        "proposed_decision": 26
       }
     },
     {
@@ -6693,6 +9282,375 @@
       }
     },
     {
+      "case_name": "Scientology",
+      "slug": "scientology",
+      "has_data": true,
+      "error": null,
+      "case_start": "2009-03-20",
+      "case_end": "2009-07-09",
+      "case_duration_days": 110,
+      "total_editors": 23,
+      "total_events": 221,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 17,
+      "departure_rate": 0.7391,
+      "starters": 6,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "evidence": 75,
+        "workshop": 75,
+        "proposed_decision": 71
+      }
+    },
+    {
+      "case_name": "Scottywong",
+      "slug": "scottywong",
+      "has_data": true,
+      "error": null,
+      "case_start": "2023-06-07",
+      "case_end": "2023-07-10",
+      "case_duration_days": 32,
+      "total_editors": 30,
+      "total_events": 172,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 9,
+      "departure_rate": 0.3,
+      "starters": 11,
+      "saw_through": 1,
+      "retention_rate": 0.0909,
+      "phase_edits": {
+        "main": 2,
+        "evidence": 62,
+        "workshop": 33,
+        "proposed_decision": 75
+      }
+    },
+    {
+      "case_name": "SemBubenny",
+      "slug": "sembubenny",
+      "has_data": true,
+      "error": null,
+      "case_start": "2009-01-29",
+      "case_end": "2009-03-04",
+      "case_duration_days": 33,
+      "total_editors": 26,
+      "total_events": 182,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 1,
+      "departure_rate": 0.0385,
+      "starters": 2,
+      "saw_through": 1,
+      "retention_rate": 0.5,
+      "phase_edits": {
+        "main": 2,
+        "evidence": 35,
+        "workshop": 73,
+        "proposed_decision": 72
+      }
+    },
+    {
+      "case_name": "Senkaku Islands",
+      "slug": "senkaku_islands",
+      "has_data": true,
+      "error": null,
+      "case_start": "2011-08-17",
+      "case_end": "2011-10-05",
+      "case_duration_days": 49,
+      "total_editors": 23,
+      "total_events": 204,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 5,
+      "departure_rate": 0.2174,
+      "starters": 2,
+      "saw_through": 1,
+      "retention_rate": 0.5,
+      "phase_edits": {
+        "main": 4,
+        "evidence": 52,
+        "workshop": 74,
+        "proposed_decision": 74
+      }
+    },
+    {
+      "case_name": "SevenOfDiamonds",
+      "slug": "sevenofdiamonds",
+      "has_data": true,
+      "error": null,
+      "case_start": "2007-08-27",
+      "case_end": "2007-10-18",
+      "case_duration_days": 52,
+      "total_editors": 23,
+      "total_events": 195,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 3,
+      "departure_rate": 0.1304,
+      "starters": 4,
+      "saw_through": 3,
+      "retention_rate": 0.75,
+      "phase_edits": {
+        "main": 5,
+        "evidence": 61,
+        "proposed_decision": 56,
+        "workshop": 73
+      }
+    },
+    {
+      "case_name": "Sexology",
+      "slug": "sexology",
+      "has_data": true,
+      "error": null,
+      "case_start": "2013-02-08",
+      "case_end": "2013-04-25",
+      "case_duration_days": 75,
+      "total_editors": 26,
+      "total_events": 222,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 13,
+      "departure_rate": 0.5,
+      "starters": 3,
+      "saw_through": 1,
+      "retention_rate": 0.3333,
+      "phase_edits": {
+        "main": 16,
+        "evidence": 56,
+        "workshop": 75,
+        "proposed_decision": 75
+      }
+    },
+    {
+      "case_name": "Shakespeare authorship question",
+      "slug": "shakespeare_authorship_question",
+      "has_data": true,
+      "error": null,
+      "case_start": "2011-01-24",
+      "case_end": "2025-10-10",
+      "case_duration_days": 5373,
+      "total_editors": 55,
+      "total_events": 284,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 36,
+      "departure_rate": 0.6545,
+      "starters": 34,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "evidence": 72,
+        "main": 71,
+        "workshop": 69,
+        "proposed_decision": 72
+      }
+    },
+    {
+      "case_name": "Shiloh",
+      "slug": "shiloh",
+      "has_data": true,
+      "error": null,
+      "case_start": "2006-02-12",
+      "case_end": "2006-03-25",
+      "case_duration_days": 40,
+      "total_editors": 24,
+      "total_events": 196,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 10,
+      "departure_rate": 0.4167,
+      "starters": 10,
+      "saw_through": 3,
+      "retention_rate": 0.3,
+      "phase_edits": {
+        "main": 15,
+        "proposed_decision": 37,
+        "workshop": 72,
+        "evidence": 72
+      }
+    },
+    {
+      "case_name": "Shorne and Fred Bauder",
+      "slug": "shorne_and_fred_bauder",
+      "has_data": true,
+      "error": null,
+      "case_start": "2004-10-12",
+      "case_end": "2004-12-27",
+      "case_duration_days": 75,
+      "total_editors": 7,
+      "total_events": 38,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 0,
+      "departure_rate": 0.0,
+      "starters": 2,
+      "saw_through": 2,
+      "retention_rate": 1.0,
+      "phase_edits": {
+        "main": 8,
+        "evidence": 24,
+        "proposed_decision": 6
+      }
+    },
+    {
+      "case_name": "Silverback",
+      "slug": "silverback",
+      "has_data": true,
+      "error": null,
+      "case_start": "2005-11-01",
+      "case_end": "2005-11-28",
+      "case_duration_days": 26,
+      "total_editors": 18,
+      "total_events": 71,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 7,
+      "departure_rate": 0.3889,
+      "starters": 6,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 1,
+        "evidence": 47,
+        "workshop": 6,
+        "proposed_decision": 17
+      }
+    },
+    {
+      "case_name": "Skepticism and coordinated editing",
+      "slug": "skepticism_and_coordinated_editing",
+      "has_data": true,
+      "error": null,
+      "case_start": "2022-01-17",
+      "case_end": "2022-03-03",
+      "case_duration_days": 45,
+      "total_editors": 39,
+      "total_events": 236,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 15,
+      "departure_rate": 0.3846,
+      "starters": 2,
+      "saw_through": 1,
+      "retention_rate": 0.5,
+      "phase_edits": {
+        "main": 12,
+        "evidence": 74,
+        "workshop": 75,
+        "proposed_decision": 75
+      }
+    },
+    {
+      "case_name": "Skyring",
+      "slug": "skyring",
+      "has_data": true,
+      "error": null,
+      "case_start": "2005-05-30",
+      "case_end": "2005-08-11",
+      "case_duration_days": 73,
+      "total_editors": 17,
+      "total_events": 149,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 8,
+      "departure_rate": 0.4706,
+      "starters": 8,
+      "saw_through": 1,
+      "retention_rate": 0.125,
+      "phase_edits": {
+        "main": 9,
+        "proposed_decision": 70,
+        "evidence": 70
+      }
+    },
+    {
+      "case_name": "SlimVirgin-Lar",
+      "slug": "slimvirgin-lar",
+      "has_data": true,
+      "error": null,
+      "case_start": "2008-07-23",
+      "case_end": "2024-05-09",
+      "case_duration_days": 5769,
+      "total_editors": 19,
+      "total_events": 90,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 10,
+      "departure_rate": 0.5263,
+      "starters": 10,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 15,
+        "proposed_decision": 75
+      }
+    },
+    {
+      "case_name": "SmallCat dispute",
+      "slug": "smallcat_dispute",
+      "has_data": true,
+      "error": null,
+      "case_start": "2023-07-21",
+      "case_end": "2023-08-27",
+      "case_duration_days": 37,
+      "total_editors": 37,
+      "total_events": 234,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 6,
+      "departure_rate": 0.1622,
+      "starters": 1,
+      "saw_through": 1,
+      "retention_rate": 1.0,
+      "phase_edits": {
+        "main": 10,
+        "evidence": 74,
+        "workshop": 75,
+        "proposed_decision": 75
+      }
+    },
+    {
+      "case_name": "Snowspinner vs. Lir",
+      "slug": "snowspinner_vs._lir",
+      "has_data": true,
+      "error": null,
+      "case_start": "2004-11-28",
+      "case_end": "2013-10-14",
+      "case_duration_days": 3241,
+      "total_editors": 24,
+      "total_events": 100,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 13,
+      "departure_rate": 0.5417,
+      "starters": 13,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "evidence": 42,
+        "main": 23,
+        "proposed_decision": 35
+      }
+    },
+    {
       "case_name": "Socionics",
       "slug": "socionics",
       "has_data": true,
@@ -7135,6 +10093,275 @@
       }
     },
     {
+      "case_name": "Theresa knott vs. Mr-Natural-Health",
+      "slug": "theresa_knott_vs._mr-natural-health",
+      "has_data": true,
+      "error": null,
+      "case_start": "2004-02-07",
+      "case_end": "2007-04-04",
+      "case_duration_days": 1152,
+      "total_editors": 12,
+      "total_events": 57,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 5,
+      "departure_rate": 0.4167,
+      "starters": 5,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 40,
+        "evidence": 17
+      }
+    },
+    {
+      "case_name": "TimidGuy ban appeal",
+      "slug": "timidguy_ban_appeal",
+      "has_data": true,
+      "error": null,
+      "case_start": "2011-12-14",
+      "case_end": "2014-12-29",
+      "case_duration_days": 1111,
+      "total_editors": 35,
+      "total_events": 210,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 26,
+      "departure_rate": 0.7429,
+      "starters": 25,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 12,
+        "evidence": 58,
+        "workshop": 67,
+        "proposed_decision": 73
+      }
+    },
+    {
+      "case_name": "TingMing",
+      "slug": "tingming",
+      "has_data": true,
+      "error": null,
+      "case_start": "2007-04-29",
+      "case_end": "2007-06-20",
+      "case_duration_days": 51,
+      "total_editors": 21,
+      "total_events": 146,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 10,
+      "departure_rate": 0.4762,
+      "starters": 9,
+      "saw_through": 1,
+      "retention_rate": 0.1111,
+      "phase_edits": {
+        "main": 4,
+        "evidence": 28,
+        "proposed_decision": 41,
+        "workshop": 73
+      }
+    },
+    {
+      "case_name": "Tkorrovi and Paul Beardsell",
+      "slug": "tkorrovi_and_paul_beardsell",
+      "has_data": true,
+      "error": null,
+      "case_start": "2005-04-01",
+      "case_end": "2005-07-21",
+      "case_duration_days": 111,
+      "total_editors": 14,
+      "total_events": 122,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 7,
+      "departure_rate": 0.5,
+      "starters": 5,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 13,
+        "evidence": 36,
+        "proposed_decision": 73
+      }
+    },
+    {
+      "case_name": "Tobias Conradi",
+      "slug": "tobias_conradi",
+      "has_data": true,
+      "error": null,
+      "case_start": "2007-04-20",
+      "case_end": "2007-05-23",
+      "case_duration_days": 33,
+      "total_editors": 14,
+      "total_events": 144,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 4,
+      "departure_rate": 0.2857,
+      "starters": 3,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 10,
+        "workshop": 30,
+        "proposed_decision": 30,
+        "evidence": 74
+      }
+    },
+    {
+      "case_name": "Toddst1",
+      "slug": "toddst1",
+      "has_data": true,
+      "error": null,
+      "case_start": "2014-02-26",
+      "case_end": "2015-03-09",
+      "case_duration_days": 376,
+      "total_editors": 7,
+      "total_events": 8,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 0,
+      "departure_rate": 0.0,
+      "starters": 0,
+      "saw_through": 0,
+      "retention_rate": 0,
+      "phase_edits": {
+        "main": 8
+      }
+    },
+    {
+      "case_name": "Tommstein",
+      "slug": "tommstein",
+      "has_data": true,
+      "error": null,
+      "case_start": "2006-01-25",
+      "case_end": "2006-02-24",
+      "case_duration_days": 29,
+      "total_editors": 17,
+      "total_events": 101,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 4,
+      "departure_rate": 0.2353,
+      "starters": 10,
+      "saw_through": 5,
+      "retention_rate": 0.5,
+      "phase_edits": {
+        "main": 4,
+        "evidence": 30,
+        "workshop": 34,
+        "proposed_decision": 33
+      }
+    },
+    {
+      "case_name": "Tothwolf",
+      "slug": "tothwolf",
+      "has_data": true,
+      "error": null,
+      "case_start": "2009-11-15",
+      "case_end": "2025-10-10",
+      "case_duration_days": 5808,
+      "total_editors": 42,
+      "total_events": 242,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 28,
+      "departure_rate": 0.6667,
+      "starters": 28,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 34,
+        "workshop": 61,
+        "evidence": 73,
+        "proposed_decision": 74
+      }
+    },
+    {
+      "case_name": "Transcendental Meditation movement",
+      "slug": "transcendental_meditation_movement",
+      "has_data": true,
+      "error": null,
+      "case_start": "2010-02-18",
+      "case_end": "2025-10-10",
+      "case_duration_days": 5713,
+      "total_editors": 44,
+      "total_events": 256,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 29,
+      "departure_rate": 0.6591,
+      "starters": 28,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 43,
+        "evidence": 72,
+        "workshop": 67,
+        "proposed_decision": 74
+      }
+    },
+    {
+      "case_name": "Transgender healthcare and people",
+      "slug": "transgender_healthcare_and_people",
+      "has_data": true,
+      "error": null,
+      "case_start": "2025-07-28",
+      "case_end": "2025-10-31",
+      "case_duration_days": 95,
+      "total_editors": 35,
+      "total_events": 235,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 11,
+      "departure_rate": 0.3143,
+      "starters": 14,
+      "saw_through": 3,
+      "retention_rate": 0.2143,
+      "phase_edits": {
+        "main": 15,
+        "evidence": 75,
+        "workshop": 70,
+        "proposed_decision": 75
+      }
+    },
+    {
+      "case_name": "Transnistria",
+      "slug": "transnistria",
+      "has_data": true,
+      "error": null,
+      "case_start": "2007-04-20",
+      "case_end": "2007-07-01",
+      "case_duration_days": 71,
+      "total_editors": 26,
+      "total_events": 219,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 19,
+      "departure_rate": 0.7308,
+      "starters": 5,
+      "saw_through": 2,
+      "retention_rate": 0.4,
+      "phase_edits": {
+        "main": 12,
+        "workshop": 60,
+        "evidence": 74,
+        "proposed_decision": 73
+      }
+    },
+    {
       "case_name": "Tree shaping",
       "slug": "tree_shaping",
       "has_data": true,
@@ -7528,6 +10755,81 @@
       }
     },
     {
+      "case_name": "Webcomics",
+      "slug": "webcomics",
+      "has_data": true,
+      "error": null,
+      "case_start": "2005-12-01",
+      "case_end": "2006-01-04",
+      "case_duration_days": 33,
+      "total_editors": 26,
+      "total_events": 153,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 6,
+      "departure_rate": 0.2308,
+      "starters": 6,
+      "saw_through": 2,
+      "retention_rate": 0.3333,
+      "phase_edits": {
+        "main": 2,
+        "evidence": 47,
+        "proposed_decision": 35,
+        "workshop": 69
+      }
+    },
+    {
+      "case_name": "WebEx and Min Zhu",
+      "slug": "webex_and_min_zhu",
+      "has_data": true,
+      "error": null,
+      "case_start": "2005-12-29",
+      "case_end": "2006-02-27",
+      "case_duration_days": 60,
+      "total_editors": 20,
+      "total_events": 218,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 10,
+      "departure_rate": 0.5,
+      "starters": 6,
+      "saw_through": 1,
+      "retention_rate": 0.1667,
+      "phase_edits": {
+        "main": 12,
+        "proposed_decision": 62,
+        "evidence": 72,
+        "workshop": 72
+      }
+    },
+    {
+      "case_name": "West Bank - Judea and Samaria",
+      "slug": "west_bank_-_judea_and_samaria",
+      "has_data": true,
+      "error": null,
+      "case_start": "2009-03-01",
+      "case_end": "2009-05-12",
+      "case_duration_days": 72,
+      "total_editors": 49,
+      "total_events": 226,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 5,
+      "departure_rate": 0.102,
+      "starters": 4,
+      "saw_through": 3,
+      "retention_rate": 0.75,
+      "phase_edits": {
+        "main": 18,
+        "evidence": 70,
+        "workshop": 65,
+        "proposed_decision": 73
+      }
+    },
+    {
       "case_name": "WHEELER",
       "slug": "wheeler",
       "has_data": true,
@@ -7549,6 +10851,248 @@
         "evidence": 44,
         "main": 4,
         "proposed_decision": 73
+      }
+    },
+    {
+      "case_name": "Wifione",
+      "slug": "wifione",
+      "has_data": true,
+      "error": null,
+      "case_start": "2015-01-02",
+      "case_end": "2021-09-02",
+      "case_duration_days": 2435,
+      "total_editors": 33,
+      "total_events": 233,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 23,
+      "departure_rate": 0.697,
+      "starters": 22,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 18,
+        "evidence": 72,
+        "workshop": 73,
+        "proposed_decision": 70
+      }
+    },
+    {
+      "case_name": "Wik",
+      "slug": "wik",
+      "has_data": true,
+      "error": null,
+      "case_start": "2004-02-20",
+      "case_end": "2004-11-27",
+      "case_duration_days": 280,
+      "total_editors": 31,
+      "total_events": 106,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 15,
+      "departure_rate": 0.4839,
+      "starters": 15,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "evidence": 69,
+        "main": 37
+      }
+    },
+    {
+      "case_name": "Wik2",
+      "slug": "wik2",
+      "has_data": true,
+      "error": null,
+      "case_start": "2004-04-12",
+      "case_end": "2024-10-15",
+      "case_duration_days": 7490,
+      "total_editors": 36,
+      "total_events": 147,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 19,
+      "departure_rate": 0.5278,
+      "starters": 19,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "evidence": 74,
+        "main": 73
+      }
+    },
+    {
+      "case_name": "Wikicology",
+      "slug": "wikicology",
+      "has_data": true,
+      "error": null,
+      "case_start": "2016-04-08",
+      "case_end": "2016-05-14",
+      "case_duration_days": 35,
+      "total_editors": 36,
+      "total_events": 234,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 6,
+      "departure_rate": 0.1667,
+      "starters": 1,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 10,
+        "evidence": 74,
+        "workshop": 75,
+        "proposed_decision": 75
+      }
+    },
+    {
+      "case_name": "WikiProject Tropical Cyclones",
+      "slug": "wikiproject_tropical_cyclones",
+      "has_data": true,
+      "error": null,
+      "case_start": "2022-03-30",
+      "case_end": "2022-05-27",
+      "case_duration_days": 58,
+      "total_editors": 26,
+      "total_events": 207,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 12,
+      "departure_rate": 0.4615,
+      "starters": 11,
+      "saw_through": 2,
+      "retention_rate": 0.1818,
+      "phase_edits": {
+        "main": 8,
+        "evidence": 49,
+        "workshop": 75,
+        "proposed_decision": 75
+      }
+    },
+    {
+      "case_name": "WikiUser",
+      "slug": "wikiuser",
+      "has_data": true,
+      "error": null,
+      "case_start": "2005-02-12",
+      "case_end": "2005-02-25",
+      "case_duration_days": 13,
+      "total_editors": 15,
+      "total_events": 99,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 0,
+      "departure_rate": 0.0,
+      "starters": 7,
+      "saw_through": 5,
+      "retention_rate": 0.7143,
+      "phase_edits": {
+        "main": 15,
+        "evidence": 10,
+        "proposed_decision": 74
+      }
+    },
+    {
+      "case_name": "Wilkes, Wyss and Onefortyone",
+      "slug": "wilkes,_wyss_and_onefortyone",
+      "has_data": true,
+      "error": null,
+      "case_start": "2005-11-28",
+      "case_end": "2005-12-24",
+      "case_duration_days": 26,
+      "total_editors": 13,
+      "total_events": 107,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 1,
+      "departure_rate": 0.0769,
+      "starters": 3,
+      "saw_through": 2,
+      "retention_rate": 0.6667,
+      "phase_edits": {
+        "main": 2,
+        "evidence": 18,
+        "workshop": 51,
+        "proposed_decision": 36
+      }
+    },
+    {
+      "case_name": "Winhunter",
+      "slug": "winhunter",
+      "has_data": true,
+      "error": null,
+      "case_start": "2017-09-03",
+      "case_end": "2018-09-16",
+      "case_duration_days": 377,
+      "total_editors": 17,
+      "total_events": 29,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 2,
+      "departure_rate": 0.1176,
+      "starters": 2,
+      "saw_through": 0,
+      "retention_rate": 0.0,
+      "phase_edits": {
+        "main": 29
+      }
+    },
+    {
+      "case_name": "Winter Soldier",
+      "slug": "winter_soldier",
+      "has_data": true,
+      "error": null,
+      "case_start": "2005-11-20",
+      "case_end": "2006-02-02",
+      "case_duration_days": 74,
+      "total_editors": 20,
+      "total_events": 180,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 8,
+      "departure_rate": 0.4,
+      "starters": 8,
+      "saw_through": 1,
+      "retention_rate": 0.125,
+      "phase_edits": {
+        "main": 6,
+        "workshop": 38,
+        "proposed_decision": 66,
+        "evidence": 70
+      }
+    },
+    {
+      "case_name": "Winter Soldier 2",
+      "slug": "winter_soldier_2",
+      "has_data": true,
+      "error": null,
+      "case_start": "2007-11-19",
+      "case_end": "2007-12-09",
+      "case_duration_days": 19,
+      "total_editors": 19,
+      "total_events": 166,
+      "outcome_status": "unknown",
+      "sanctioned_count": 0,
+      "sanctioned_names": [],
+      "departed_count": 1,
+      "departure_rate": 0.0526,
+      "starters": 7,
+      "saw_through": 2,
+      "retention_rate": 0.2857,
+      "phase_edits": {
+        "main": 2,
+        "evidence": 68,
+        "workshop": 64,
+        "proposed_decision": 32
       }
     },
     {
@@ -7928,254 +11472,14 @@
       "error": "No revisions found in any case page"
     },
     {
-      "case_name": "Copperchair",
-      "slug": "copperchair",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Dalmatia",
-      "slug": "dalmatia",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "DangerousPanda",
-      "slug": "dangerouspanda",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "DarrenRay and 2006BC",
-      "slug": "darrenray_and_2006bc",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Date delinking",
-      "slug": "date_delinking",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Deathrocker",
-      "slug": "deathrocker",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Deeceevoice",
-      "slug": "deeceevoice",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Deir Yassin massacre",
-      "slug": "deir_yassin_massacre",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Depleted uranium",
-      "slug": "depleted_uranium",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Dionyseus",
-      "slug": "dionyseus",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "DotSix",
-      "slug": "dotsix",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Dr Zen",
-      "slug": "dr_zen",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "DreamGuy",
-      "slug": "dreamguy",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "DreamGuy 2",
-      "slug": "dreamguy_2",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Durova",
-      "slug": "durova",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Dyslexic Agnostic",
-      "slug": "dyslexic_agnostic",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "E104421-Tajik",
-      "slug": "e104421-tajik",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Eastern Europe",
-      "slug": "eastern_europe",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Eastern European disputes",
-      "slug": "eastern_european_disputes",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Eastern European mailing list",
-      "slug": "eastern_european_mailing_list",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Ebionites",
-      "slug": "ebionites",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Ebionites 3",
-      "slug": "ebionites_3",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Ed Poor",
-      "slug": "ed_poor",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Ed Poor 2",
-      "slug": "ed_poor_2",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Editing of Biographies of Living Persons",
-      "slug": "editing_of_biographies_of_living_persons",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Editor conduct in e-cigs articles",
-      "slug": "editor_conduct_in_e-cigs_articles",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "EffK",
-      "slug": "effk",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Ehud Lesar",
-      "slug": "ehud_lesar",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Election",
-      "slug": "election",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Emico",
-      "slug": "emico",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
       "case_name": "FuelWagon v. Ed Poor",
       "slug": "fuelwagon_v._ed_poor",
       "has_data": false,
       "error": "No revisions found in any case page"
     },
     {
-      "case_name": "Fæ",
-      "slug": "fæ",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "G.-M. Cupertino",
-      "slug": "g.-m._cupertino",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Gabrielsimon",
-      "slug": "gabrielsimon",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Gamaliel and others",
-      "slug": "gamaliel_and_others",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Gender and sexuality",
-      "slug": "gender_and_sexuality",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Gene Poole vs. Samboy",
-      "slug": "gene_poole_vs._samboy",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Genetically modified organisms",
-      "slug": "genetically_modified_organisms",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Giano",
-      "slug": "giano",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "GRider",
-      "slug": "grider",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
       "case_name": "Highways 2",
       "slug": "highways_2",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "His excellency",
-      "slug": "his_excellency",
       "has_data": false,
       "error": "No revisions found in any case page"
     },
@@ -8192,142 +11496,10 @@
       "error": "No revisions found in any case page"
     },
     {
-      "case_name": "HistoryBuffEr and Jayjg",
-      "slug": "historybuffer_and_jayjg",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Hkelkar 2",
-      "slug": "hkelkar_2",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Honda S2000",
-      "slug": "honda_s2000",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Horn of Africa",
-      "slug": "horn_of_africa",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Hunger",
-      "slug": "hunger",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Iloveminun",
-      "slug": "iloveminun",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "India-Pakistan",
-      "slug": "india-pakistan",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Infinity0",
-      "slug": "infinity0",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
       "case_name": "Interactions at GGTF",
       "slug": "interactions_at_ggtf",
       "has_data": false,
       "error": "'NoneType' object has no attribute 'endswith'"
-    },
-    {
-      "case_name": "IRC",
-      "slug": "irc",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Israeli apartheid",
-      "slug": "israeli_apartheid",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "IZAK",
-      "slug": "izak",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Jacrosse",
-      "slug": "jacrosse",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "JarlaxleArtemis",
-      "slug": "jarlaxleartemis",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "JarlaxleArtemis 2",
-      "slug": "jarlaxleartemis_2",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Jeffrey O. Gustafson",
-      "slug": "jeffrey_o._gustafson",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Jeffrey Vernon Merkey",
-      "slug": "jeffrey_vernon_merkey",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Jguk",
-      "slug": "jguk",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Jim62sch",
-      "slug": "jim62sch",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Jimmyvanthach",
-      "slug": "jimmyvanthach",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Jmfangio-Chrisjnelson",
-      "slug": "jmfangio-chrisjnelson",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Joefromrandb and others",
-      "slug": "joefromrandb_and_others",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "JRR Trollkien",
-      "slug": "jrr_trollkien",
-      "has_data": false,
-      "error": "No revisions found in any case page"
     },
     {
       "case_name": "Koavf",
@@ -8336,280 +11508,22 @@
       "error": "No revisions found in any case page"
     },
     {
-      "case_name": "Kosovo",
-      "slug": "kosovo",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Kuban kazak",
-      "slug": "kuban_kazak",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Kudpung",
-      "slug": "kudpung",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Kurds and Kurdistan",
-      "slug": "kurds_and_kurdistan",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Kven",
-      "slug": "kven",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Kww and The Rambling Man",
-      "slug": "kww_and_the_rambling_man",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Lance6wins",
-      "slug": "lance6wins",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Lapsed Pacifist",
-      "slug": "lapsed_pacifist",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Macedonia 2",
-      "slug": "macedonia_2",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Magioladitis",
-      "slug": "magioladitis",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Magioladitis 2",
-      "slug": "magioladitis_2",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Manipulation of BLPs",
-      "slug": "manipulation_of_blps",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Manning naming dispute",
-      "slug": "manning_naming_dispute",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Mantanmoreland",
-      "slug": "mantanmoreland",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Maoririder",
-      "slug": "maoririder",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Marcosantezana",
-      "slug": "marcosantezana",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Martinphi-ScienceApologist",
-      "slug": "martinphi-scienceapologist",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Marudubshinki",
-      "slug": "marudubshinki",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Mattisse",
-      "slug": "mattisse",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Mav v. 168",
-      "slug": "mav_v._168",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Netoholic 2",
-      "slug": "netoholic_2",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Neuro-linguistic programming",
-      "slug": "neuro-linguistic_programming",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "New World Translation",
-      "slug": "new_world_translation",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Nightscream",
-      "slug": "nightscream",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Njyoder",
-      "slug": "njyoder",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Nobs01 and others",
-      "slug": "nobs01_and_others",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
       "case_name": "Noleander",
       "slug": "noleander",
       "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Noloop",
-      "slug": "noloop",
-      "has_data": false,
-      "error": "No revisions found in any case page"
+      "error": "'NoneType' object has no attribute 'endswith'"
     },
     {
       "case_name": "Obama articles",
       "slug": "obama_articles",
       "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "OccultZone and others",
-      "slug": "occultzone_and_others",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "OldRight",
-      "slug": "oldright",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Onefortyone",
-      "slug": "onefortyone",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "PoolGuy",
-      "slug": "poolguy",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Portals",
-      "slug": "portals",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Prem Rawat",
-      "slug": "prem_rawat",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Prem Rawat 2",
-      "slug": "prem_rawat_2",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Privatemusings",
-      "slug": "privatemusings",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Pseudoscience",
-      "slug": "pseudoscience",
-      "has_data": false,
-      "error": "No revisions found in any case page"
+      "error": "'NoneType' object has no attribute 'endswith'"
     },
     {
       "case_name": "Race and intelligence",
       "slug": "race_and_intelligence",
       "has_data": false,
       "error": "'NoneType' object has no attribute 'endswith'"
-    },
-    {
-      "case_name": "Reithy",
-      "slug": "reithy",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Reversal and reinstatement of Athaenara's block",
-      "slug": "reversal_and_reinstatement_of_athaenara's_block",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Reversion of office actions",
-      "slug": "reversion_of_office_actions",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Rex071404",
-      "slug": "rex071404",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Rex071404 2",
-      "slug": "rex071404_2",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Rex071404 3",
-      "slug": "rex071404_3",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Rex071404 4",
-      "slug": "rex071404_4",
-      "has_data": false,
-      "error": "No revisions found in any case page"
     },
     {
       "case_name": "Sathya Sai Baba",
@@ -8624,172 +11538,16 @@
       "error": "No revisions found in any case page"
     },
     {
-      "case_name": "Scientology",
-      "slug": "scientology",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Scottywong",
-      "slug": "scottywong",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
       "case_name": "Seeyou",
       "slug": "seeyou",
       "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "SemBubenny",
-      "slug": "sembubenny",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Senkaku Islands",
-      "slug": "senkaku_islands",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "SevenOfDiamonds",
-      "slug": "sevenofdiamonds",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Sexology",
-      "slug": "sexology",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Shakespeare authorship question",
-      "slug": "shakespeare_authorship_question",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Shiloh",
-      "slug": "shiloh",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Shorne and Fred Bauder",
-      "slug": "shorne_and_fred_bauder",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Silverback",
-      "slug": "silverback",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Skepticism and coordinated editing",
-      "slug": "skepticism_and_coordinated_editing",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Skyring",
-      "slug": "skyring",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "SlimVirgin-Lar",
-      "slug": "slimvirgin-lar",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "SmallCat dispute",
-      "slug": "smallcat_dispute",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Snowspinner vs. Lir",
-      "slug": "snowspinner_vs._lir",
-      "has_data": false,
-      "error": "No revisions found in any case page"
+      "error": "'NoneType' object has no attribute 'endswith'"
     },
     {
       "case_name": "Speed of light",
       "slug": "speed_of_light",
       "has_data": false,
       "error": "'NoneType' object has no attribute 'endswith'"
-    },
-    {
-      "case_name": "Theresa knott vs. Mr-Natural-Health",
-      "slug": "theresa_knott_vs._mr-natural-health",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "TimidGuy ban appeal",
-      "slug": "timidguy_ban_appeal",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "TingMing",
-      "slug": "tingming",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Tkorrovi and Paul Beardsell",
-      "slug": "tkorrovi_and_paul_beardsell",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Tobias Conradi",
-      "slug": "tobias_conradi",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Toddst1",
-      "slug": "toddst1",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Tommstein",
-      "slug": "tommstein",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Tothwolf",
-      "slug": "tothwolf",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Transcendental Meditation movement",
-      "slug": "transcendental_meditation_movement",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Transgender healthcare and people",
-      "slug": "transgender_healthcare_and_people",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Transnistria",
-      "slug": "transnistria",
-      "has_data": false,
-      "error": "No revisions found in any case page"
     },
     {
       "case_name": "Ulritz",
@@ -8800,84 +11558,6 @@
     {
       "case_name": "Waterboarding",
       "slug": "waterboarding",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Webcomics",
-      "slug": "webcomics",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "WebEx and Min Zhu",
-      "slug": "webex_and_min_zhu",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "West Bank - Judea and Samaria",
-      "slug": "west_bank_-_judea_and_samaria",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Wifione",
-      "slug": "wifione",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Wik",
-      "slug": "wik",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Wik2",
-      "slug": "wik2",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Wikicology",
-      "slug": "wikicology",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "WikiProject Tropical Cyclones",
-      "slug": "wikiproject_tropical_cyclones",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "WikiUser",
-      "slug": "wikiuser",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Wilkes, Wyss and Onefortyone",
-      "slug": "wilkes,_wyss_and_onefortyone",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Winhunter",
-      "slug": "winhunter",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Winter Soldier",
-      "slug": "winter_soldier",
-      "has_data": false,
-      "error": "No revisions found in any case page"
-    },
-    {
-      "case_name": "Winter Soldier 2",
-      "slug": "winter_soldier_2",
       "has_data": false,
       "error": "No revisions found in any case page"
     }
