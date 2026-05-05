@@ -497,6 +497,27 @@ async function loadAll() {
   groupData.forEach(d => {
     buildGroupRow(root, d.grp, d.cases, d.avgEv);
   });
+
+  // URL param ?expand=science,geopolitics opens named groups (used for static exports)
+  const expandParam = new URLSearchParams(location.search).get('expand');
+  if (expandParam) {
+    expandParam.split(',').forEach(id => {
+      const block = [...document.querySelectorAll('.grp-block')]
+        .find(b => b.style.getPropertyValue('--grp-color') &&
+          groupData.find(d => d.grp.id === id.trim() && b.contains(b.querySelector('.grp-name'))));
+      // simpler: match by group order index
+    });
+    // match by grp id against rendered blocks (blocks are in same order as groupData)
+    const blocks = document.querySelectorAll('.grp-block');
+    expandParam.split(',').forEach(id => {
+      const idx = groupData.findIndex(d => d.grp.id === id.trim());
+      if (idx >= 0 && blocks[idx]) {
+        blocks[idx].classList.add('open');
+        const chev = blocks[idx].querySelector('.grp-chevron');
+        if (chev) chev.style.transform = 'rotate(90deg)';
+      }
+    });
+  }
 }
 
 loadAll();
