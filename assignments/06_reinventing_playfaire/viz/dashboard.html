@@ -1614,14 +1614,14 @@ function buildAnalysis(){
   </div>
 
   <div class="an-section">
-    <h2>5 · Where editors fight — evidence dominates</h2>
+    <h2>5 · Where editing energy goes — by conflict type</h2>
     <p class="lede">
-      ArbCom cases have four formal pages: the main filing, evidence, workshop, and proposed decision.
-      The evidence page is where participants invest the most energy — it is the only place where
-      they can influence the narrative. By the time the proposed decision is written, most have
-      already stopped watching.
+      ArbCom cases have four formal pages: main filing, evidence, workshop, and proposed decision.
+      Evidence is where participants try to win the argument — but how much energy lands there
+      depends on <em>what kind of dispute it is</em>. Conduct cases concentrate editing on evidence;
+      geopolitical and religious cases spread effort across all phases as participants keep refiling arguments.
     </p>
-    <div class="an-chart"><div class="an-chart-title">Edit share by phase (each row = one case)</div>
+    <div class="an-chart"><div class="an-chart-title">Average edit share by phase, grouped by conflict topic</div>
       <div id="ch-phase"></div>
     </div>
   </div>
@@ -1629,23 +1629,13 @@ function buildAnalysis(){
   <div class="an-section">
     <h2>6 · Sanctions and duration — a two-way relationship</h2>
     <p class="lede">
-      Cases with sanctions last longer — not because the committee deliberates more carefully, but
-      because the behavior that triggers sanctions is chronic. Repeat offenders generate iterative
-      evidence rounds that stretch every metric.
+      Cases that result in sanctions last longer — not because the committee deliberates more carefully,
+      but because sanctionable behavior is chronic. Repeat offenders generate iterative rounds of
+      evidence that stretch every metric.
     </p>
     <div class="an-chart"><div class="an-chart-title">Median duration: sanctioned vs not sanctioned</div>
       <div id="ch-sanct"></div>
     </div>
-  </div>
-
-  <div class="an-section">
-    <h2>7 · Editors vs duration — the full picture</h2>
-    <p class="lede">
-      Each point is one case. More editors loosely predicts longer duration, but the relationship
-      is noisy — some small disputes become multi-year wars, some large mobilizations resolve quickly.
-      Sanctioned cases (red) cluster toward the top-left: many chronic offenders have few observers.
-    </p>
-    <div class="an-chart"><div id="ch-scatter"></div></div>
   </div>
   `;
 
@@ -1661,9 +1651,8 @@ function buildAnalysis(){
     {label:'>90 days', v:avg(long_.map(c=>c.departure_rate*100))},
   ],'Avg departure %','#B60000',100);
   _anEraChart(eraData);
-  _anPhaseStack(cases);
+  _anPhaseByTopic(cases);
   _anSanctBars(sanctioned,noSanct);
-  _anScatter(cases);
 }
 
 // ── Duration histogram (log-binned) ──
@@ -1862,45 +1851,95 @@ function _anRetention(cases){
 }
 
 // ── Phase stack ──
-function _anPhaseStack(cases){
+// ── Phase share by topic — stacked horizontal bars ──
+function _anPhaseByTopic(cases){
   const el=document.getElementById('ch-phase');
   if(!el) return;
   const phases=['main','evidence','workshop','proposed_decision','article'];
-  const W=el.clientWidth||640, rowH=16, pad=3, labelW=110;
-  const iW=W-labelW-12;
-  const sorted=[...cases].sort((a,b)=>{
-    const pa=a.phase_edits||{}, pb=b.phase_edits||{};
-    const ea=(pa.evidence||0)/(Object.values(pa).reduce((s,v)=>s+v,0)||1);
-    const eb=(pb.evidence||0)/(Object.values(pb).reduce((s,v)=>s+v,0)||1);
-    return eb-ea;
+  const phaseLabels={'main':'Main','evidence':'Evidence','workshop':'Workshop','proposed_decision':'Prop. Decision','article':'Article'};
+
+  // Aggregate mean phase share per topic
+  const topicKeys=Object.keys(TOPICS);
+  const rows=topicKeys.map(t=>{
+    const tc=cases.filter(c=>c.topic===t&&c.phase_edits);
+    if(!tc.length) return null;
+    const shares={};
+    phases.forEach(p=>{
+      shares[p]=d3.mean(tc,c=>{
+        const pe=c.phase_edits||{};
+        const tot=Object.values(pe).reduce((s,v)=>s+v,0)||1;
+        return (pe[p]||0)/tot;
+      });
+    });
+    return {topic:t,n:tc.length,shares,color:TOPICS[t].color};
+  }).filter(Boolean);
+
+  // Add an "All cases" aggregate row at top
+  const allShares={};
+  phases.forEach(p=>{
+    allShares[p]=d3.mean(cases.filter(c=>c.phase_edits),c=>{
+      const pe=c.phase_edits||{};
+      const tot=Object.values(pe).reduce((s,v)=>s+v,0)||1;
+      return (pe[p]||0)/tot;
+    })||0;
   });
-  const H=sorted.length*(rowH+pad)+20;
+  rows.unshift({topic:'All cases',n:cases.filter(c=>c.phase_edits).length,shares:allShares,color:'#A2A9B1',isAll:true});
+
+  const rowH=28, pad=6, labelW=100, legH=18;
+  const W=el.clientWidth||640;
+  const iW=W-labelW-16;
+  const H=rows.length*(rowH+pad)+legH+16;
+
   const svg=d3.select(el).append('svg').attr('width',W).attr('height',H);
-  const g=svg.append('g').attr('transform',`translate(${labelW},12)`);
+
+  // Phase color palette
+  const phaseColor={'main':'#72777D','evidence':'#3366CC','workshop':'#E97500','proposed_decision':'#B60000','article':'#54A823'};
 
   // Legend
+  const legG=svg.append('g').attr('transform',`translate(${labelW},8)`);
   phases.forEach((p,i)=>{
     const lx=(i/phases.length)*iW;
-    g.append('rect').attr('x',lx).attr('y',-12).attr('width',7).attr('height',7).attr('fill',PAGE_COLOR[p]).attr('rx',1.5);
-    g.append('text').attr('x',lx+9).attr('y',-5).attr('fill','#54595D').attr('font-size',7.5)
-      .text(p.replace(/_/g,' ').replace('proposed ','prop. '));
+    legG.append('rect').attr('x',lx).attr('y',0).attr('width',9).attr('height',9).attr('fill',phaseColor[p]).attr('rx',2);
+    legG.append('text').attr('x',lx+12).attr('y',9).attr('font-size',9).attr('fill','#54595D').text(phaseLabels[p]);
   });
 
-  sorted.forEach((c,ri)=>{
+  const g=svg.append('g').attr('transform',`translate(0,${legH+12})`);
+
+  rows.forEach((r,ri)=>{
     const y=ri*(rowH+pad);
-    const pe=c.phase_edits||{};
-    const tot=Object.values(pe).reduce((s,v)=>s+v,0)||1;
-    let cx=0;
-    svg.append('text').attr('x',labelW-4).attr('y',y+rowH/2+4)
-      .attr('text-anchor','end').attr('font-size',8).attr('fill',c.color||'#595959')
-      .text(c.case_name.length>16?c.case_name.slice(0,15)+'…':c.case_name);
+    // Divider above "All cases" row
+    if(ri===0){
+      g.append('line').attr('x1',labelW).attr('x2',W-16).attr('y1',y-3).attr('y2',y-3).attr('stroke','#EAECF0');
+    }
+    // Row separator before topic rows
+    if(ri===1){
+      g.append('line').attr('x1',labelW).attr('x2',W-16).attr('y1',y-3).attr('y2',y-3).attr('stroke','#EAECF0').attr('stroke-dasharray','3 3');
+    }
+
+    // Label
+    g.append('text').attr('x',labelW-6).attr('y',y+rowH/2+4)
+      .attr('text-anchor','end').attr('font-size',r.isAll?10:9.5)
+      .attr('font-weight',r.isAll?700:400).attr('fill',r.isAll?'#202122':r.color)
+      .text(r.isAll?'All cases':r.topic);
+    g.append('text').attr('x',labelW-6).attr('y',y+rowH/2+14)
+      .attr('text-anchor','end').attr('font-size',7.5).attr('fill','#72777D')
+      .text(`n=${r.n}`);
+
+    // Stacked bar
+    let cx=labelW;
     phases.forEach(p=>{
-      const val=pe[p]||0, w=(val/tot)*iW;
+      const w=(r.shares[p]||0)*iW;
       if(w<1){cx+=w;return;}
       g.append('rect').attr('x',cx).attr('y',y).attr('width',w).attr('height',rowH)
-        .attr('fill',PAGE_COLOR[p]).attr('rx',1)
-        .on('mouseover',ev=>showTip(ev,`<strong>${c.case_name}</strong><br>${p.replace(/_/g,' ')}: ${val} edits (${Math.round(val/tot*100)}%)`))
+        .attr('fill',phaseColor[p]).attr('opacity',r.isAll?1:.82)
+        .on('mouseover',ev=>showTip(ev,`<strong>${r.topic}</strong> — ${phaseLabels[p]}<br>${Math.round((r.shares[p]||0)*100)}% avg edit share`))
         .on('mousemove',moveTip).on('mouseout',hideTip);
+      // Label if wide enough
+      if(w>24){
+        g.append('text').attr('x',cx+w/2).attr('y',y+rowH/2+4)
+          .attr('text-anchor','middle').attr('font-size',8.5).attr('fill','#fff').attr('pointer-events','none')
+          .text(Math.round((r.shares[p]||0)*100)+'%');
+      }
       cx+=w;
     });
   });
