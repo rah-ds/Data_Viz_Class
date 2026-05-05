@@ -212,8 +212,12 @@ tbody tr:hover:not(.no-data) .case-name{color:var(--link);}
 /* ── TOPIC CHIPS ── */
 .topic-chips{padding:6px 20px;border-bottom:1px solid var(--border-light);display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0;background:var(--surface);}
 .topic-chip{padding:3px 10px;font-size:.68rem;border-radius:12px;cursor:pointer;border:1.5px solid transparent;transition:all .12s;white-space:nowrap;}
-.topic-chip.active{font-weight:600;}
-.topic-chip:not(.active){opacity:.6;}
+.topic-chip.active{font-weight:600;border-color:currentColor;}
+.topic-chip:not(.active){opacity:.5;}
+.phase-legend{display:flex;gap:14px;align-items:center;padding:4px 20px 6px;flex-shrink:0;background:var(--surface);border-bottom:1px solid var(--border-light);}
+.phase-legend-lbl{font-size:.58rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-right:4px;}
+.phase-dot{display:inline-flex;align-items:center;gap:4px;font-size:.6rem;color:var(--muted);}
+.phase-dot span{display:inline-block;width:9px;height:9px;border-radius:2px;flex-shrink:0;}
 
 /* ── VIEW TOGGLE ── */
 .view-toggle{display:flex;border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-left:4px;}
@@ -515,7 +519,7 @@ function hideTip(){tip.style.display='none';}
 // ═════════════════════════════════════════════════════════
 // STATE
 // ═════════════════════════════════════════════════════════
-let ALL=[], FILTERED=[], filterMode='all', currentRec=null, currentTopic='All', currentEra='All', currentView='cards';
+let ALL=[], FILTERED=[], filterMode='all', currentRec=null, SELECTED_TOPICS=new Set(), currentEra='All', currentView='cards';
 const D3_CACHE={}, COMPARE_SET=new Map();
 
 // ═════════════════════════════════════════════════════════
@@ -648,16 +652,25 @@ function buildTopicChips(){
   }
   el.innerHTML=[['All',null],...[...counts.entries()].filter(([k])=>k!=='All')].map(([k,n])=>{
     const td=TOPICS[k]||{color:'#595959',icon:'&#9873;'};
-    const act=currentTopic===k?' active':'';
+    const isAll=k==='All';
+    const act=(isAll&&SELECTED_TOPICS.size===0)||(!isAll&&SELECTED_TOPICS.has(k))?' active':'';
     const cnt=n!=null?` (${n})`:'';
     return `<div class="topic-chip${act}" data-t="${k}" style="color:${td.color||'#595959'}"
-      onclick="setTopic('${k}')">${k!=='All'?(td.icon+' '):''}${k}${cnt}</div>`;
+      onclick="setTopic('${k}')">${!isAll?(td.icon+' '):''}${k}${cnt}</div>`;
   }).join('');
 }
 
 function setTopic(t){
-  currentTopic=t;
-  document.querySelectorAll('.topic-chip').forEach(c=>c.classList.toggle('active',c.dataset.t===t));
+  if(t==='All'){
+    SELECTED_TOPICS.clear();
+  } else {
+    if(SELECTED_TOPICS.has(t)) SELECTED_TOPICS.delete(t);
+    else SELECTED_TOPICS.add(t);
+  }
+  document.querySelectorAll('.topic-chip').forEach(c=>{
+    const isAll=c.dataset.t==='All';
+    c.classList.toggle('active',(isAll&&SELECTED_TOPICS.size===0)||(!isAll&&SELECTED_TOPICS.has(c.dataset.t)));
+  });
   filterAndRender();
 }
 
@@ -709,7 +722,7 @@ function filterAndRender(){
   FILTERED=ALL
     .filter(c=>c.case_name.toLowerCase().includes(q))
     .filter(c=>filterMode==='all'?true:filterMode==='data'?c.has_data:!c.has_data)
-    .filter(c=>currentTopic==='All'||c.topic===currentTopic)
+    .filter(c=>SELECTED_TOPICS.size===0||SELECTED_TOPICS.has(c.topic))
     .filter(c=>currentEra==='All'||c.era===currentEra)
     .sort((a,b)=>{
       if(filterMode==='all'){const dd=(b.has_data?1:0)-(a.has_data?1:0);if(dd) return dd;}
@@ -1089,7 +1102,7 @@ function renderCompareFull(){
   Promise.all(recs.map(r=>loadD3(r.slug))).then(datasets=>{
     body.innerHTML='';
     const t1=document.createElement('div');
-    t1.className='cmp-section-title'; t1.textContent='Edit journeys — normalized 0–100% of case duration';
+    t1.className='cmp-section-title'; t1.innerHTML='Edit journeys — normalized 0–100% of case duration <span style="font-weight:400;font-style:italic;text-transform:none;letter-spacing:0">· click any row to open its full timeline</span>';
     body.appendChild(t1);
     renderNormalizedTimelines(recs, datasets, body);
     renderCompareStats(recs, body);
@@ -1359,10 +1372,24 @@ function renderTimeline(data, container){
   const {meta,nodes,events}=data;
 
   // ── Activity overview bar ────────────────────────────────
+  const topicColor=TOPICS[currentRec?.topic]?.color||'#595959';
+  const editEvtsForOverview=events.filter(e=>e.type==='edit'||e.type==='revert');
   const overviewWrap=document.createElement('div');
   overviewWrap.className='cmp-act-overview';
-  overviewWrap.style.cssText=`height:50px;margin:0 ${M.right+20}px 8px ${M.left}px;`;
+  overviewWrap.style.cssText=`height:120px;margin:8px ${M.right+20}px 0 ${M.left}px;border-radius:6px;overflow:hidden;`;
   container.appendChild(overviewWrap);
+  renderAreaChart(editEvtsForOverview, meta, topicColor, overviewWrap, 120);
+
+  // Phase legend
+  const legendWrap=document.createElement('div');
+  legendWrap.style.cssText=`display:flex;gap:12px;align-items:center;padding:5px ${M.right+20}px 8px ${M.left}px;flex-shrink:0;`;
+  legendWrap.innerHTML='<span style="font-size:.58rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em">Phase:</span>'+
+    Object.entries(PAGE_COLOR).filter(([p])=>p!=='outcome').map(([p,c])=>
+      `<span style="display:inline-flex;align-items:center;gap:3px;font-size:.6rem;color:var(--muted)">
+        <span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:${c}"></span>
+        ${p.replace(/_/g,' ').replace('proposed decision','prop. decision')}
+       </span>`).join('');
+  container.appendChild(legendWrap);
 
   // ── Sort + cap editors ───────────────────────────────────
   const editCounts={};
@@ -1434,42 +1461,6 @@ function renderTimeline(data, container){
     labG.append('text').attr('class','lane-label').attr('x',-6).attr('y',yi)
       .attr('text-anchor','end').style('fill','#A2A9B1').text(`+${hiddenCount} others`);
   }
-
-  // ── Render activity overview bar ────────────────────────
-  requestAnimationFrame(()=>{
-    const pages=['main','evidence','workshop','proposed_decision','article','outcome'];
-    const editEvts=events.filter(e=>e.type==='edit'||e.type==='revert');
-    const buckets=computeDensity(editEvts,60);
-    if(buckets.length&&overviewWrap.clientWidth){
-      const oW=overviewWrap.clientWidth, oH=overviewWrap.clientHeight||50;
-      const maxTot=Math.max(1,...buckets.map(b=>pages.reduce((s,p)=>s+(b[p]||0),0)));
-      const bw=oW/buckets.length;
-      const oSvg=d3.select(overviewWrap).append('svg').attr('width','100%').attr('height',oH);
-      // phase band backgrounds
-      const t0=+new Date(meta.case_start), t1=+new Date(meta.case_end);
-      meta.stages.filter(s=>s.name!=='outcome').forEach(s=>{
-        const x0=Math.max(0,((+new Date(s.start)-t0)/(t1-t0||1))*oW);
-        const x1=Math.min(oW,((+new Date(s.end)-t0)/(t1-t0||1))*oW);
-        oSvg.append('rect').attr('x',x0).attr('y',0).attr('width',Math.max(1,x1-x0)).attr('height',oH)
-          .attr('fill',STAGE_FILL[s.name]||'#F5F5F5').attr('opacity',.8);
-        if(x1-x0>36)
-          oSvg.append('text').attr('x',x0+4).attr('y',9).attr('font-size',7).attr('fill','#A2A9B1')
-            .text(s.name.replace(/_/g,' ').replace('proposed ','prop. '));
-      });
-      // stacked edit bars
-      buckets.forEach((b,i)=>{
-        let y=oH;
-        pages.forEach(p=>{
-          const v=b[p]||0; if(!v) return;
-          const h=(v/maxTot)*oH; y-=h;
-          oSvg.append('rect').attr('x',i*bw).attr('y',y)
-            .attr('width',Math.max(1,bw-.5)).attr('height',h)
-            .attr('fill',PAGE_COLOR[p]||'#595959').attr('opacity',.85);
-        });
-      });
-      oSvg.append('text').attr('x',2).attr('y',oH-3).attr('font-size',7.5).attr('fill','#A2A9B1').text('activity overview');
-    }
-  });
 
   const editEvents=events.filter(e=>e.type==='edit'||e.type==='revert');
   const dots=cG.append('g').selectAll('circle').data(editEvents).join('circle')
