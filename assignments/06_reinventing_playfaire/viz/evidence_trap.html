@@ -94,9 +94,11 @@ body{
 }
 .grp-toggle:hover{background:rgba(255,255,255,.025)}
 .grp-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.grp-icon{font-size:13px;width:18px;flex-shrink:0;text-align:center;line-height:1}
 .grp-name{font-size:11.5px;font-weight:700;text-transform:uppercase;
-  letter-spacing:.08em;width:88px;flex-shrink:0}
+  letter-spacing:.08em;width:80px;flex-shrink:0}
 .grp-nc{font-size:10.5px;color:var(--muted);width:52px;flex-shrink:0}
+.grp-dash-num{font-size:10px;color:rgba(139,148,158,.45);width:28px;flex-shrink:0;font-variant-numeric:tabular-nums}
 .grp-desc{
   font-size:11.5px;color:rgba(200,209,219,.55);line-height:1.6;
   padding:0 0 10px 168px;font-style:italic;max-width:860px;
@@ -106,6 +108,11 @@ body{
   transition:transform .2s;line-height:1;
 }
 .grp-block.open .grp-chevron{transform:rotate(90deg)}
+.grp-spark-row{display:flex;align-items:stretch;margin-bottom:3px;height:28px}
+.grp-spark-lbl{width:168px;flex-shrink:0;font-size:7.5px;color:rgba(139,148,158,.28);
+  text-align:right;padding-right:10px;display:flex;align-items:flex-end;
+  justify-content:flex-end;padding-bottom:2px;font-style:italic;letter-spacing:.04em}
+.grp-spark-svg{flex:1;display:block}
 
 /* DETAIL / FINGERPRINTS */
 .grp-detail{display:none;padding-bottom:12px}
@@ -235,7 +242,7 @@ const PLABELS = {
 const ESCAPE = 0.14;
 
 const GROUPS = [
-  {id:'politics', label:'Politics', baseColor:'#CC3333',
+  {id:'politics', label:'Politics', baseColor:'#CC3333', icon:'★', dashNum:12,
    desc:'Disputes over political figures, elections, and partisan articles — editor allegiances here often mirror real-world party divides more than Wikipedia sourcing standards.',
    recurNotes:[
      {title:'American Politics (2014 + 2015)', note:'The 2015 case reopened within months because the prior sanctions were insufficient to stop battleground editing ahead of U.S. elections. The committee had to tighten restrictions twice in a single election cycle.'},
@@ -254,7 +261,7 @@ const GROUPS = [
     {slug:'venezuelan_politics',         short:'Venezuela 2024'},
     {slug:'indian_military_history',     short:'IndMilitary 2025'},
   ]},
-  {id:'religion', label:'Religion', baseColor:'#9966CC',
+  {id:'religion', label:'Religion', baseColor:'#9966CC', icon:'✦', dashNum:19,
    desc:'Conflicts over doctrine, sacred figures, and religious institutions — editors frequently treat their faith tradition as an authority that Wikipedia\'s neutrality policy cannot override.',
    recurNotes:[
      {title:'Ebionites (2007 + 2013)', note:'A small, persistent group of editors with fringe theological views returned six years after the first case with the same sourcing disputes largely intact. The original remedies expired without resolving the underlying belief conflict.'},
@@ -268,7 +275,7 @@ const GROUPS = [
     {slug:'christianity_and_sexuality',  short:'C&S 2015'},
     {slug:'world_war_ii_and_the_history_of_jews_in_poland', short:'WWII Jews 2023'},
   ]},
-  {id:'science', label:'Science', baseColor:'#14866D',
+  {id:'science', label:'Science', baseColor:'#14866D', icon:'⚗', dashNum:15,
    desc:'Edit wars over empirically contested claims — climate change, alternative medicine, pseudoscience — where minority viewpoints seek equal footing with scientific consensus on the grounds of editorial fairness.',
    recurNotes:[
      {title:'Climate Change (2005, 2005, 2010)', note:'Three separate arbitration cases in five years tracked successive waves of skeptic editors. The first two cases in 2005 named different editors for the same dispute; the 2010 case reopened in the wake of the Climategate controversy, which briefly gave fringe editors new ammunition.'},
@@ -284,7 +291,7 @@ const GROUPS = [
     {slug:'climate_change',              short:'Climate 2010'},
     {slug:'skepticism_and_coordinated_editing', short:'Skepticism 2022'},
   ]},
-  {id:'social', label:'Social', baseColor:'#339966',
+  {id:'social', label:'Social', baseColor:'#339966', icon:'◈', dashNum:13,
    desc:'Cases involving identity, demographics, and social policy — contested cultural definitions make neutral framing structurally difficult, and the battlegrounds shift as terminology evolves.',
    recurNotes:[],
    cases:[
@@ -296,7 +303,7 @@ const GROUPS = [
     {slug:'civility_in_infobox_discussions', short:'Infobox 2018'},
     {slug:'transgender_healthcare_and_people', short:'TransHealth 2025'},
   ]},
-  {id:'geopolitics', label:'Geopolitics', baseColor:'#FF9900',
+  {id:'geopolitics', label:'Geopolitics', baseColor:'#FF9900', icon:'⊕', dashNum:31,
    desc:'Territorial and ethnic disputes — especially in the Middle East and the former Soviet Union — where competing national narratives about history are irreconcilable and real-world events keep reopening old wounds.',
    recurNotes:[
      {title:'Palestine–Israel (2015, 2019, 2024)', note:'Three cases across nine years. Each resolved the immediate editor conduct but could not settle the underlying historical narrative. New rounds of real-world conflict — 2014 Gaza war, 2021 escalation, October 2023 — brought fresh waves of editors with the same framing disputes, requiring the committee to intervene again each time.'},
@@ -315,7 +322,7 @@ const GROUPS = [
     {slug:'armenia-azerbaijan_3',        short:'ArmAze 2023'},
     {slug:'palestine-israel_articles_5', short:'PalIsrael5 2024'},
   ]},
-  {id:'policy', label:'Policy', baseColor:'#3366CC',
+  {id:'policy', label:'Policy', baseColor:'#3366CC', icon:'§', dashNum:16,
    desc:'Disputes about Wikipedia\'s own enforcement rules and banning procedures — cases where the community turned its dispute-resolution apparatus on itself to debate how arbitration should work.',
    recurNotes:[
      {title:'Arbitration Enforcement (2011, 2015, 2015)', note:'Three cases over four years as the community kept finding its enforcement procedures insufficient. Each case tightened the rules, but the new rules created new ambiguities that required their own arbitration. The second and third cases in 2015 ran nearly simultaneously, reflecting how quickly the policy was being stress-tested.'},
@@ -390,10 +397,24 @@ function buildGroupRow(root, grp, cases, avgEv, isTrapped, isMid) {  const evEnd
   toggle.className = 'grp-toggle';
   toggle.innerHTML = `
     <div class="grp-dot" style="background:${grp.baseColor}"></div>
+    <div class="grp-icon">${grp.icon}</div>
     <div class="grp-name" style="color:${grp.baseColor}">${grp.label}</div>
     <div class="grp-nc">${cases.length} cases</div>
+    <div class="grp-dash-num">(${grp.dashNum})</div>
     <div class="grp-chevron">›</div>`;
   block.appendChild(toggle);
+
+  // Per-group evidence sparkline with median line — always visible
+  const sparkRow = document.createElement('div');
+  sparkRow.className = 'grp-spark-row';
+  const sparkLbl = document.createElement('div');
+  sparkLbl.className = 'grp-spark-lbl';
+  sparkLbl.textContent = 'evidence %';
+  const sparkSvgWrap = document.createElement('div');
+  sparkSvgWrap.className = 'grp-spark-svg';
+  sparkRow.appendChild(sparkLbl);
+  sparkRow.appendChild(sparkSvgWrap);
+  block.appendChild(sparkRow);
 
   // Group avg fingerprint row — ALWAYS visible
   const avgRow = document.createElement('div');
@@ -501,6 +522,62 @@ function buildGroupRow(root, grp, cases, avgEv, isTrapped, isMid) {  const evEnd
   });
 
   root.appendChild(block);
+
+  // Return deferred spark draw (needs layout width)
+  return () => drawGroupSpark(sparkSvgWrap, avgEv, grp.baseColor);
+}
+
+// Draw the per-group evidence sparkline + group-median reference line
+function drawGroupSpark(container, avgEv, color) {
+  const W = container.getBoundingClientRect().width;
+  if (!W) return;
+  const H = 28;
+  const sorted = [...avgEv].sort((a,b)=>a-b);
+  const medianEv = sorted[Math.floor(sorted.length/2)];
+  const localMax = Math.max(d3.max(avgEv)*1.25, ESCAPE*1.5, 0.06);
+
+  const x = d3.scaleLinear().domain([0, BUCKETS-1]).range([0, W]);
+  const y = d3.scaleLinear().domain([0, localMax]).range([H-1, 1]);
+
+  const svg = d3.select(container).append('svg')
+    .attr('width', W).attr('height', H).style('display','block');
+
+  // Area fill
+  svg.append('path')
+    .datum(avgEv)
+    .attr('fill', color)
+    .attr('opacity', .13)
+    .attr('d', d3.area().x((_,i)=>x(i)).y0(H-1).y1(d=>y(d)).curve(d3.curveCatmullRom.alpha(.5)));
+
+  // Line
+  svg.append('path')
+    .datum(avgEv)
+    .attr('fill','none')
+    .attr('stroke', color)
+    .attr('stroke-width', 1.5)
+    .attr('opacity', .75)
+    .attr('d', d3.line().x((_,i)=>x(i)).y(d=>y(d)).curve(d3.curveCatmullRom.alpha(.5)));
+
+  // Group median reference line
+  const medY = y(medianEv);
+  svg.append('line')
+    .attr('x1', 0).attr('x2', W)
+    .attr('y1', medY).attr('y2', medY)
+    .attr('stroke', color)
+    .attr('stroke-width', 1)
+    .attr('stroke-dasharray', '3,3')
+    .attr('opacity', .45);
+
+  // Median label
+  const pct = (medianEv*100).toFixed(0);
+  svg.append('text')
+    .attr('x', W - 3).attr('y', medY - 2)
+    .attr('text-anchor','end')
+    .attr('font-size', 7.5)
+    .attr('fill', color)
+    .attr('opacity', .6)
+    .attr('font-family','inherit')
+    .text(`median ${pct}%`);
 }
 
 // MAIN
@@ -537,9 +614,14 @@ async function loadAll() {
 
   const root = document.getElementById('groups-root');
 
+  const deferredSparks = [];
   groupData.forEach(d => {
-    buildGroupRow(root, d.grp, d.cases, d.avgEv, d.isTrapped, d.isMid);
+    const draw = buildGroupRow(root, d.grp, d.cases, d.avgEv, d.isTrapped, d.isMid);
+    deferredSparks.push(draw);
   });
+
+  // Draw sparklines after layout is complete
+  requestAnimationFrame(() => deferredSparks.forEach(fn => fn()));
 }
 
 loadAll();
