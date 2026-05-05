@@ -288,13 +288,18 @@ tbody tr:hover:not(.no-data) .case-name{color:var(--link);}
 .diverg-row{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
 .diverg-label{width:150px;font-size:.62rem;color:var(--muted);flex-shrink:0;}
 .diverg-strip{flex:1;height:12px;border-radius:2px;overflow:hidden;display:flex;}
-.cmp-stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;}
-.cmp-stat-card{background:var(--surface);border:1px solid var(--border-light);border-radius:6px;padding:10px 14px;}
-.cmp-stat-name{font-size:.57rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;}
-.cmp-stat-vals{display:flex;gap:12px;flex-wrap:wrap;}
-.cmp-stat-val{min-width:60px;}
-.cmp-stat-v{font-size:1rem;font-weight:700;}
-.cmp-stat-l{font-size:.58rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90px;}
+.cmp-row{display:flex;align-items:stretch;gap:0;margin-bottom:8px;}
+.cmp-row-label{width:168px;padding-right:10px;flex-shrink:0;display:flex;flex-direction:column;justify-content:center;}
+.cmp-row-chart{flex:1;border-radius:3px;overflow:hidden;}
+.cmp-axis-row{display:flex;padding-left:168px;margin-bottom:4px;}
+.cmp-axis-tick{flex:1;font-size:7.5px;color:var(--muted);text-align:center;}
+.cmp-stats-table{width:100%;border-collapse:collapse;font-size:.72rem;margin-top:4px;}
+.cmp-stats-table th{text-align:left;padding:6px 12px;font-size:.63rem;border-bottom:2px solid var(--border);}
+.cmp-stats-table td{padding:5px 12px;border-bottom:1px solid var(--border-light);}
+.cmp-stat-row-name{color:var(--muted);font-size:.6rem;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;}
+.cmp-stat-row-val{font-weight:600;}
+.cmp-stats-table tr:hover td{background:var(--surface2);}
+.cmp-act-overview{background:var(--surface2);border-radius:3px;overflow:hidden;margin-bottom:2px;}
 </style>
 </head>
 <body>
@@ -1014,20 +1019,9 @@ function renderCompareFull(){
   Promise.all(recs.map(r=>loadD3(r.slug))).then(datasets=>{
     body.innerHTML='';
     const t1=document.createElement('div');
-    t1.className='cmp-section-title'; t1.textContent='Edit journeys (normalized 0\u2013100%)';
+    t1.className='cmp-section-title'; t1.textContent='Edit journeys — normalized 0–100% of case duration';
     body.appendChild(t1);
     renderNormalizedTimelines(recs, datasets, body);
-    if(recs.length>=2){
-      const t2=document.createElement('div');
-      t2.className='cmp-section-title';
-      t2.textContent='Divergence \u2014 where journeys differ most';
-      body.appendChild(t2);
-      for(let i=0;i<recs.length-1;i++){
-        for(let j=i+1;j<recs.length;j++){
-          renderDivergenceStrip(recs[i],datasets[i],recs[j],datasets[j],body);
-        }
-      }
-    }
     renderCompareStats(recs, body);
   }).catch(err=>{
     body.innerHTML=`<div style="padding:20px;color:#B60000">Error: ${err.message}</div>`;
@@ -1035,40 +1029,84 @@ function renderCompareFull(){
 }
 
 function renderNormalizedTimelines(recs, datasets, container){
-  const nBuckets=40;
-  const pages=['main','evidence','workshop','proposed_decision','article','outcome'];
+  const nBuckets=60;
+  const phases=['main','evidence','workshop','proposed_decision','article','outcome'];
+  const rowH=80;
+
+  // Shared % axis header
+  const axisRow=document.createElement('div');
+  axisRow.className='cmp-axis-row';
+  axisRow.innerHTML='<div class="cmp-axis-tick" style="flex:0;width:168px"></div>'+
+    [0,25,50,75,100].map(p=>`<div class="cmp-axis-tick">${p}%</div>`).join('');
+  container.appendChild(axisRow);
+
   recs.forEach((rec,ri)=>{
     const data=datasets[ri]; if(!data) return;
-    const buckets=computeDensity(data.events, nBuckets);
-    const maxTot=Math.max(1,...buckets.map(b=>pages.reduce((s,p)=>s+(b[p]||0),0)));
+    const buckets=computeDensity(data.events,nBuckets);
+    const maxTot=Math.max(1,...buckets.map(b=>phases.reduce((s,p)=>s+(b[p]||0),0)));
     const color=TOPICS[rec.topic]?.color||'#595959';
-    const row=document.createElement('div'); row.className='cmp-row';
-    const lbl=document.createElement('div'); lbl.className='cmp-row-label';
-    lbl.style.color=color; lbl.title=rec.case_name;
-    lbl.textContent=rec.case_name.length>20?rec.case_name.slice(0,19)+'\u2026':rec.case_name;
-    const chartDiv=document.createElement('div'); chartDiv.className='cmp-row-chart';
-    row.appendChild(lbl); row.appendChild(chartDiv); container.appendChild(row);
-    // Render after append so clientWidth is available
+    const depPct=Math.round((rec.departure_rate||0)*100);
+
+    const row=document.createElement('div');
+    row.className='cmp-row';
+
+    // Label col
+    const lbl=document.createElement('div');
+    lbl.className='cmp-row-label';
+    lbl.innerHTML=`
+      <div style="font-size:.72rem;font-weight:700;color:${color};white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${rec.case_name}">${rec.case_name}</div>
+      <div style="font-size:.6rem;color:var(--muted);margin-top:3px">${rec.case_duration_days??'?'}d &middot; ${rec.total_editors??'?'} editors</div>
+      <div style="font-size:.6rem;color:var(--muted)">${depPct}% departed &middot; ${rec.sanctioned_count||0} sanctioned</div>
+      <div style="font-size:.6rem;color:var(--muted);margin-top:2px;font-style:italic">${TOPICS[rec.topic]?.desc||rec.topic||''}</div>`;
+
+    // Chart col
+    const chartDiv=document.createElement('div');
+    chartDiv.className='cmp-row-chart';
+    chartDiv.style.height=rowH+'px';
+
+    row.appendChild(lbl);
+    row.appendChild(chartDiv);
+    container.appendChild(row);
+
     requestAnimationFrame(()=>{
-      const svgW=chartDiv.clientWidth||600, rowH=44;
-      const bwActual=svgW/nBuckets;
+      const W=chartDiv.clientWidth||500;
       const svg=d3.select(chartDiv).append('svg').attr('width','100%').attr('height',rowH);
-      svg.append('rect').attr('x',0).attr('y',0).attr('width',4).attr('height',rowH).attr('fill',color).attr('opacity',.7);
+
+      // Phase band overlays (normalized to 0→100%)
+      if(data.meta?.stages){
+        const t0=+new Date(data.meta.case_start), t1=+new Date(data.meta.case_end);
+        data.meta.stages.filter(s=>s.name!=='outcome').forEach(s=>{
+          const x0=Math.max(0,((+new Date(s.start)-t0)/(t1-t0||1))*W);
+          const x1=Math.min(W,((+new Date(s.end)-t0)/(t1-t0||1))*W);
+          svg.append('rect').attr('x',x0).attr('y',0).attr('width',Math.max(1,x1-x0)).attr('height',rowH)
+            .attr('fill',STAGE_FILL[s.name]||'#F5F5F5').attr('opacity',.7);
+          if(x1-x0>40)
+            svg.append('text').attr('x',x0+4).attr('y',10).attr('font-size',7).attr('fill','#A2A9B1')
+              .text(s.name.replace(/_/g,' ').replace('proposed ','prop. '));
+        });
+      }
+
+      // Stacked edit bars
+      const bw=W/nBuckets;
       buckets.forEach((b,i)=>{
         let y=rowH;
-        pages.forEach(p=>{
+        phases.forEach(p=>{
           const v=b[p]||0; if(!v) return;
           const h=(v/maxTot)*rowH; y-=h;
-          svg.append('rect').attr('x',6+i*bwActual).attr('y',y)
-            .attr('width',Math.max(1,bwActual-.5)).attr('height',h)
-            .attr('fill',PAGE_COLOR[p]||'#595959').attr('opacity',.85);
+          svg.append('rect').attr('x',i*bw).attr('y',y)
+            .attr('width',Math.max(1,bw-.5)).attr('height',h)
+            .attr('fill',PAGE_COLOR[p]||'#595959').attr('opacity',.88);
         });
       });
-      svg.append('line').attr('x1',6).attr('x2',svgW).attr('y1',rowH).attr('y2',rowH)
-        .attr('stroke','#EAECF0').attr('stroke-width',.5);
-      [0,25,50,75,100].forEach(pct=>{
-        svg.append('text').attr('x',6+(pct/100)*(svgW-6)).attr('y',rowH-1)
-          .attr('text-anchor','middle').attr('font-size',7).attr('fill','#A2A9B1').text(pct+'%');
+
+      // Left accent bar
+      svg.append('rect').attr('x',0).attr('y',0).attr('width',4).attr('height',rowH).attr('fill',color).attr('opacity',.9);
+
+      // Guide lines at 25/50/75%
+      [25,50,75].forEach(p=>{
+        svg.append('line').attr('x1',(p/100)*W).attr('x2',(p/100)*W)
+          .attr('y1',0).attr('y2',rowH)
+          .attr('stroke','rgba(255,255,255,.6)').attr('stroke-width',1).attr('stroke-dasharray','2 4');
       });
     });
   });
@@ -1109,34 +1147,23 @@ function renderDivergenceStrip(recA, dataA, recB, dataB, container){
 
 function renderCompareStats(recs, container){
   const t=document.createElement('div');
-  t.className='cmp-section-title'; t.textContent='Key statistics';
+  t.className='cmp-section-title'; t.textContent='Side-by-side statistics';
   container.appendChild(t);
   const stats=[
-    {name:'Duration',fn:r=>r.case_duration_days?(r.case_duration_days>=365?(r.case_duration_days/365).toFixed(1)+'y':r.case_duration_days+'d'):'&#8212;'},
-    {name:'Total editors',fn:r=>r.total_editors??'&#8212;'},
-    {name:'Departure rate',fn:r=>r.departure_rate!=null?Math.round(r.departure_rate*100)+'%':'&#8212;'},
-    {name:'Starter retention',fn:r=>r.starters>0?Math.round((r.retention_rate||0)*100)+'%':'&#8212;'},
-    {name:'Sanctioned',fn:r=>r.sanctioned_count||0},
-    {name:'Total edits',fn:r=>r.total_events??'&#8212;'},
-    {name:'Outcome',fn:r=>r.outcome_status||'&#8212;'},
-    {name:'Topic',fn:r=>r.topic||'&#8212;'},
+    {name:'Duration',       fn:r=>r.case_duration_days?(r.case_duration_days>=365?(r.case_duration_days/365).toFixed(1)+'y':r.case_duration_days+'d'):'—'},
+    {name:'Total editors',  fn:r=>r.total_editors??'—'},
+    {name:'Departure rate', fn:r=>r.departure_rate!=null?Math.round(r.departure_rate*100)+'%':'—'},
+    {name:'Retention',      fn:r=>r.starters>0?Math.round((r.retention_rate||0)*100)+'%':'—'},
+    {name:'Sanctioned',     fn:r=>r.sanctioned_count||0},
+    {name:'Outcome',        fn:r=>r.outcome_status||'—'},
+    {name:'Topic',          fn:r=>r.topic||'—'},
   ];
-  const grid=document.createElement('div'); grid.className='cmp-stats-grid';
-  stats.forEach(stat=>{
-    const card=document.createElement('div'); card.className='cmp-stat-card';
-    const nameDiv=document.createElement('div'); nameDiv.className='cmp-stat-name';
-    nameDiv.textContent=stat.name;
-    const valsDiv=document.createElement('div'); valsDiv.className='cmp-stat-vals';
-    recs.forEach(rec=>{
-      const col=TOPICS[rec.topic]?.color||'#595959';
-      const val=document.createElement('div'); val.className='cmp-stat-val';
-      val.innerHTML=`<div class="cmp-stat-v" style="color:${col}">${stat.fn(rec)}</div>`+
-        `<div class="cmp-stat-l" title="${rec.case_name}">${rec.case_name.slice(0,12)}${rec.case_name.length>12?'\u2026':''}</div>`;
-      valsDiv.appendChild(val);
-    });
-    card.appendChild(nameDiv); card.appendChild(valsDiv); grid.appendChild(card);
-  });
-  container.appendChild(grid);
+  const colors=recs.map(r=>TOPICS[r.topic]?.color||'#595959');
+  const table=document.createElement('table');
+  table.className='cmp-stats-table';
+  table.innerHTML=`<thead><tr><th></th>${recs.map((r,i)=>`<th style="color:${colors[i]}">${r.case_name.length>20?r.case_name.slice(0,19)+'…':r.case_name}</th>`).join('')}</tr></thead>
+  <tbody>${stats.map(s=>`<tr><td class="cmp-stat-row-name">${s.name}</td>${recs.map(r=>`<td class="cmp-stat-row-val">${s.fn(r)}</td>`).join('')}</tr>`).join('')}</tbody>`;
+  container.appendChild(table);
 }
 
 
@@ -1334,13 +1361,35 @@ function loadD3(slug){
 function renderTimeline(data, container){
   container.innerHTML='';
   const {meta,nodes,events}=data;
-  const ordered=[...nodes].sort((a,b)=>{
+
+  // ── Activity overview bar ────────────────────────────────
+  const overviewWrap=document.createElement('div');
+  overviewWrap.className='cmp-act-overview';
+  overviewWrap.style.cssText=`height:50px;margin:0 ${M.right+20}px 8px ${M.left}px;`;
+  container.appendChild(overviewWrap);
+
+  // ── Sort + cap editors ───────────────────────────────────
+  const editCounts={};
+  events.filter(e=>e.type==='edit'||e.type==='revert').forEach(e=>{
+    editCounts[e.actor]=(editCounts[e.actor]||0)+1;
+  });
+  const MAX_EDITORS=30;
+  let ordered=[...nodes].sort((a,b)=>{
     const r=(ROLE_ORDER[a.role]??9)-(ROLE_ORDER[b.role]??9);
     return r||+(a.first_active>b.first_active)||-+(a.first_active<b.first_active);
   });
+  let hiddenCount=0;
+  if(ordered.length>MAX_EDITORS){
+    const privileged=ordered.filter(n=>(ROLE_ORDER[n.role]??9)<=1);
+    const rest=ordered.filter(n=>(ROLE_ORDER[n.role]??9)>1)
+      .sort((a,b)=>(editCounts[b.username]||0)-(editCounts[a.username]||0));
+    const keep=Math.max(0,MAX_EDITORS-privileged.length);
+    hiddenCount=Math.max(0,rest.length-keep);
+    ordered=[...privileged,...rest.slice(0,keep)];
+  }
   const yIdx={};
   ordered.forEach((n,i)=>yIdx[n.username]=i);
-  const rows=ordered.length;
+  const rows=ordered.length+(hiddenCount>0?1:0);
   const chartW=Math.max(860,container.clientWidth-M.left-M.right-20);
   const svgH=M.top+rows*(LANE_H+LANE_PAD)+M.bottom;
   const svgW=M.left+chartW+M.right;
@@ -1384,6 +1433,47 @@ function renderTimeline(data, container){
     labG.append('text').attr('class','lane-label').attr('x',-6).attr('y',y)
       .attr('text-anchor','end').style('fill',ROLE_COLOR[node.role]||'#595959').text(node.username);
   });
+  if(hiddenCount>0){
+    const yi=ordered.length*(LANE_H+LANE_PAD)+LANE_H/2;
+    labG.append('text').attr('class','lane-label').attr('x',-6).attr('y',yi)
+      .attr('text-anchor','end').style('fill','#A2A9B1').text(`+${hiddenCount} others`);
+  }
+
+  // ── Render activity overview bar ────────────────────────
+  requestAnimationFrame(()=>{
+    const pages=['main','evidence','workshop','proposed_decision','article','outcome'];
+    const editEvts=events.filter(e=>e.type==='edit'||e.type==='revert');
+    const buckets=computeDensity(editEvts,60);
+    if(buckets.length&&overviewWrap.clientWidth){
+      const oW=overviewWrap.clientWidth, oH=overviewWrap.clientHeight||50;
+      const maxTot=Math.max(1,...buckets.map(b=>pages.reduce((s,p)=>s+(b[p]||0),0)));
+      const bw=oW/buckets.length;
+      const oSvg=d3.select(overviewWrap).append('svg').attr('width','100%').attr('height',oH);
+      // phase band backgrounds
+      const t0=+new Date(meta.case_start), t1=+new Date(meta.case_end);
+      meta.stages.filter(s=>s.name!=='outcome').forEach(s=>{
+        const x0=Math.max(0,((+new Date(s.start)-t0)/(t1-t0||1))*oW);
+        const x1=Math.min(oW,((+new Date(s.end)-t0)/(t1-t0||1))*oW);
+        oSvg.append('rect').attr('x',x0).attr('y',0).attr('width',Math.max(1,x1-x0)).attr('height',oH)
+          .attr('fill',STAGE_FILL[s.name]||'#F5F5F5').attr('opacity',.8);
+        if(x1-x0>36)
+          oSvg.append('text').attr('x',x0+4).attr('y',9).attr('font-size',7).attr('fill','#A2A9B1')
+            .text(s.name.replace(/_/g,' ').replace('proposed ','prop. '));
+      });
+      // stacked edit bars
+      buckets.forEach((b,i)=>{
+        let y=oH;
+        pages.forEach(p=>{
+          const v=b[p]||0; if(!v) return;
+          const h=(v/maxTot)*oH; y-=h;
+          oSvg.append('rect').attr('x',i*bw).attr('y',y)
+            .attr('width',Math.max(1,bw-.5)).attr('height',h)
+            .attr('fill',PAGE_COLOR[p]||'#595959').attr('opacity',.85);
+        });
+      });
+      oSvg.append('text').attr('x',2).attr('y',oH-3).attr('font-size',7.5).attr('fill','#A2A9B1').text('activity overview');
+    }
+  });
 
   const editEvents=events.filter(e=>e.type==='edit'||e.type==='revert');
   const dots=cG.append('g').selectAll('circle').data(editEvents).join('circle')
@@ -1421,13 +1511,6 @@ function renderTimeline(data, container){
       d.sanctions.map(s=>`<span class="m">${s.sanction_type}</span>: ${s.description.slice(0,120)}…`).join('<br>')))
     .on('mousemove',moveTip).on('mouseout',hideTip);
 
-  events.filter(e=>e.type==='revert'&&e.reverted).forEach(e=>{
-    const si=yIdx[e.actor],ti=yIdx[e.reverted];
-    if(si===undefined||ti===undefined) return;
-    const y1=si*(LANE_H+LANE_PAD)+LANE_H/2, y2=ti*(LANE_H+LANE_PAD)+LANE_H/2;
-    cG.append('path').attr('class','revert-arc').attr('data-ts',e.timestamp).attr('y1',y1).attr('y2',y2);
-  });
-
   ordered.forEach((_,i)=>{
     labG.append('line').attr('x1',-LABEL_W).attr('x2',0)
       .attr('y1',i*(LANE_H+LANE_PAD)+LANE_H+LANE_PAD-1).attr('y2',i*(LANE_H+LANE_PAD)+LANE_H+LANE_PAD-1)
@@ -1446,13 +1529,6 @@ function renderTimeline(data, container){
       .attr('width',function(){return Math.max(1,x(new Date(this.dataset.end))-x(new Date(this.dataset.start)));});
     cG.selectAll('.stage-label-text')
       .attr('x',function(){return x(new Date(this.dataset.ts))+3;});
-    cG.selectAll('.revert-arc').each(function(){
-      const ts=this.dataset.ts; if(!ts) return;
-      const xc=x(new Date(ts));
-      const y1=+this.getAttribute('y1'), y2=+this.getAttribute('y2');
-      const cx=xc+Math.abs(y2-y1)*.4;
-      d3.select(this).attr('d',`M${xc},${y1} C${cx},${y1} ${cx},${y2} ${xc},${y2}`);
-    });
   }
   updateX(xOrig);
 
