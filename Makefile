@@ -1,4 +1,4 @@
-.PHONY: help install export-svgs serve-vda serve-btw serve-lg serve-wiki serve-wiki-ideas serve-wiki-ideas2 sync-wiki-cases prepare-vda notebook lint fmt-py fmt-md clean
+.PHONY: help install export-svgs serve-vda serve-btw serve-lg serve-wiki serve-wiki-ideas serve-wiki-ideas2 serve-wiki-politics sync-wiki-cases prepare-vda notebook lint fmt-py fmt-md clean
 
 # ──────────────────────────────────────────────
 #  Colors (only when stdout is a terminal)
@@ -27,7 +27,8 @@ help:
 	@echo "    $(GREEN)serve-lg$(RESET)       Serve assignment 05 Observable Framework (port 3000)"
 	@echo "    $(GREEN)serve-wiki$(RESET)     Serve assignment 06 Wikipedia edit-conflict viz (port 8888)"
 	@echo "    $(GREEN)serve-wiki-ideas$(RESET)  Open Volume I experimental viz ideas"
-	@echo "    $(GREEN)serve-wiki-ideas2$(RESET) Open Volume II experimental viz ideas"
+	@echo "    $(GREEN)serve-wiki-ideas2$(RESET) Open Volume II experimental viz ideas
+    $(GREEN)serve-wiki-politics$(RESET) Open politics cases standalone viz"
 	@echo "    $(GREEN)notebook$(RESET)       Launch Jupyter Notebook"
 	@echo ""
 	@echo "  $(CYAN)Data & Export$(RESET)"
@@ -71,6 +72,10 @@ serve-wiki-ideas:
 ## serve-wiki-ideas2: open Volume II experimental ideas page
 serve-wiki-ideas2:
 	uv run python assignments/06_reinventing_playfaire/scripts/serve.py --open viz/ideas2.html
+
+## serve-wiki-politics: open politics cases standalone viz
+serve-wiki-politics:
+	uv run python assignments/06_reinventing_playfaire/scripts/serve.py --open viz/politics.html
 
 ## sync-wiki-cases: export newly-fetched raw cases and sync to assignment viz folder
 sync-wiki-cases:

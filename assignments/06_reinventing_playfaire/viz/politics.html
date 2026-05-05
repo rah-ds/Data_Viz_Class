@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Political Conflict on Wikipedia — 9 Cases, 20 Years</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text-muted: #7d8590;
+  --text-faint: #3d444d;
+  --accent: #58a6ff;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Georgia', 'Times New Roman', serif;
+  line-height: 1.6;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── Page header ── */
+#hero {
+  padding: 64px 48px 48px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+#hero h1 {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+#hero .subtitle {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  max-width: 640px;
+  font-style: italic;
+}
+#hero .stats-row {
+  display: flex;
+  gap: 32px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+#hero .stat {
+  text-align: center;
+}
+#hero .stat-n {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  display: block;
+}
+#hero .stat-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ── Nav ── */
+#toc {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 0 48px;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  position: sticky;
+  top: 0;
+  background: rgba(13,17,23,0.95);
+  backdrop-filter: blur(6px);
+  z-index: 100;
+}
+#toc ul {
+  list-style: none;
+  display: inline-flex;
+  gap: 0;
+  padding: 0;
+}
+#toc li a {
+  display: inline-block;
+  padding: 12px 16px;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+#toc li a:hover,
+#toc li a.active {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+  text-decoration: none;
+}
+
+/* ── Section wrapper ── */
+.viz-section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 64px 48px;
+  border-bottom: 1px solid var(--border);
+}
+.viz-section:last-child { border-bottom: none; }
+.section-label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.section-num {
+  color: var(--text-faint);
+  margin-right: 4px;
+}
+.viz-title {
+  font-size: clamp(1.3rem, 2.5vw, 1.9rem);
+  font-weight: 700;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+.viz-desc {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  max-width: 600px;
+  margin-bottom: 36px;
+  font-style: italic;
+}
+.chart-host {
+  width: 100%;
+  overflow: hidden;
+}
+.chart-host svg {
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+
+/* ── Case legend ── */
+#case-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  margin-bottom: 40px;
+  padding: 20px 48px;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.78rem;
+  cursor: default;
+}
+.legend-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── Tooltip ── */
+#tooltip {
+  position: fixed;
+  pointer-events: none;
+  background: rgba(22,27,34,0.97);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.82rem;
+  max-width: 240px;
+  line-height: 1.45;
+  z-index: 999;
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+#tooltip.visible { opacity: 1; }
+#tooltip strong { color: var(--text); display: block; margin-bottom: 3px; }
+#tooltip span { color: var(--text-muted); }
+
+/* ── V1 Gantt ── */
+.gantt-axis text { fill: var(--text-muted); font-size: 11px; }
+.gantt-axis line, .gantt-axis path { stroke: var(--border); }
+
+/* ── V4 scatter ── */
+.departure-diagonal { stroke: var(--border); stroke-dasharray: 4,3; }
+
+/* ── V6 rhythm ── */
+.heatmap-label { fill: var(--text-muted); font-size: 11px; }
+
+/* ── Footer ── */
+footer {
+  text-align: center;
+  padding: 40px 48px;
+  font-size: 0.78rem;
+  color: var(--text-faint);
+  border-top: 1px solid var(--border);
+}
+footer a { color: var(--text-muted); }
+
+/* loading state */
+.loading {
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 0.9rem;
+  padding: 40px 0;
+  text-align: center;
+}
+
+/* donut grid */
+.donut-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 8px;
+}
+.donut-cell {
+  text-align: center;
+}
+.donut-cell .donut-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 8px;
+  display: block;
+  word-break: break-word;
+}
+
+/* role bars */
+.role-bar-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: 8px;
+}
+.role-bar-row .case-name-lbl {
+  width: 150px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-align: right;
+  flex-shrink: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.role-stacked {
+  flex: 1;
+  height: 22px;
+  display: flex;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.role-segment {
+  height: 100%;
+  transition: opacity 0.15s;
+}
+.role-segment:hover { opacity: 0.8; }
+.role-bar-row .pct-lbl {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  width: 36px;
+  text-align: right;
+}
+
+/* departure slope */
+.slope-line {
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+/* fingerprint */
+.fingerprint-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.fingerprint-lbl {
+  width: 130px;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-align: right;
+  flex-shrink: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fingerprint-bar {
+  flex: 1;
+  height: 26px;
+  display: flex;
+}
+.fingerprint-cell {
+  flex: 1;
+  height: 100%;
+}
+
+/* V9 departure slope */
+.slope-chart-wrap { overflow-x: auto; }
+</style>
+</head>
+<body>
+
+<div id="hero">
+  <h1>Political Conflict on Wikipedia<br/>Nine Cases Across Twenty Years</h1>
+  <p class="subtitle">From a 2004 squabble over Polish politicians to a 2024 dispute about Venezuelan coverage — a close look at how political editing conflicts escalate, sustain, and resolve inside Wikipedia's arbitration committee.</p>
+  <div class="stats-row" id="hero-stats">
+    <div class="stat"><span class="stat-n">9</span><span class="stat-label">Cases</span></div>
+    <div class="stat"><span class="stat-n">20</span><span class="stat-label">Years</span></div>
+    <div class="stat"><span class="stat-n" id="hn-editors">—</span><span class="stat-label">Total Editors</span></div>
+    <div class="stat"><span class="stat-n" id="hn-events">—</span><span class="stat-label">Total Edits</span></div>
+    <div class="stat"><span class="stat-n" id="hn-dep">—</span><span class="stat-label">Avg Departure Rate</span></div>
+    <div class="stat"><span class="stat-n">0</span><span class="stat-label">Sanctions Issued</span></div>
+  </div>
+</div>
+
+<nav id="toc">
+  <ul>
+    <li><a href="#v1">Timeline</a></li>
+    <li><a href="#v2">Phase Portraits</a></li>
+    <li><a href="#v3">Escalation</a></li>
+    <li><a href="#v4">Departures</a></li>
+    <li><a href="#v5">Role DNA</a></li>
+    <li><a href="#v6">Weekly Rhythm</a></li>
+    <li><a href="#v7">Editor Lifespans</a></li>
+    <li><a href="#v8">Evidence vs Workshop</a></li>
+    <li><a href="#v9">The Exit Pattern</a></li>
+    <li><a href="#v10">Conflict Fingerprints</a></li>
+  </ul>
+</nav>
+
+<div id="case-legend"></div>
+
+<!-- V1 -->
+<section class="viz-section" id="v1">
+  <div class="section-label"><span class="section-num">01 /</span> When They Fought</div>
+  <h2 class="viz-title">The 20-Year Arc of Political Conflict</h2>
+  <p class="viz-desc">Each bar spans the duration of one arbitration case on the Wikipedia calendar. Width encodes duration; height encodes total editors. Gaps between cases are real — years where no political arbitration was filed.</p>
+  <div class="chart-host" id="v1-host"></div>
+</section>
+
+<!-- V2 -->
+<section class="viz-section" id="v2">
+  <div class="section-label"><span class="section-num">02 /</span> Phase Portraits</div>
+  <h2 class="viz-title">How Each Case Divided Its Time</h2>
+  <p class="viz-desc">Each ring shows the proportion of edits made in each procedural phase. Cases dominated by evidence-gathering have a different flavor than those dominated by proposed decisions.</p>
+  <div class="donut-grid" id="v2-host"></div>
+</section>
+
+<!-- V3 -->
+<section class="viz-section" id="v3">
+  <div class="section-label"><span class="section-num">03 /</span> Escalation Curves</div>
+  <h2 class="viz-title">How Quickly Did Each Case Accumulate?</h2>
+  <p class="viz-desc">Cumulative edits plotted against normalized case time (0–100%). A line that rises steeply early signals a fast-burning conflict; a steady diagonal suggests sustained engagement throughout.</p>
+  <div class="chart-host" id="v3-host"></div>
+</section>
+
+<!-- V4 -->
+<section class="viz-section" id="v4">
+  <div class="section-label"><span class="section-num">04 /</span> Who Left Early</div>
+  <h2 class="viz-title">Entry vs. Exit — Mapping Editor Departures</h2>
+  <p class="viz-desc">Each dot is one editor. The diagonal represents an editor who stayed the full case. Dots below the diagonal left before the case closed. The further below, the earlier they departed.</p>
+  <div class="chart-host" id="v4-host"></div>
+</section>
+
+<!-- V5 -->
+<section class="viz-section" id="v5">
+  <div class="section-label"><span class="section-num">05 /</span> Role DNA</div>
+  <h2 class="viz-title">The Disappearing Arbitrators</h2>
+  <p class="viz-desc">Role composition per case. Over twenty years, the formal arbitrator class shrank and then vanished — later cases consist almost entirely of participants and observers, suggesting a structural shift in how Wikipedia adjudicates political conflict.</p>
+  <div id="v5-host"></div>
+</section>
+
+<!-- V6 -->
+<section class="viz-section" id="v6">
+  <div class="section-label"><span class="section-num">06 /</span> Weekly Rhythm</div>
+  <h2 class="viz-title">What Day Do Wikipedia Editors Fight?</h2>
+  <p class="viz-desc">Edit intensity by day of week for each case. Brighter = more edits on that day. Patterns reveal whether disputes follow weekday work rhythms or spill into weekends.</p>
+  <div class="chart-host" id="v6-host"></div>
+</section>
+
+<!-- V7 -->
+<section class="viz-section" id="v7">
+  <div class="section-label"><span class="section-num">07 /</span> Editor Lifespans</div>
+  <h2 class="viz-title">How Long Editors Actually Engaged</h2>
+  <p class="viz-desc">Each dot represents one editor, placed at their fraction of the total case duration they were active for. Cases with dots clustered near zero had high churn; clusters near one indicate committed engagement.</p>
+  <div class="chart-host" id="v7-host"></div>
+</section>
+
+<!-- V8 -->
+<section class="viz-section" id="v8">
+  <div class="section-label"><span class="section-num">08 /</span> Evidence vs. Workshop</div>
+  <h2 class="viz-title">Two Modes of Arbitration</h2>
+  <p class="viz-desc">Cases lean either into evidence-gathering (building the factual record) or workshopping (negotiating remedies). This scatter maps each case's balance — with bubble size showing total edit volume.</p>
+  <div class="chart-host" id="v8-host"></div>
+</section>
+
+<!-- V9 -->
+<section class="viz-section" id="v9">
+  <div class="section-label"><span class="section-num">09 /</span> The Exit Pattern</div>
+  <h2 class="viz-title">Departure as the Unwritten Sanction</h2>
+  <p class="viz-desc">Zero formal sanctions were issued across all nine politics cases. Yet in every case, editors left before resolution. This slope chart traces the journey from enrolled editors to those who stayed to the end — departure may be the only consequence that stuck.</p>
+  <div class="chart-host slope-chart-wrap" id="v9-host"></div>
+</section>
+
+<!-- V10 -->
+<section class="viz-section" id="v10">
+  <div class="section-label"><span class="section-num">10 /</span> Conflict Fingerprints</div>
+  <h2 class="viz-title">Each Case's Unique Signature</h2>
+  <p class="viz-desc">Each row is a case divided into 60 equal time buckets. Each cell is colored by the dominant editing phase in that window — creating a visual "barcode" fingerprint of how conflict unfolded. No two cases look the same.</p>
+  <div id="v10-host"></div>
+</section>
+
+<footer>
+  <p>Data sourced from <a href="https://en.wikipedia.org/wiki/Wikipedia:Arbitration/Requests" target="_blank">Wikipedia Arbitration Requests</a> &nbsp;·&nbsp; SARC 5400 Final Project &nbsp;·&nbsp; University of Virginia</p>
+  <p style="margin-top:6px"><a href="dashboard.html">← Back to main dashboard</a></p>
+</footer>
+
+<div id="tooltip"></div>
+
+<script>
+'use strict';
+
+// ── Constants ──────────────────────────────────────────────────────────────
+
+const CASES_META = [
+  { slug: 'user:polishpoliticians',                   label: 'Polish Politicians',     short: 'Polish 2004',     year: 2004, color: '#a78bfa' },
+  { slug: 'election',                                  label: 'Election',               short: 'Election 2006',   year: 2006, color: '#818cf8' },
+  { slug: 'race_and_politics',                         label: 'Race & Politics',         short: 'Race 2013',       year: 2013, color: '#fb7185' },
+  { slug: 'american_politics',                         label: 'American Politics',       short: 'AmPol 2014',      year: 2014, color: '#f87171' },
+  { slug: 'american_politics_2',                       label: 'American Politics 2',     short: 'AmPol2 2015',     year: 2015, color: '#fb923c' },
+  { slug: 'blp_issues_on_british_politics_articles',   label: 'British Politics BLP',   short: 'BritBLP 2018',    year: 2018, color: '#facc15' },
+  { slug: 'canadian_politics',                         label: 'Canadian Politics',       short: 'Canada 2019',     year: 2019, color: '#4ade80' },
+  { slug: 'iranian_politics',                          label: 'Iranian Politics',        short: 'Iran 2021',       year: 2021, color: '#22d3ee' },
+  { slug: 'venezuelan_politics',                       label: 'Venezuelan Politics',     short: 'Venezuela 2024',  year: 2024, color: '#60a5fa' },
+];
+
+const PHASE_COLOR = {
+  main:              '#595959',
+  evidence:          '#E97500',
+  workshop:          '#54A823',
+  proposed_decision: '#B60000',
+  article:           '#3366CC',
+  outcome:           '#72777D',
+};
+
+const ROLE_COLOR = {
+  arbitrator:           '#f87171',
+  arbitrator_candidate: '#fb923c',
+  participant:          '#60a5fa',
+  observer:             '#4ade80',
+};
+
+const DOW_LABELS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+// ── Tooltip ────────────────────────────────────────────────────────────────
+const TT = document.getElementById('tooltip');
+function showTip(html, evt) {
+  TT.innerHTML = html;
+  TT.classList.add('visible');
+  moveTip(evt);
+}
+function moveTip(evt) {
+  const pad = 14;
+  let x = evt.clientX + pad, y = evt.clientY - 14;
+  if (x + 250 > window.innerWidth) x = evt.clientX - 260;
+  TT.style.left = x + 'px';
+  TT.style.top  = y + 'px';
+}
+function hideTip() { TT.classList.remove('visible'); }
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+const px = (d,k) => new Date(d.meta[k]);
+const clamp01 = v => Math.max(0, Math.min(1, v));
+
+function enrichCase(raw, meta) {
+  const events = raw.events || [];
+  const nodes  = raw.nodes  || [];
+  const m      = raw.meta   || {};
+
+  const start = new Date(m.case_start);
+  const end   = new Date(m.case_end);
+  const dur   = end - start;
+
+  // phase breakdown
+  const phaseCounts = {};
+  for (const e of events) {
+    const pt = e.page_type || 'main';
+    phaseCounts[pt] = (phaseCounts[pt] || 0) + 1;
+  }
+
+  // role breakdown
+  const roleCounts = {};
+  for (const n of nodes) {
+    const r = n.role || 'observer';
+    roleCounts[r] = (roleCounts[r] || 0) + 1;
+  }
+
+  // departure
+  const departed = nodes.filter(n => n.departed).length;
+  const depRate  = nodes.length ? departed / nodes.length : 0;
+
+  // editor entry/exit (normalized 0-1)
+  const editorDots = nodes.map(n => {
+    const entry = n.first_active ? clamp01((new Date(n.first_active) - start) / dur) : 0;
+    const exit  = n.last_active  ? clamp01((new Date(n.last_active)  - start) / dur) : 1;
+    return { entry, exit, role: n.role || 'observer', name: n.username, departed: n.departed };
+  });
+
+  // cumulative edit curve (sorted by time)
+  const sortedEvents = [...events].sort((a,b) => new Date(a.timestamp)-new Date(b.timestamp));
+  const cumCurve = sortedEvents.map((e,i) => ({
+    t: clamp01((new Date(e.timestamp)-start)/dur),
+    n: (i+1)/events.length
+  }));
+
+  // day-of-week
+  const dow = Array(7).fill(0);
+  for (const e of events) {
+    const d = new Date(e.timestamp);
+    const wd = (d.getUTCDay() + 6) % 7; // Mon=0
+    dow[wd]++;
+  }
+
+  // fingerprint: 60 buckets, dominant phase
+  const N_BUCKETS = 60;
+  const buckets = Array.from({length:N_BUCKETS}, () => ({}));
+  for (const e of events) {
+    const t = clamp01((new Date(e.timestamp)-start)/dur);
+    const bi = Math.min(N_BUCKETS-1, Math.floor(t * N_BUCKETS));
+    const pt = e.page_type || 'main';
+    buckets[bi][pt] = (buckets[bi][pt] || 0) + 1;
+  }
+  const fingerprint = buckets.map(b => {
+    let top = 'main', topN = 0;
+    for (const [pt,n] of Object.entries(b)) {
+      if (n > topN) { topN = n; top = pt; }
+    }
+    return { phase: top, count: topN, empty: topN === 0 };
+  });
+
+  // days active per editor
+  const lifespans = nodes.map(n => n.days_active || 0);
+
+  return { ...meta, raw: m, events, nodes, phaseCounts, roleCounts,
+           departed, depRate, editorDots, cumCurve, dow, fingerprint,
+           lifespans, start, end, dur };
+}
+
+// ── Load data ──────────────────────────────────────────────────────────────
+const dataPath = slug => `../data/processed/d3/${slug}.json`;
+
+Promise.all(CASES_META.map(m =>
+  fetch(dataPath(m.slug)).then(r => {
+    if (!r.ok) throw new Error(`HTTP ${r.status}: ${m.slug}`);
+    return r.json().then(d => enrichCase(d, m));
+  })
+))
+.then(cases => { window.CASES = cases; init(cases); })
+.catch(err => {
+  document.querySelectorAll('.chart-host,.donut-grid,[id$="-host"]').forEach(el => {
+    el.innerHTML = `<p class="loading" style="color:#f87171">Error: ${err.message}</p>`;
+  });
+});
+
+// ── Build legend ───────────────────────────────────────────────────────────
+(function buildLegend() {
+  const wrap = document.getElementById('case-legend');
+  for (const m of CASES_META) {
+    const div = document.createElement('div');
+    div.className = 'legend-item';
+    div.innerHTML = `<span class="legend-swatch" style="background:${m.color}"></span><span>${m.short}</span>`;
+    wrap.appendChild(div);
+  }
+})();
+
+// ── Nav active state ───────────────────────────────────────────────────────
+(function initNav() {
+  const links = [...document.querySelectorAll('#toc a')];
+  const sections = links.map(a => document.querySelector(a.getAttribute('href')));
+  const observer = new IntersectionObserver(entries => {
+    for (const e of entries) {
+      if (e.isIntersecting) {
+        const i = sections.indexOf(e.target);
+        links.forEach((l,j) => l.classList.toggle('active', j===i));
+      }
+    }
+  }, { rootMargin: '-40% 0px -55% 0px' });
+  sections.forEach(s => s && observer.observe(s));
+})();
+
+// ── INIT ───────────────────────────────────────────────────────────────────
+function init(cases) {
+  // hero stats
+  const totalEditors = d3.sum(cases, d => d.raw.total_editors);
+  const totalEvents  = d3.sum(cases, d => d.raw.total_events);
+  const avgDep       = d3.mean(cases, d => d.depRate);
+  document.getElementById('hn-editors').textContent = totalEditors;
+  document.getElementById('hn-events').textContent  = totalEvents.toLocaleString();
+  document.getElementById('hn-dep').textContent     = Math.round(avgDep * 100) + '%';
+
+  buildV1(cases);
+  buildV2(cases);
+  buildV3(cases);
+  buildV4(cases);
+  buildV5(cases);
+  buildV6(cases);
+  buildV7(cases);
+  buildV8(cases);
+  buildV9(cases);
+  buildV10(cases);
+}
+
+// ── V1: Gantt timeline ─────────────────────────────────────────────────────
+function buildV1(cases) {
+  const host = document.getElementById('v1-host');
+  const W = host.clientWidth || 900;
+  const marginL = 16, marginR = 16, marginT = 10, marginB = 36;
+  const plotW = W - marginL - marginR;
+  const LANE_H = 30, GAP = 12;
+  const H = cases.length * (LANE_H + GAP) + marginT + marginB;
+
+  const allDates = cases.flatMap(c => [c.start, c.end]);
+  const xScale = d3.scaleTime()
+    .domain([new Date('2003-01-01'), new Date('2025-06-01')])
+    .range([0, plotW]);
+
+  const yScale = d3.scalePoint()
+    .domain(cases.map(c => c.label))
+    .range([marginT, H - marginB - LANE_H])
+    .padding(0.4);
+
+  const maxEditors = d3.max(cases, c => c.raw.total_editors);
+
+  const svg = d3.select(host).append('svg')
+    .attr('viewBox', `0 0 ${W} ${H}`)
+    .attr('height', H);
+
+  const g = svg.append('g').attr('transform', `translate(${marginL},0)`);
+
+  // Year ticks
+  const xAxis = d3.axisBottom(xScale)
+    .ticks(d3.timeYear.every(2))
+    .tickFormat(d3.timeFormat('%Y'))
+    .tickSize(-H + marginT + marginB);
+
+  g.append('g')
+    .attr('transform', `translate(0,${H - marginB})`)
+    .attr('class','gantt-axis')
+    .call(xAxis)
+    .call(ax => ax.select('.domain').remove())
+    .call(ax => ax.selectAll('.tick line').attr('stroke','#21262d'));
+
+  // Bars
+  cases.forEach(c => {
+    const x1 = xScale(c.start);
+    const x2 = xScale(c.end);
+    const bw  = Math.max(x2 - x1, 4);
+    const y   = yScale(c.label);
+    const h   = LANE_H * 0.6 + LANE_H * 0.4 * (c.raw.total_editors / maxEditors);
+
+    // glow
+    g.append('rect')
+      .attr('x', x1 - 2).attr('y', y + (LANE_H - h)/2 - 2)
+      .attr('width', bw + 4).attr('height', h + 4)
+      .attr('rx', 5).attr('fill', c.color)
+      .attr('opacity', 0.18);
+
+    const bar = g.append('rect')
+      .attr('x', x1).attr('y', y + (LANE_H - h)/2)
+      .attr('width', bw).attr('height', h)
+      .attr('rx', 3)
+      .attr('fill', c.color)
+      .attr('opacity', 0.85)
+      .style('cursor','pointer');
+
+    // label inside or after bar
+    const labelX = x2 + 6;
+    const fits = (plotW - labelX) > 80;
+    g.append('text')
+      .attr('x', fits ? labelX : x1 + 4)
+      .attr('y', y + LANE_H/2 + 1)
+      .attr('dominant-baseline','middle')
+      .attr('fill', fits ? c.color : '#000')
+      .attr('font-size', '10px')
+      .attr('font-family','Georgia,serif')
+      .text(`${c.short} · ${c.raw.case_duration_days}d · ${c.raw.total_editors} eds`);
+
+    bar.on('mouseover', evt => {
+      showTip(`<strong>${c.label}</strong>
+        <span>${c.start.toLocaleDateString()} → ${c.end.toLocaleDateString()}</span><br/>
+        <span>${c.raw.case_duration_days} days &nbsp;·&nbsp; ${c.raw.total_editors} editors</span><br/>
+        <span>Departure rate: ${Math.round(c.depRate*100)}%</span>`, evt);
+    })
+    .on('mousemove', moveTip)
+    .on('mouseout', hideTip);
+  });
+}
+
+// ── V2: Phase portrait donuts ──────────────────────────────────────────────
+function buildV2(cases) {
+  const host = document.getElementById('v2-host');
+  const phases = ['evidence','workshop','proposed_decision','main','article'];
+
+  cases.forEach(c => {
+    const cell = document.createElement('div');
+    cell.className = 'donut-cell';
+
+    const total = d3.sum(phases, p => c.phaseCounts[p] || 0);
+    const data = phases
+      .filter(p => c.phaseCounts[p])
+      .map(p => ({ phase: p, value: c.phaseCounts[p] || 0 }));
+
+    const S = 100, R = 36, IR = 20;
+    const pie = d3.pie().value(d => d.value).sort(null);
+    const arc = d3.arc().outerRadius(R).innerRadius(IR);
+
+    const svgEl = d3.create('svg').attr('viewBox',`0 0 ${S} ${S}`).attr('width',S).attr('height',S);
+    const g = svgEl.append('g').attr('transform',`translate(${S/2},${S/2})`);
+
+    pie(data).forEach(slice => {
+      const path = g.append('path')
+        .attr('d', arc(slice))
+        .attr('fill', PHASE_COLOR[slice.data.phase] || '#555')
+        .attr('stroke','#0d1117').attr('stroke-width',1.5)
+        .style('cursor','pointer');
+
+      path.on('mouseover', evt => {
+        const pct = Math.round(slice.data.value/total*100);
+        showTip(`<strong>${c.label}</strong><span>${slice.data.phase.replace(/_/g,' ')} · ${pct}% (${slice.data.value} edits)</span>`, evt);
+      })
+      .on('mousemove', moveTip)
+      .on('mouseout', hideTip);
+    });
+
+    // center label
+    g.append('text').attr('text-anchor','middle').attr('dy','-4px')
+      .attr('fill', c.color).attr('font-size','13px').attr('font-weight','700')
+      .text(c.year.toString());
+    g.append('text').attr('text-anchor','middle').attr('dy','10px')
+      .attr('fill','#7d8590').attr('font-size','7.5px')
+      .text(`${total} edits`);
+
+    cell.appendChild(svgEl.node());
+    const lbl = document.createElement('span');
+    lbl.className = 'donut-label';
+    lbl.textContent = c.short;
+    lbl.style.color = c.color;
+    cell.appendChild(lbl);
+
+    host.appendChild(cell);
+  });
+
+  // Legend
+  const legendDiv = document.createElement('div');
+  legendDiv.style.cssText = 'grid-column:1/-1;display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid #30363d';
+  phases.filter(p => Object.keys(PHASE_COLOR).includes(p)).forEach(p => {
+    const item = document.createElement('span');
+    item.style.cssText = 'display:flex;align-items:center;gap:5px;font-size:0.7rem;color:#7d8590';
+    item.innerHTML = `<span style="width:8px;height:8px;border-radius:2px;background:${PHASE_COLOR[p]};display:inline-block"></span>${p.replace(/_/g,' ')}`;
+    legendDiv.appendChild(item);
+  });
+  host.appendChild(legendDiv);
+}
+
+// ── V3: Escalation curves ──────────────────────────────────────────────────
+function buildV3(cases) {
+  const host = document.getElementById('v3-host');
+  const W = host.clientWidth || 900;
+  const H = 320, ML = 44, MR = 24, MT = 16, MB = 36;
+  const pW = W - ML - MR, pH = H - MT - MB;
+
+  const x = d3.scaleLinear().domain([0,1]).range([0, pW]);
+  const y = d3.scaleLinear().domain([0,1]).range([pH, 0]);
+
+  const svg = d3.select(host).append('svg')
+    .attr('viewBox',`0 0 ${W} ${H}`).attr('height', H);
+
+  const g = svg.append('g').attr('transform',`translate(${ML},${MT})`);
+
+  // Axes
+  g.append('g').attr('transform',`translate(0,${pH})`)
+    .call(d3.axisBottom(x).ticks(5).tickFormat(d => `${Math.round(d*100)}%`))
+    .call(a => a.select('.domain').attr('stroke','#30363d'))
+    .call(a => a.selectAll('text').attr('fill','#7d8590').attr('font-size',10))
+    .call(a => a.selectAll('.tick line').attr('stroke','#30363d'));
+
+  g.append('g')
+    .call(d3.axisLeft(y).ticks(4).tickFormat(d => `${Math.round(d*100)}%`))
+    .call(a => a.select('.domain').attr('stroke','#30363d'))
+    .call(a => a.selectAll('text').attr('fill','#7d8590').attr('font-size',10))
+    .call(a => a.selectAll('.tick line').attr('stroke','#30363d'));
+
+  g.append('text').attr('x', pW/2).attr('y', pH+30).attr('text-anchor','middle')
+    .attr('fill','#7d8590').attr('font-size',10).text('Case progress (normalized)');
+  g.append('text').attr('transform','rotate(-90)').attr('x',-pH/2).attr('y',-34)
+    .attr('text-anchor','middle').attr('fill','#7d8590').attr('font-size',10)
+    .text('Cumulative edits %');
+
+  // diagonal guide
+  g.append('line').attr('x1',0).attr('y1',pH).attr('x2',pW).attr('y2',0)
+    .attr('stroke','#21262d').attr('stroke-dasharray','4,3');
+
+  const lineGen = d3.line().x(d => x(d.t)).y(d => y(d.n)).curve(d3.curveBumpX);
+
+  cases.forEach(c => {
+    const path = g.append('path')
+      .datum(c.cumCurve)
+      .attr('d', lineGen)
+      .attr('fill','none')
+      .attr('stroke', c.color)
+      .attr('stroke-width', 1.5)
+      .attr('opacity', 0.75);
+
+    // end label
+    const last = c.cumCurve[c.cumCurve.length-1];
+    g.append('circle').attr('cx',x(last.t)).attr('cy',y(last.n)).attr('r',3)
+      .attr('fill',c.color);
+
+    path.on('mouseover', function(evt) {
+      d3.select(this).attr('stroke-width',3).attr('opacity',1);
+      showTip(`<strong>${c.label}</strong><span>${c.raw.total_events} total edits over ${c.raw.case_duration_days} days</span>`, evt);
+    })
+    .on('mousemove', moveTip)
+    .on('mouseout', function() {
+      d3.select(this).attr('stroke-width',1.5).attr('opacity',0.75);
+      hideTip();
+    });
+  });
+}
+
+// ── V4: Departure scatter ──────────────────────────────────────────────────
+function buildV4(cases) {
+  const host = document.getElementById('v4-host');
+  const W = host.clientWidth || 900;
+  const COLS = 3, ROWS = Math.ceil(cases.length / COLS);
+  const CELL_W = Math.floor(W / COLS);
+  const CELL_H = 170;
+  const H = ROWS * CELL_H + 16;
+  const PAD = 24;
+
+  const svg = d3.select(host).append('svg')
+    .attr('viewBox',`0 0 ${W} ${H}`).attr('height',H);
+
+  cases.forEach((c, i) => {
+    const col = i % COLS, row = Math.floor(i / COLS);
+    const ox = col * CELL_W, oy = row * CELL_H;
+    const pW = CELL_W - PAD*2, pH = CELL_H - PAD*1.5;
+    const g = svg.append('g').attr('transform',`translate(${ox+PAD},${oy+PAD*0.75})`);
+
+    const x = d3.scaleLinear().domain([0,1]).range([0,pW]);
+    const y = d3.scaleLinear().domain([0,1]).range([pH,0]);
+
+    // diagonal
+    g.append('line').attr('x1',0).attr('y1',pH).attr('x2',pW).attr('y2',0)
+      .attr('class','departure-diagonal');
+
+    // dots
+    c.editorDots.forEach(ed => {
+      const cx = x(ed.entry), cy = y(ed.exit);
+      const col2 = ROLE_COLOR[ed.role] || '#60a5fa';
+      g.append('circle')
+        .attr('cx', cx).attr('cy', cy).attr('r', 3.5)
+        .attr('fill', col2).attr('opacity', 0.8)
+        .style('cursor','pointer')
+        .on('mouseover', evt => {
+          showTip(`<strong>${ed.name}</strong>
+            <span>${ed.role.replace(/_/g,' ')}</span><br/>
+            <span>Entered at ${Math.round(ed.entry*100)}% · Left at ${Math.round(ed.exit*100)}%</span>
+            ${ed.departed ? '<br/><span style="color:#fb7185">Departed early</span>' : ''}`, evt);
+        })
+        .on('mousemove', moveTip)
+        .on('mouseout', hideTip);
+    });
+
+    // title
+    g.append('text').attr('x', pW/2).attr('y', -8)
+      .attr('text-anchor','middle').attr('fill', c.color)
+      .attr('font-size','9px').attr('font-family','Georgia,serif')
+      .text(`${c.short} · ${Math.round(c.depRate*100)}% departed`);
+
+    // axes
+    g.append('line').attr('x1',0).attr('y1',pH).attr('x2',pW).attr('y2',pH).attr('stroke','#21262d');
+    g.append('line').attr('x1',0).attr('y1',0).attr('x2',0).attr('y2',pH).attr('stroke','#21262d');
+  });
+}
+
+// ── V5: Role DNA ───────────────────────────────────────────────────────────
+function buildV5(cases) {
+  const host = document.getElementById('v5-host');
+  const roles = ['arbitrator','arbitrator_candidate','participant','observer'];
+
+  const wrap = document.createElement('div');
+  wrap.style.padding = '8px 0';
+
+  // Role legend
+  const legDiv = document.createElement('div');
+  legDiv.style.cssText = 'display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px';
+  roles.forEach(r => {
+    const item = document.createElement('span');
+    item.style.cssText = 'display:flex;align-items:center;gap:5px;font-size:0.72rem;color:#7d8590';
+    item.innerHTML = `<span style="width:8px;height:8px;border-radius:2px;background:${ROLE_COLOR[r]||'#555'};display:inline-block"></span>${r.replace(/_/g,' ')}`;
+    legDiv.appendChild(item);
+  });
+  wrap.appendChild(legDiv);
+
+  cases.forEach(c => {
+    const row = document.createElement('div');
+    row.className = 'role-bar-row';
+
+    const lbl = document.createElement('div');
+    lbl.className = 'case-name-lbl';
+    lbl.title = c.label;
+    lbl.textContent = c.short;
+    lbl.style.color = c.color;
+    row.appendChild(lbl);
+
+    const bar = document.createElement('div');
+    bar.className = 'role-stacked';
+
+    const total = d3.sum(roles, r => c.roleCounts[r] || 0);
+    roles.forEach(r => {
+      const n = c.roleCounts[r] || 0;
+      if (!n) return;
+      const seg = document.createElement('div');
+      seg.className = 'role-segment';
+      seg.style.width = `${(n/total)*100}%`;
+      seg.style.background = ROLE_COLOR[r] || '#555';
+      seg.title = `${r.replace(/_/g,' ')}: ${n} (${Math.round(n/total*100)}%)`;
+      seg.addEventListener('mouseover', evt => {
+        showTip(`<strong>${c.label}</strong><span>${r.replace(/_/g,' ')}: ${n} editors (${Math.round(n/total*100)}%)</span>`, evt);
+      });
+      seg.addEventListener('mousemove', moveTip);
+      seg.addEventListener('mouseout', hideTip);
+      bar.appendChild(seg);
+    });
+
+    const pctLbl = document.createElement('div');
+    pctLbl.className = 'pct-lbl';
+    const arbN = (c.roleCounts.arbitrator || 0);
+    pctLbl.textContent = arbN ? `${Math.round(arbN/total*100)}% arb` : 'no arbs';
+    pctLbl.style.color = arbN ? '#f87171' : '#3d444d';
+
+    row.appendChild(bar);
+    row.appendChild(pctLbl);
+    wrap.appendChild(row);
+  });
+
+  host.appendChild(wrap);
+}
+
+// ── V6: Weekly rhythm heatmap ──────────────────────────────────────────────
+function buildV6(cases) {
+  const host = document.getElementById('v6-host');
+  const W = host.clientWidth || 900;
+  const LABEL_W = 130, CELL = Math.floor((W - LABEL_W - 40) / 7);
+  const ROW_H = 32, H = cases.length * ROW_H + 36;
+  const svg = d3.select(host).append('svg')
+    .attr('viewBox',`0 0 ${W} ${H}`).attr('height',H);
+
+  // DOW header
+  DOW_LABELS.forEach((d, i) => {
+    svg.append('text')
+      .attr('x', LABEL_W + i * CELL + CELL/2)
+      .attr('y', 18)
+      .attr('text-anchor','middle')
+      .attr('class','heatmap-label')
+      .attr('font-size',10)
+      .text(d);
+  });
+
+  cases.forEach((c, ri) => {
+    const maxDow = d3.max(c.dow);
+    const y = 26 + ri * ROW_H;
+
+    // case label
+    svg.append('text')
+      .attr('x', LABEL_W - 8).attr('y', y + ROW_H/2)
+      .attr('text-anchor','end').attr('dominant-baseline','middle')
+      .attr('fill', c.color).attr('font-size','9px')
+      .text(c.short);
+
+    c.dow.forEach((n, di) => {
+      const intensity = maxDow > 0 ? n / maxDow : 0;
+      const cell = svg.append('rect')
+        .attr('x', LABEL_W + di * CELL + 1)
+        .attr('y', y + 2)
+        .attr('width', CELL - 2)
+        .attr('height', ROW_H - 4)
+        .attr('rx', 3)
+        .attr('fill', c.color)
+        .attr('opacity', 0.1 + intensity * 0.85);
+
+      cell.on('mouseover', evt => {
+        showTip(`<strong>${c.label}</strong><span>${DOW_LABELS[di]}: ${n} edits</span><br/><span>${Math.round(intensity*100)}% of weekly peak</span>`, evt);
+      })
+      .on('mousemove', moveTip)
+      .on('mouseout', hideTip);
+
+      if (n > 0 && intensity > 0.4) {
+        svg.append('text')
+          .attr('x', LABEL_W + di * CELL + CELL/2)
+          .attr('y', y + ROW_H/2)
+          .attr('text-anchor','middle').attr('dominant-baseline','middle')
+          .attr('fill','#0d1117').attr('font-size','8px').attr('font-weight','600')
+          .text(n);
+      }
+    });
+  });
+}
+
+// ── V7: Editor lifespans (strip plot) ──────────────────────────────────────
+function buildV7(cases) {
+  const host = document.getElementById('v7-host');
+  const W = host.clientWidth || 900;
+  const ROW_H = 40, ML = 140, MR = 20, MT = 28, MB = 28;
+  const pW = W - ML - MR;
+  const H = cases.length * ROW_H + MT + MB;
+
+  const svg = d3.select(host).append('svg')
+    .attr('viewBox',`0 0 ${W} ${H}`).attr('height',H);
+
+  const g = svg.append('g').attr('transform',`translate(${ML},${MT})`);
+
+  // x-axis
+  g.append('g').attr('transform',`translate(0,${cases.length*ROW_H})`)
+    .call(d3.axisBottom(d3.scaleLinear().domain([0,1]).range([0,pW]))
+      .ticks(5).tickFormat(d => `${Math.round(d*100)}%`))
+    .call(a => a.select('.domain').attr('stroke','#30363d'))
+    .call(a => a.selectAll('text').attr('fill','#7d8590').attr('font-size',10))
+    .call(a => a.selectAll('.tick line').attr('stroke','#30363d'));
+
+  g.append('text').attr('x',pW/2).attr('y',cases.length*ROW_H+22)
+    .attr('text-anchor','middle').attr('fill','#7d8590').attr('font-size',10)
+    .text('Editor active days as % of case duration');
+
+  cases.forEach((c, i) => {
+    const y = i * ROW_H;
+    const dur = c.raw.case_duration_days;
+
+    // background line
+    g.append('line').attr('x1',0).attr('y1',y+ROW_H/2).attr('x2',pW).attr('y2',y+ROW_H/2)
+      .attr('stroke','#21262d').attr('stroke-width',1);
+
+    // label
+    svg.append('text')
+      .attr('x', ML - 8).attr('y', MT + y + ROW_H/2)
+      .attr('text-anchor','end').attr('dominant-baseline','middle')
+      .attr('fill', c.color).attr('font-size','9px')
+      .text(c.short);
+
+    // jitter dots
+    c.nodes.forEach((n, ni) => {
+      const frac = dur > 0 ? Math.min(1, (n.days_active || 0) / dur) : 0;
+      const jitter = (ni * 7.3 % 1 - 0.5) * (ROW_H * 0.45);
+      const cx = frac * pW;
+      const cy = y + ROW_H/2 + jitter;
+
+      g.append('circle')
+        .attr('cx', cx).attr('cy', cy).attr('r', 3)
+        .attr('fill', n.departed ? '#f87171' : c.color)
+        .attr('opacity', 0.7)
+        .style('cursor','pointer')
+        .on('mouseover', evt => {
+          showTip(`<strong>${n.username}</strong>
+            <span>${n.role?.replace(/_/g,' ') || 'editor'}</span><br/>
+            <span>${n.days_active || 0}/${dur} days active (${Math.round(frac*100)}%)</span>
+            ${n.departed ? '<br/><span style="color:#fb7185">departed early</span>' : ''}`, evt);
+        })
+        .on('mousemove', moveTip)
+        .on('mouseout', hideTip);
+    });
+
+    // median line
+    const fracs = c.nodes.map(n => dur > 0 ? Math.min(1,(n.days_active||0)/dur) : 0);
+    const med = d3.median(fracs);
+    g.append('line')
+      .attr('x1', med*pW).attr('y1', y+4)
+      .attr('x2', med*pW).attr('y2', y+ROW_H-4)
+      .attr('stroke', c.color).attr('stroke-width', 1.5)
+      .attr('opacity', 0.6);
+  });
+}
+
+// ── V8: Evidence vs Workshop scatter ──────────────────────────────────────
+function buildV8(cases) {
+  const host = document.getElementById('v8-host');
+  const W = host.clientWidth || 900;
+  const H = 360, ML = 56, MR = 28, MT = 28, MB = 44;
+  const pW = W - ML - MR, pH = H - MT - MB;
+
+  const evPct = c => {
+    const tot = d3.sum(Object.values(c.phaseCounts));
+    return tot ? (c.phaseCounts.evidence||0) / tot : 0;
+  };
+  const wsPct = c => {
+    const tot = d3.sum(Object.values(c.phaseCounts));
+    return tot ? (c.phaseCounts.workshop||0) / tot : 0;
+  };
+
+  const x = d3.scaleLinear().domain([0, 0.55]).range([0, pW]);
+  const y = d3.scaleLinear().domain([0, 0.55]).range([pH, 0]);
+
+  const svg = d3.select(host).append('svg')
+    .attr('viewBox',`0 0 ${W} ${H}`).attr('height',H);
+
+  const g = svg.append('g').attr('transform',`translate(${ML},${MT})`);
+
+  // Grid
+  g.append('g').attr('transform',`translate(0,${pH})`)
+    .call(d3.axisBottom(x).ticks(5).tickFormat(d => `${Math.round(d*100)}%`))
+    .call(a => a.select('.domain').attr('stroke','#30363d'))
+    .call(a => a.selectAll('text').attr('fill','#7d8590').attr('font-size',10))
+    .call(a => a.selectAll('.tick line').attr('stroke','#30363d').attr('y2',-pH));
+
+  g.append('g')
+    .call(d3.axisLeft(y).ticks(5).tickFormat(d => `${Math.round(d*100)}%`))
+    .call(a => a.select('.domain').attr('stroke','#30363d'))
+    .call(a => a.selectAll('text').attr('fill','#7d8590').attr('font-size',10))
+    .call(a => a.selectAll('.tick line').attr('stroke','#30363d').attr('x2',pW));
+
+  // Axis labels
+  g.append('text').attr('x',pW/2).attr('y',pH+34).attr('text-anchor','middle')
+    .attr('fill','#7d8590').attr('font-size',10).text('Evidence edits (% of total)');
+  g.append('text').attr('transform','rotate(-90)').attr('x',-pH/2).attr('y',-40)
+    .attr('text-anchor','middle').attr('fill','#7d8590').attr('font-size',10)
+    .text('Workshop edits (% of total)');
+
+  // Quadrant labels
+  const qStyle = 'fill:#3d444d;font-size:9px;font-style:italic';
+  g.append('text').attr('x',4).attr('y',14).attr('style',qStyle).text('low evidence, high workshop');
+  g.append('text').attr('x',pW-4).attr('y',14).attr('text-anchor','end').attr('style',qStyle).text('high evidence, high workshop');
+  g.append('text').attr('x',4).attr('y',pH-6).attr('style',qStyle).text('low evidence & workshop');
+  g.append('text').attr('x',pW-4).attr('y',pH-6).attr('text-anchor','end').attr('style',qStyle).text('heavy evidence, low workshop');
+
+  // Diagonal guide
+  const maxDomain = 0.55;
+  g.append('line').attr('x1',0).attr('y1',pH).attr('x2',x(maxDomain)).attr('y2',y(maxDomain))
+    .attr('stroke','#21262d').attr('stroke-dasharray','4,3');
+
+  const maxEvents = d3.max(cases, c => c.raw.total_events);
+
+  cases.forEach(c => {
+    const cx = x(evPct(c)), cy = y(wsPct(c));
+    const r = 6 + 10 * (c.raw.total_events / maxEvents);
+
+    g.append('circle')
+      .attr('cx', cx).attr('cy', cy).attr('r', r)
+      .attr('fill', c.color).attr('opacity', 0.2);
+
+    g.append('circle')
+      .attr('cx', cx).attr('cy', cy).attr('r', r)
+      .attr('fill', 'none')
+      .attr('stroke', c.color).attr('stroke-width', 1.5);
+
+    g.append('text')
+      .attr('x', cx).attr('y', cy - r - 4)
+      .attr('text-anchor','middle').attr('fill', c.color)
+      .attr('font-size','8px')
+      .text(c.short);
+
+    g.append('circle')
+      .attr('cx', cx).attr('cy', cy).attr('r', r + 4)
+      .attr('fill','transparent')
+      .style('cursor','pointer')
+      .on('mouseover', evt => {
+        const tot = d3.sum(Object.values(c.phaseCounts));
+        showTip(`<strong>${c.label}</strong>
+          <span>Evidence: ${Math.round(evPct(c)*100)}%</span><br/>
+          <span>Workshop: ${Math.round(wsPct(c)*100)}%</span><br/>
+          <span>Total edits: ${tot}</span>`, evt);
+      })
+      .on('mousemove', moveTip)
+      .on('mouseout', hideTip);
+  });
+}
+
+// ── V9: Exit slope chart ───────────────────────────────────────────────────
+function buildV9(cases) {
+  const host = document.getElementById('v9-host');
+  const W = Math.max(host.clientWidth || 900, 700);
+  const H = 320, ML = 60, MR = 60, MT = 28, MB = 44;
+  const pW = W - ML - MR, pH = H - MT - MB;
+
+  const maxEditors = d3.max(cases, c => c.raw.total_editors);
+
+  const x = d3.scalePoint()
+    .domain(['All Editors', 'Stayed to End'])
+    .range([0, pW])
+    .padding(0.5);
+
+  const y = d3.scaleLinear().domain([0, maxEditors]).range([pH, 0]).nice();
+
+  const svg = d3.select(host).append('svg')
+    .attr('viewBox',`0 0 ${W} ${H}`).attr('height',H);
+
+  const g = svg.append('g').attr('transform',`translate(${ML},${MT})`);
+
+  g.append('g').attr('transform',`translate(0,${pH})`)
+    .call(d3.axisBottom(x))
+    .call(a => a.select('.domain').attr('stroke','#30363d'))
+    .call(a => a.selectAll('text').attr('fill','#7d8590').attr('font-size',11));
+
+  g.append('g')
+    .call(d3.axisLeft(y).ticks(6))
+    .call(a => a.select('.domain').attr('stroke','#30363d'))
+    .call(a => a.selectAll('text').attr('fill','#7d8590').attr('font-size',10))
+    .call(a => a.selectAll('.tick line').attr('stroke','#30363d').attr('x2',pW));
+
+  g.append('text').attr('x',-pH/2).attr('y',-42).attr('transform','rotate(-90)')
+    .attr('text-anchor','middle').attr('fill','#7d8590').attr('font-size',10)
+    .text('Number of editors');
+
+  const xStart = x('All Editors'), xEnd = x('Stayed to End');
+
+  cases.forEach(c => {
+    const stayed = c.raw.total_editors - c.departed;
+    const y1 = y(c.raw.total_editors), y2 = y(stayed);
+
+    // slope line
+    g.append('line')
+      .attr('x1', xStart).attr('y1', y1)
+      .attr('x2', xEnd).attr('y2', y2)
+      .attr('class','slope-line')
+      .attr('stroke', c.color)
+      .attr('opacity', 0.7);
+
+    // start dot
+    g.append('circle').attr('cx', xStart).attr('cy', y1).attr('r', 4.5)
+      .attr('fill', c.color);
+    // end dot
+    g.append('circle').attr('cx', xEnd).attr('cy', y2).attr('r', 4.5)
+      .attr('fill', c.color);
+
+    // left label
+    g.append('text')
+      .attr('x', xStart - 8).attr('y', y1)
+      .attr('text-anchor','end').attr('dominant-baseline','middle')
+      .attr('fill', c.color).attr('font-size','9px')
+      .text(`${c.raw.total_editors}`);
+
+    // right label (stayed count + %)
+    g.append('text')
+      .attr('x', xEnd + 8).attr('y', y2)
+      .attr('text-anchor','start').attr('dominant-baseline','middle')
+      .attr('fill', c.color).attr('font-size','9px')
+      .text(`${stayed} (${Math.round(stayed/c.raw.total_editors*100)}% stayed)`);
+
+    // invisible hover
+    g.append('line')
+      .attr('x1', xStart).attr('y1', y1)
+      .attr('x2', xEnd).attr('y2', y2)
+      .attr('stroke','transparent').attr('stroke-width',10)
+      .style('cursor','pointer')
+      .on('mouseover', evt => {
+        showTip(`<strong>${c.label}</strong>
+          <span>Started: ${c.raw.total_editors} editors</span><br/>
+          <span>Stayed: ${stayed} (${Math.round(stayed/c.raw.total_editors*100)}%)</span><br/>
+          <span>Left: ${c.departed} (${Math.round(c.depRate*100)}%)</span><br/>
+          <span style="color:#4ade80">Sanctions: 0</span>`, evt);
+      })
+      .on('mousemove', moveTip)
+      .on('mouseout', hideTip);
+  });
+}
+
+// ── V10: Conflict fingerprints ─────────────────────────────────────────────
+function buildV10(cases) {
+  const host = document.getElementById('v10-host');
+
+  const wrap = document.createElement('div');
+  wrap.style.padding = '4px 0';
+
+  // Phase legend
+  const legDiv = document.createElement('div');
+  legDiv.style.cssText = 'display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px';
+  Object.entries(PHASE_COLOR).forEach(([p, col]) => {
+    const item = document.createElement('span');
+    item.style.cssText = 'display:flex;align-items:center;gap:5px;font-size:0.7rem;color:#7d8590';
+    item.innerHTML = `<span style="width:10px;height:10px;border-radius:2px;background:${col};display:inline-block"></span>${p.replace(/_/g,' ')}`;
+    legDiv.appendChild(item);
+  });
+  wrap.appendChild(legDiv);
+
+  cases.forEach(c => {
+    const row = document.createElement('div');
+    row.className = 'fingerprint-row';
+
+    const lbl = document.createElement('div');
+    lbl.className = 'fingerprint-lbl';
+    lbl.textContent = c.short;
+    lbl.style.color = c.color;
+    lbl.title = c.label;
+    row.appendChild(lbl);
+
+    const bar = document.createElement('div');
+    bar.className = 'fingerprint-bar';
+
+    c.fingerprint.forEach((bucket, bi) => {
+      const cell = document.createElement('div');
+      cell.className = 'fingerprint-cell';
+      if (bucket.empty) {
+        cell.style.background = '#161b22';
+      } else {
+        cell.style.background = PHASE_COLOR[bucket.phase] || '#555';
+        cell.style.opacity = '0.8';
+      }
+      cell.title = `${c.label} · bucket ${bi+1}/60 · ${bucket.phase}`;
+      cell.addEventListener('mouseover', evt => {
+        if (!bucket.empty) {
+          showTip(`<strong>${c.label}</strong>
+            <span>Time window: ${Math.round(bi/60*100)}–${Math.round((bi+1)/60*100)}%</span><br/>
+            <span>Dominant: ${bucket.phase.replace(/_/g,' ')} (${bucket.count} edits)</span>`, evt);
+        }
+      });
+      cell.addEventListener('mousemove', moveTip);
+      cell.addEventListener('mouseout', hideTip);
+      bar.appendChild(cell);
+    });
+
+    row.appendChild(bar);
+    wrap.appendChild(row);
+  });
+
+  // Time axis under fingerprints
+  const axisRow = document.createElement('div');
+  axisRow.className = 'fingerprint-row';
+  axisRow.style.marginTop = '6px';
+  const axisLblSpc = document.createElement('div');
+  axisLblSpc.style.width = '130px';
+  axisLblSpc.style.flexShrink = '0';
+  axisRow.appendChild(axisLblSpc);
+  const axisLabels = document.createElement('div');
+  axisLabels.style.cssText = 'flex:1;display:flex;justify-content:space-between;font-size:0.65rem;color:#7d8590';
+  ['Start','25%','50%','75%','End'].forEach(t => {
+    const s = document.createElement('span');
+    s.textContent = t;
+    axisLabels.appendChild(s);
+  });
+  axisRow.appendChild(axisLabels);
+  wrap.appendChild(axisRow);
+
+  host.appendChild(wrap);
+}
+</script>
+</body>
+</html>
