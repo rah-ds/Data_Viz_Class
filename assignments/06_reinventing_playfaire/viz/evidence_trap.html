@@ -219,7 +219,25 @@ const PLABELS = {
 };
 const ESCAPE = 0.14;
 
+// Groups ordered by evidence intensity × duration (least → most trapped)
+// score = meanEvidence × activeBucketFraction
+// Policy 0.044 · Politics 0.058 · Social 0.074 · Geopolitics 0.094 · Religion 0.099 · Science 0.099
 const GROUPS = [
+  {id:'policy', label:'Policy', baseColor:'#3366CC', icon:'§', dashNum:16,
+   desc:'Disputes about Wikipedia\'s own enforcement rules and banning procedures — cases where the community turned its dispute-resolution apparatus on itself to debate how arbitration should work.',
+   recurNotes:[
+     {title:'Arbitration Enforcement (2011, 2015, 2015)', note:'Three cases over four years as the community kept finding its enforcement procedures insufficient. Each case tightened the rules, but the new rules created new ambiguities that required their own arbitration. The second and third cases in 2015 ran nearly simultaneously, reflecting how quickly the policy was being stress-tested.'},
+   ],
+   cases:[
+    {slug:'civility_enforcement',        short:'Civility 2011'},
+    {slug:'arbitration_enforcement_sanction_handling', short:'ArbSanctions 2011'},
+    {slug:'banning_policy',              short:'Banning 2014'},
+    {slug:'arbitration_enforcement',     short:'ArbEnf 2015'},
+    {slug:'arbitration_enforcement_2',   short:'ArbEnf2 2015'},
+    {slug:'editor_conduct_in_e-cigs_articles', short:'E-cigs 2015'},
+    {slug:'conduct_of_mister_wiki_editors', short:'MisterWiki 2017'},
+    {slug:'conduct_in_deletion-related_editing', short:'Deletion 2022'},
+  ]},
   {id:'politics', label:'Politics', baseColor:'#CC3333', icon:'★', dashNum:12,
    desc:'Disputes over political figures, elections, and partisan articles — editor allegiances here often mirror real-world party divides more than Wikipedia sourcing standards.',
    recurNotes:[
@@ -238,36 +256,6 @@ const GROUPS = [
     {slug:'iranian_politics',            short:'Iran 2021'},
     {slug:'venezuelan_politics',         short:'Venezuela 2024'},
     {slug:'indian_military_history',     short:'IndMilitary 2025'},
-  ]},
-  {id:'religion', label:'Religion', baseColor:'#9966CC', icon:'✦', dashNum:19,
-   desc:'Conflicts over doctrine, sacred figures, and religious institutions — editors frequently treat their faith tradition as an authority that Wikipedia\'s neutrality policy cannot override.',
-   recurNotes:[
-     {title:'Ebionites (2007 + 2013)', note:'A small, persistent group of editors with fringe theological views returned six years after the first case with the same sourcing disputes largely intact. The original remedies expired without resolving the underlying belief conflict.'},
-   ],
-   cases:[
-    {slug:'st_christopher',              short:'StChris 2006'},
-    {slug:'ebionites',                   short:'Ebionites 2007'},
-    {slug:'international_churches_of_christ', short:'ICC 2008'},
-    {slug:'scientology',                 short:'Scientology 2009'},
-    {slug:'ebionites_3',                 short:'Ebionites 2013'},
-    {slug:'christianity_and_sexuality',  short:'C&S 2015'},
-    {slug:'world_war_ii_and_the_history_of_jews_in_poland', short:'WWII Jews 2023'},
-  ]},
-  {id:'science', label:'Science', baseColor:'#14866D', icon:'⚗', dashNum:15,
-   desc:'Edit wars over empirically contested claims — climate change, alternative medicine, pseudoscience — where minority viewpoints seek equal footing with scientific consensus on the grounds of editorial fairness.',
-   recurNotes:[
-     {title:'Climate Change (2005, 2005, 2010)', note:'Three separate arbitration cases in five years tracked successive waves of skeptic editors. The first two cases in 2005 named different editors for the same dispute; the 2010 case reopened in the wake of the Climategate controversy, which briefly gave fringe editors new ammunition.'},
-     {title:'Theresa Knott / Mr-Natural-Health (both 2004)', note:'Two cases filed the same year about the same underlying dispute — one named the editor, one named the article topic. The committee split the proceedings to handle conduct and content separately, which is why both appear as distinct cases.'},
-   ],
-   cases:[
-    {slug:'theresa_knott_vs._mr-natural-health', short:'Theresa 2004'},
-    {slug:'mr-natural-health',           short:'MrNatural 2004'},
-    {slug:'climate_change_dispute',      short:'Climate 2005'},
-    {slug:'climate_change_dispute_2',    short:'Climate2 2005'},
-    {slug:'pseudoscience',               short:'Pseudosci 2006'},
-    {slug:'martinphi-scienceapologist',  short:'SciApp 2007'},
-    {slug:'climate_change',              short:'Climate 2010'},
-    {slug:'skepticism_and_coordinated_editing', short:'Skepticism 2022'},
   ]},
   {id:'social', label:'Social', baseColor:'#339966', icon:'◈', dashNum:13,
    desc:'Cases involving identity, demographics, and social policy — contested cultural definitions make neutral framing structurally difficult, and the battlegrounds shift as terminology evolves.',
@@ -300,20 +288,35 @@ const GROUPS = [
     {slug:'armenia-azerbaijan_3',        short:'ArmAze 2023'},
     {slug:'palestine-israel_articles_5', short:'PalIsrael5 2024'},
   ]},
-  {id:'policy', label:'Policy', baseColor:'#3366CC', icon:'§', dashNum:16,
-   desc:'Disputes about Wikipedia\'s own enforcement rules and banning procedures — cases where the community turned its dispute-resolution apparatus on itself to debate how arbitration should work.',
+  {id:'religion', label:'Religion', baseColor:'#9966CC', icon:'✦', dashNum:19,
+   desc:'Conflicts over doctrine, sacred figures, and religious institutions — editors frequently treat their faith tradition as an authority that Wikipedia\'s neutrality policy cannot override.',
    recurNotes:[
-     {title:'Arbitration Enforcement (2011, 2015, 2015)', note:'Three cases over four years as the community kept finding its enforcement procedures insufficient. Each case tightened the rules, but the new rules created new ambiguities that required their own arbitration. The second and third cases in 2015 ran nearly simultaneously, reflecting how quickly the policy was being stress-tested.'},
+     {title:'Ebionites (2007 + 2013)', note:'A small, persistent group of editors with fringe theological views returned six years after the first case with the same sourcing disputes largely intact. The original remedies expired without resolving the underlying belief conflict.'},
    ],
    cases:[
-    {slug:'civility_enforcement',        short:'Civility 2011'},
-    {slug:'arbitration_enforcement_sanction_handling', short:'ArbSanctions 2011'},
-    {slug:'banning_policy',              short:'Banning 2014'},
-    {slug:'arbitration_enforcement',     short:'ArbEnf 2015'},
-    {slug:'arbitration_enforcement_2',   short:'ArbEnf2 2015'},
-    {slug:'editor_conduct_in_e-cigs_articles', short:'E-cigs 2015'},
-    {slug:'conduct_of_mister_wiki_editors', short:'MisterWiki 2017'},
-    {slug:'conduct_in_deletion-related_editing', short:'Deletion 2022'},
+    {slug:'st_christopher',              short:'StChris 2006'},
+    {slug:'ebionites',                   short:'Ebionites 2007'},
+    {slug:'international_churches_of_christ', short:'ICC 2008'},
+    {slug:'scientology',                 short:'Scientology 2009'},
+    {slug:'ebionites_3',                 short:'Ebionites 2013'},
+    {slug:'christianity_and_sexuality',  short:'C&S 2015'},
+    {slug:'world_war_ii_and_the_history_of_jews_in_poland', short:'WWII Jews 2023'},
+  ]},
+  {id:'science', label:'Science', baseColor:'#14866D', icon:'⚗', dashNum:15,
+   desc:'Edit wars over empirically contested claims — climate change, alternative medicine, pseudoscience — where minority viewpoints seek equal footing with scientific consensus on the grounds of editorial fairness.',
+   recurNotes:[
+     {title:'Climate Change (2005, 2005, 2010)', note:'Three separate arbitration cases in five years tracked successive waves of skeptic editors. The first two cases in 2005 named different editors for the same dispute; the 2010 case reopened in the wake of the Climategate controversy, which briefly gave fringe editors new ammunition.'},
+     {title:'Theresa Knott / Mr-Natural-Health (both 2004)', note:'Two cases filed the same year about the same underlying dispute — one named the editor, one named the article topic. The committee split the proceedings to handle conduct and content separately, which is why both appear as distinct cases.'},
+   ],
+   cases:[
+    {slug:'theresa_knott_vs._mr-natural-health', short:'Theresa 2004'},
+    {slug:'mr-natural-health',           short:'MrNatural 2004'},
+    {slug:'climate_change_dispute',      short:'Climate 2005'},
+    {slug:'climate_change_dispute_2',    short:'Climate2 2005'},
+    {slug:'pseudoscience',               short:'Pseudosci 2006'},
+    {slug:'martinphi-scienceapologist',  short:'SciApp 2007'},
+    {slug:'climate_change',              short:'Climate 2010'},
+    {slug:'skepticism_and_coordinated_editing', short:'Skepticism 2022'},
   ]},
 ];
 
