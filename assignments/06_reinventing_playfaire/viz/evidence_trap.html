@@ -164,7 +164,7 @@ body{
 </nav>
 
 <div class="page-header">
-  <div class="ph-label">Deep Dive · Arbitration Analysis · 53 Cases · 2004 to 2025</div>
+  <div class="ph-label">53 Cases · 2004 to 2025</div>
   <div class="ph-title">The <em>Evidence</em> Trap</div>
   <div class="ph-sub">Why fact-based conflicts never settle</div>
   <div class="ph-cols">
@@ -359,8 +359,7 @@ function enrichCase(c, json, grp) {
 }
 
 // GROUP ROW (avg always visible; individual cases expand on click)
-function buildGroupRow(root, grp, cases, avgEv, isTrapped, isMid) {  const evEnd = (avgEv[BUCKETS-1]*100).toFixed(0);
-
+function buildGroupRow(root, grp, cases, avgEv) {
   const block = document.createElement('div');
   block.className = 'grp-block';
   block.style.setProperty('--grp-color', grp.baseColor);
@@ -445,15 +444,6 @@ function buildGroupRow(root, grp, cases, avgEv, isTrapped, isMid) {  const evEnd
     detail.appendChild(row);
   });
 
-  const foot = document.createElement('div');
-  foot.className = 'grp-foot';
-  foot.textContent = isTrapped
-    ? `Evidence at ${evEnd}% in the final window. This group never fully leaves the gathering phase.`
-    : isMid
-      ? `Evidence fades to ${evEnd}% at close. Slow but eventual exit from the gathering phase.`
-      : `Evidence drops to ${evEnd}% at close. The committee acts once it has what it needs.`;
-  detail.appendChild(foot);
-
   // Recurring case notes
   if (grp.recurNotes && grp.recurNotes.length) {
     const sec = document.createElement('div');
@@ -504,22 +494,13 @@ async function loadAll() {
     const gc = all.filter(c => c.groupId === g.id);
     if (!gc.length) return null;
     const avgEv = Array.from({length:BUCKETS}, (_,bi) => d3.mean(gc, c=>c.evidencePct[bi])||0);
-    let clearBucket = -1;
-    for (let i = BUCKETS-1; i >= 0; i--) {
-      if (avgEv[i] > ESCAPE) { clearBucket = i; break; }
-    }
-    const clearPct = clearBucket > 0 ? Math.round(clearBucket/(BUCKETS-1)*100) : 0;
-    const isTrapped = clearPct > 64;
-    const isMid     = clearPct > 38 && !isTrapped;
-    return {grp:g, cases:gc, avgEv, clearBucket, clearPct, isTrapped, isMid};
+    return {grp:g, cases:gc, avgEv};
   }).filter(Boolean);
-
-  const allAvg = groupData.flatMap(d => d.avgEv);
 
   const root = document.getElementById('groups-root');
 
   groupData.forEach(d => {
-    buildGroupRow(root, d.grp, d.cases, d.avgEv, d.isTrapped, d.isMid);
+    buildGroupRow(root, d.grp, d.cases, d.avgEv);
   });
 }
 
