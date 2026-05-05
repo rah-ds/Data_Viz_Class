@@ -112,10 +112,10 @@ body{
 .grp-block.open .grp-chevron{transform:rotate(90deg)}
 
 /* DETAIL / FINGERPRINTS */
-.grp-detail{display:none;padding-bottom:16px}
+.grp-detail{display:none;padding-bottom:12px}
 .grp-block.open .grp-detail{display:block}
 .lbl-col{width:168px;flex-shrink:0;text-align:right;padding-right:10px}
-.fp-avg-row{display:flex;align-items:center;height:13px;margin-bottom:4px}
+.fp-avg-row{display:flex;align-items:center;height:18px;margin-bottom:4px;cursor:pointer}
 .fp-avg-lbl{font-size:8px;color:rgba(139,148,158,.35);font-style:italic}
 .fp-avg-bar{flex:1;display:flex;height:100%}
 .fp-avg-cell{flex:1;height:100%}
@@ -189,14 +189,6 @@ body{
 <div class="phase-legend" id="phase-legend"></div>
 
 <div class="section-wrap">
-  <div class="section-head">All Groups: Evidence-Phase Activity Over Time</div>
-  <div class="section-caption">
-    Each curve shows average evidence-phase activity for one group, as a fraction of all editing in each time window.
-    The dashed line is the escape threshold.
-  </div>
-  <div id="combo-wrap"></div>
-
-  <div class="section-head" style="padding-top:36px">Click to Expand</div>
   <div id="groups-root" class="groups-section"></div>
 </div>
 
@@ -344,123 +336,13 @@ function buildLegend() {
   });
 }
 
-// COMBINED OVERLAY CHART
-function buildComboChart(wrap, groupData, maxEv) {
-  const W  = wrap.getBoundingClientRect().width || 1000;
-  const H  = 240, pad = {t:16, r:148, b:28, l:44};
-  const iw = W - pad.l - pad.r;
-  const ih = H - pad.t - pad.b;
-
-  const x   = d3.scaleLinear().domain([0, BUCKETS-1]).range([0, iw]);
-  const y   = d3.scaleLinear().domain([0, maxEv]).range([ih, 0]);
-  const thY = y(ESCAPE);
-
-  const svg = d3.select(wrap).append('svg').attr('width',W).attr('height',H);
-  const g   = svg.append('g').attr('transform',`translate(${pad.l},${pad.t})`);
-
-  // grid
-  [.25,.5,.75,1].forEach(f => {
-    g.append('line').attr('x1',0).attr('x2',iw).attr('y1',y(maxEv*f)).attr('y2',y(maxEv*f))
-      .attr('stroke','rgba(48,54,61,.28)').attr('stroke-dasharray','2,5');
-    g.append('text').attr('x',-6).attr('y',y(maxEv*f)+4).attr('text-anchor','end')
-      .attr('font-size',9).attr('fill','rgba(139,148,158,.45)')
-      .text(Math.round(maxEv*f*100)+'%');
-  });
-  g.append('text').attr('x',-6).attr('y',ih+2).attr('text-anchor','end')
-    .attr('font-size',9).attr('fill','rgba(139,148,158,.35)').text('0');
-
-  // escape threshold — prominent "so what" line
-  // subtle band below threshold (the "safe zone")
-  g.append('rect').attr('x',0).attr('y',thY).attr('width',iw).attr('height',ih-thY)
-    .attr('fill','rgba(83,168,35,.04)');
-  // solid threshold line
-  g.append('line').attr('x1',0).attr('x2',iw).attr('y1',thY).attr('y2',thY)
-    .attr('stroke','rgba(233,117,0,.55)').attr('stroke-width',1.5);
-  // threshold label on the left
-  g.append('text').attr('x',4).attr('y',thY-5)
-    .attr('font-size',9.5).attr('font-weight','700')
-    .attr('fill','rgba(233,117,0,.7)')
-    .text('still gathering evidence ▲');
-  g.append('text').attr('x',4).attr('y',thY+13)
-    .attr('font-size',9.5).attr('font-weight','700')
-    .attr('fill','rgba(83,168,35,.55)')
-    .text('moved on ▼');
-
-  // X axis label
-  g.append('text').attr('x',iw/2).attr('y',ih+22)
-    .attr('text-anchor','middle').attr('font-size',9.5).attr('fill','rgba(139,148,158,.35)')
-    .text('0%   ←   fraction through case timeline   →   100%');
-
-  // area + line per group
-  const lineGen = d3.line().x((_,i)=>x(i)).y(d=>y(d)).curve(d3.curveCatmullRom.alpha(.5));
-  const areaGen = d3.area().x((_,i)=>x(i)).y0(ih).y1(d=>y(d)).curve(d3.curveCatmullRom.alpha(.5));
-
-  groupData.forEach(({grp, avgEv, isTrapped, clearPct}) => {
-    const c = grp.baseColor;
-    g.append('path').datum(avgEv).attr('fill',c).attr('opacity',.07).attr('d',areaGen);
-    g.append('path').datum(avgEv).attr('fill','none')
-      .attr('stroke',c).attr('stroke-width', isTrapped ? 2.4 : 1.8)
-      .attr('opacity', isTrapped ? .95 : .7).attr('d',lineGen);
-
-    // end label
-    const endY = y(avgEv[BUCKETS-1]);
-    const evEnd = (avgEv[BUCKETS-1]*100).toFixed(0);
-    svg.append('text')
-      .attr('x', pad.l + iw + 6)
-      .attr('y', pad.t + Math.max(10, Math.min(ih-4, endY)))
-      .attr('font-size', 9.5).attr('font-weight', isTrapped ? '700' : '400')
-      .attr('fill', isTrapped ? c : `${c}99`)
-      .text(`${grp.label} ${evEnd}%`);
-  });
-
-  // hover crosshair
-  const vline = g.append('line').attr('y1',0).attr('y2',ih)
-    .attr('stroke','rgba(255,255,255,.1)').attr('stroke-width',1).attr('display','none');
-
-  g.append('rect').attr('width',iw).attr('height',ih).attr('fill','transparent')
-    .on('mousemove', evt => {
-      const [mx] = d3.pointer(evt);
-      const bi = Math.min(BUCKETS-1, Math.max(0, Math.round(x.invert(mx))));
-      vline.attr('display','block').attr('x1',mx).attr('x2',mx);
-      const pct = Math.round(bi/(BUCKETS-1)*100);
-      const rows = groupData.map(({grp,avgEv,isTrapped}) => {
-        const v = (avgEv[bi]*100).toFixed(1);
-        const marker = isTrapped ? '⚠' : '';
-        return `<span style="color:${grp.baseColor}">${marker} ${grp.label}</span>: <b>${v}%</b>`;
-      }).join('<br>');
-      showTip(`<b style="opacity:.5">${pct}% through timeline</b><br><br>${rows}`, evt);
-    })
-    .on('mouseleave', () => { vline.attr('display','none'); hideTip(); });
-}
-
-// MINI SPARKLINE (inline in group header)
-function buildMiniSpark(container, avgEv, color, maxEv) {
-  const W = 110, H = 22;
-  const x = d3.scaleLinear().domain([0, BUCKETS-1]).range([1, W-1]);
-  const y = d3.scaleLinear().domain([0, maxEv]).range([H-1, 1]);
-  const lineGen = d3.line().x((_,i)=>x(i)).y(d=>y(d)).curve(d3.curveCatmullRom.alpha(.5));
-  const thY = y(ESCAPE);
-  const svg = d3.select(container).append('svg')
-    .attr('width',W).attr('height',H).style('display','block');
-  svg.append('line').attr('x1',0).attr('x2',W).attr('y1',thY).attr('y2',thY)
-    .attr('stroke','rgba(233,117,0,.2)').attr('stroke-dasharray','3,3');
-  const areaGen = d3.area().x((_,i)=>x(i)).y0(H-1).y1(d=>y(d)).curve(d3.curveCatmullRom.alpha(.5));
-  svg.append('path').datum(avgEv).attr('fill',color).attr('opacity',.1).attr('d',areaGen);
-  svg.append('path').datum(avgEv).attr('fill','none')
-    .attr('stroke',color).attr('stroke-width',1.6).attr('opacity',.8).attr('d',lineGen);
-}
-
-// GROUP ROW (collapsible)
-function buildGroupRow(root, grp, cases, avgEv, clearPct, isTrapped, isMid, maxEv) {
-  const bCls = isTrapped ? 'trapped' : isMid ? 'mid' : 'clear';
-  const bTxt = isTrapped
-    ? `Evidence active past ${clearPct}%`
-    : isMid
-      ? `Fades at ~${clearPct}%`
-      : clearPct > 0 ? `Escapes at ~${clearPct}%` : 'Minimal evidence';
+// GROUP ROW (avg always visible; individual cases expand on click)
+function buildGroupRow(root, grp, cases, avgEv, isTrapped, isMid) {
+  const evEnd = (avgEv[BUCKETS-1]*100).toFixed(0);
 
   const block = document.createElement('div');
-  block.className = 'grp-block open';
+  block.className = 'grp-block';
+  block.style.setProperty('--grp-color', grp.baseColor);
 
   // Toggle header
   const toggle = document.createElement('div');
@@ -469,15 +351,10 @@ function buildGroupRow(root, grp, cases, avgEv, clearPct, isTrapped, isMid, maxE
     <div class="grp-dot" style="background:${grp.baseColor}"></div>
     <div class="grp-name" style="color:${grp.baseColor}">${grp.label}</div>
     <div class="grp-nc">${cases.length} cases</div>
-    <div class="mini-spark-wrap" data-sparkwrap></div>
-    <div class="grp-chevron" style="transform:rotate(90deg)">›</div>`;
+    <div class="grp-chevron">›</div>`;
   block.appendChild(toggle);
 
-  // Detail section (open by default)
-  const detail = document.createElement('div');
-  detail.className = 'grp-detail';
-
-  // Group avg fingerprint row
+  // Group avg fingerprint row — ALWAYS visible
   const avgRow = document.createElement('div');
   avgRow.className = 'fp-avg-row';
   avgRow.innerHTML = `<div class="lbl-col fp-avg-lbl">group avg</div>`;
@@ -489,14 +366,24 @@ function buildGroupRow(root, grp, cases, avgEv, clearPct, isTrapped, isMid, maxE
     const ent = Object.entries(cnt);
     const dom = ent.length ? ent.sort((a,b)=>b[1]-a[1])[0][0] : null;
     const cell = document.createElement('div');
-    cell.className = 'fp-avg-cell';
-    cell.style.cssText = `background:${dom?PCOLORS[dom]:'rgba(22,27,34,.4)'};opacity:${dom?'.65':'.15'}`;
+    cell.className = 'fp-avg-cell' + (dom==='evidence' ? ' ev' : '');
+    cell.style.cssText = `background:${dom?PCOLORS[dom]:'rgba(22,27,34,.4)'};opacity:${dom?'.72':'.15'}`;
+    cell.addEventListener('mouseenter', e => showTip(
+      `<b style="color:${grp.baseColor}">${grp.label}</b> group avg<br>`+
+      `Window ${bi+1}/60 · ${Math.round(bi/(BUCKETS-1)*100)}% through<br>`+
+      `Dominant phase: <span style="color:${dom?PCOLORS[dom]:'#666'}">${dom?PLABELS[dom]||dom:'none'}</span><br>`+
+      `<span style="opacity:.5">${cases.length} cases averaged</span>`, e));
+    cell.addEventListener('mousemove', moveTip);
+    cell.addEventListener('mouseleave', hideTip);
     avgBar.appendChild(cell);
   }
   avgRow.appendChild(avgBar);
-  detail.appendChild(avgRow);
+  block.appendChild(avgRow);
 
-  // Individual case rows
+  // Detail section — individual cases, hidden until click
+  const detail = document.createElement('div');
+  detail.className = 'grp-detail';
+
   cases.forEach(c => {
     const row = document.createElement('div');
     row.className = 'fp-row';
@@ -531,10 +418,8 @@ function buildGroupRow(root, grp, cases, avgEv, clearPct, isTrapped, isMid, maxE
     detail.appendChild(row);
   });
 
-  // Footer annotation
   const foot = document.createElement('div');
   foot.className = 'grp-foot';
-  const evEnd = (avgEv[BUCKETS-1]*100).toFixed(0);
   foot.textContent = isTrapped
     ? `Evidence at ${evEnd}% in the final window. This group never fully leaves the gathering phase.`
     : isMid
@@ -549,11 +434,6 @@ function buildGroupRow(root, grp, cases, avgEv, clearPct, isTrapped, isMid, maxE
   });
 
   root.appendChild(block);
-
-  return function drawSpark() {
-    const sparkWrap = toggle.querySelector('[data-sparkwrap]');
-    buildMiniSpark(sparkWrap, avgEv, grp.baseColor, maxEv);
-  };
 }
 
 // MAIN
@@ -589,14 +469,9 @@ async function loadAll() {
   buildLegend();
 
   const root = document.getElementById('groups-root');
-  const sparkFns = [];
 
-  requestAnimationFrame(() => {
-    buildComboChart(document.getElementById('combo-wrap'), groupData, maxEv);
-    groupData.forEach(d => {
-      sparkFns.push(buildGroupRow(root, d.grp, d.cases, d.avgEv, d.clearPct, d.isTrapped, d.isMid, maxEv));
-    });
-    requestAnimationFrame(() => sparkFns.forEach(fn => fn()));
+  groupData.forEach(d => {
+    buildGroupRow(root, d.grp, d.cases, d.avgEv, d.isTrapped, d.isMid);
   });
 }
 
