@@ -223,9 +223,15 @@ tbody tr:hover:not(.no-data) .case-name{color:var(--link);}
 .case-card{background:var(--surface);border:1.5px solid var(--border-light);border-radius:7px;overflow:hidden;transition:border-color .12s,box-shadow .12s;}
 .case-card:hover{border-color:var(--link);box-shadow:0 2px 8px rgba(51,102,204,.12);}
 .case-card.in-compare{border-color:var(--link);box-shadow:0 0 0 2px rgba(51,102,204,.2);}
-.card-head{padding:10px 12px 8px;cursor:pointer;}
+.card-head{padding:10px 12px 8px;cursor:pointer;display:flex;flex-direction:column;position:relative;}
 .card-head:hover .card-name{color:var(--link);}
-.card-topic-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.drag-handle{position:absolute;top:8px;right:8px;font-size:.85rem;color:var(--faint);cursor:grab;user-select:none;line-height:1;padding:2px;}
+.drag-handle:active{cursor:grabbing;}
+.case-card[draggable=true]{transition:box-shadow .15s;}
+.case-card.dragging{opacity:.35;box-shadow:none;}
+.case-card.drag-over{outline:2px dashed var(--link);outline-offset:2px;}
+.case-card.card-expanded{grid-column:1/-1;}
+.card-topic-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;padding-right:18px;}
 .card-topic-badge{display:inline-flex;align-items:center;gap:3px;font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:1px 6px;border-radius:10px;border:1px solid currentColor;opacity:.85;}
 .card-era-badge{font-size:.56rem;color:var(--muted);white-space:nowrap;font-weight:500;opacity:.8;}
 .card-name{font-size:.76rem;font-weight:600;color:var(--text);line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
@@ -241,9 +247,14 @@ tbody tr:hover:not(.no-data) .case-name{color:var(--link);}
 .ca-btn{flex:1;padding:4px 0;font-size:.63rem;border-radius:4px;cursor:pointer;text-align:center;border:1px solid var(--border);background:var(--surface);color:var(--muted);transition:all .1s;}
 .ca-btn:hover{border-color:var(--link);color:var(--link);}
 .ca-btn.cmp-active{border-color:var(--link);background:var(--link);color:#fff;}
-.card-expand{padding:0 12px 10px;display:none;border-top:1px solid var(--border-light);}
+.card-expand{padding:0;display:none;border-top:1px solid var(--border-light);}
 .card-expand.open{display:block;}
-.sparkline-lbl{font-size:.58rem;color:var(--muted);margin:6px 0 2px;}
+.expand-inner{display:flex;gap:0;align-items:stretch;}
+.expand-spark-wrap{flex:1;padding:8px 12px 10px;min-width:0;}
+.sparkline-lbl{font-size:.58rem;color:var(--muted);margin:0 0 4px;}
+.expand-actions{display:flex;flex-direction:column;gap:5px;padding:10px 12px;border-left:1px solid var(--border-light);justify-content:center;min-width:110px;}
+.expand-btn{padding:5px 8px;font-size:.62rem;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--link);cursor:pointer;text-align:center;white-space:nowrap;}
+.expand-btn:hover{background:var(--link);color:#fff;border-color:var(--link);}
 .card-nodata{padding:10px 12px;font-size:.68rem;color:var(--faint);font-style:italic;}
 .era-chips-row{border-top:none;padding-top:0;background:var(--surface2);}
 
@@ -580,14 +591,26 @@ d3.json('../data/processed/d3/manifest.json').then(m=>{
 });
 
 function buildStatRow(m){
+  // Initial load: show global context counts
   const closed=m.cases.filter(c=>c.outcome_status==='closed').length;
-  const open=m.cases.filter(c=>c.outcome_status==='open').length;
   document.getElementById('stat-row').innerHTML=`
     <div class="stat-pill green"><span class="num">${m.cases_with_data}</span><span class="lbl">cases with data</span></div>
-    <div class="stat-pill grey"><span class="num">${m.cases_no_data}</span><span class="lbl">not yet collected</span></div>
-    <div class="stat-pill"><span class="num">${m.total_cases}</span><span class="lbl">total known cases</span></div>
+    <div class="stat-pill"><span class="num">${m.total_cases}</span><span class="lbl">total known</span></div>
     <div class="stat-pill"><span class="num">${closed}</span><span class="lbl">closed</span></div>
-    <div class="stat-pill" style="color:var(--red)"><span class="num">${open}</span><span class="lbl">open</span></div>
+  `;
+}
+
+function updateStatRow(active){
+  if(!active||!active.length) return;
+  const med=arr=>arr.length?Math.round(d3.median(arr)):0;
+  const mDur=med(active.map(c=>c.case_duration_days||0));
+  const mDep=med(active.map(c=>Math.round((c.departure_rate||0)*100)));
+  const sanct=active.filter(c=>c.sanctioned_count>0).length;
+  document.getElementById('stat-row').innerHTML=`
+    <div class="stat-pill green"><span class="num">${active.length}</span><span class="lbl">cases shown</span></div>
+    <div class="stat-pill"><span class="num">${mDur}d</span><span class="lbl">median duration</span></div>
+    <div class="stat-pill"><span class="num">${mDep}%</span><span class="lbl">median departure</span></div>
+    <div class="stat-pill" style="color:var(--red)"><span class="num">${sanct}</span><span class="lbl">with sanctions</span></div>
   `;
 }
 
@@ -679,6 +702,8 @@ function filterAndRender(){
       return (sf[srt]||sf.name)(a,b);
     });
   document.getElementById('row-count').textContent=`${FILTERED.length} of ${ALL.length} cases`;
+  // Update stat row to reflect current filter
+  updateStatRow(FILTERED.filter(c=>c.has_data));
   const tblWrap=document.getElementById('tbl-wrap');
   const cardWrap=document.getElementById('card-grid-wrap');
   if(currentView==='cards'){
@@ -762,8 +787,14 @@ function renderCards(){
     const dataRec=JSON.stringify(c).replace(/'/g,'&apos;');
     const sanctChip=c.sanctioned_count>0?`<span class="sanct-chip" title="${c.sanctioned_count} editor(s) sanctioned">&#9878; ${c.sanctioned_count} sanctioned</span>`:'';
     const eraLabel=`<span class="card-era-badge" style="color:${(ERAS[c.era]||{color:'#888'}).color}">${c.era||''}</span>`;
-    return `<div class="case-card${cardClass}" id="card-${c.slug}">
-      <div class="card-head" onclick='clickCase(${dataRec})'>
+    return `<div class="case-card${cardClass}" id="card-${c.slug}"
+      draggable="true"
+      ondragstart="cardDragStart(event,'${c.slug}')"
+      ondragend="cardDragEnd(event,'${c.slug}')"
+      ondragover="cardDragOver(event,'${c.slug}')"
+      ondrop="cardDrop(event,'${c.slug}')">
+      <div class="card-head" onclick="toggleCardExpand('${c.slug}',event)">
+        <div class="drag-handle" title="Drag to reorder" ondragstart="event.stopPropagation()">&#8942;</div>
         <div class="card-topic-row">
           <div class="card-topic-badge" style="color:${td.color}">${td.icon} ${td.desc}</div>
           ${eraLabel}
@@ -785,12 +816,20 @@ function renderCards(){
         <div class="card-actions">
           <div class="ca-btn${cmpClass}" id="cmp-btn-${c.slug}"
             onclick="toggleCompare('${c.slug}',event)">${inCmp?'&#10003; Selected':'+ Compare'}</div>
-          <div class="ca-btn" onclick="toggleCardExpand('${c.slug}',event)">&#9662; Preview</div>
         </div>
       </div>
       <div class="card-expand" id="expand-${c.slug}">
-        <div class="sparkline-lbl">Edit activity by phase (timeline preview)</div>
-        <div id="spark-${c.slug}" style="height:50px"></div>
+        <div class="expand-inner">
+          <div class="expand-spark-wrap">
+            <div class="sparkline-lbl">Edit activity by phase over time</div>
+            <div id="spark-${c.slug}" style="height:90px"></div>
+          </div>
+          <div class="expand-actions">
+            <button class="expand-btn" onclick="openVizFrom('${c.slug}','timeline');event.stopPropagation()">&#8599; Timeline</button>
+            <button class="expand-btn" onclick="openVizFrom('${c.slug}','network');event.stopPropagation()">&#8599; Network</button>
+            <button class="expand-btn" onclick="clickCaseSlug('${c.slug}');event.stopPropagation()">Full Summary</button>
+          </div>
+        </div>
       </div>
     </div>`;
   }).join('');
@@ -799,8 +838,10 @@ function renderCards(){
 function toggleCardExpand(slug, ev){
   if(ev) ev.stopPropagation();
   const exp=document.getElementById('expand-'+slug);
+  const card=document.getElementById('card-'+slug);
   if(!exp) return;
   const isOpen=exp.classList.toggle('open');
+  if(card) card.classList.toggle('card-expanded', isOpen);
   if(isOpen && !exp.dataset.loaded){
     exp.dataset.loaded='1';
     loadD3(slug).then(d=>{
@@ -810,6 +851,51 @@ function toggleCardExpand(slug, ev){
       if(el) el.innerHTML='<div style="font-size:.63rem;color:var(--muted);padding:8px 0">Could not load data</div>';
     });
   }
+}
+
+function clickCaseSlug(slug){
+  const rec=ALL.find(c=>c.slug===slug);
+  if(rec) clickCase(rec);
+}
+
+function openVizFrom(slug, view){
+  const rec=ALL.find(c=>c.slug===slug);
+  if(!rec) return;
+  currentRec=rec;
+  openViz(view);
+}
+
+// ── Drag-to-reorder ──
+let _dragSrc=null;
+function cardDragStart(ev, slug){
+  _dragSrc=slug;
+  ev.dataTransfer.effectAllowed='move';
+  ev.dataTransfer.setData('text/plain',slug);
+  setTimeout(()=>{const c=document.getElementById('card-'+slug);if(c) c.classList.add('dragging');},0);
+}
+function cardDragEnd(ev, slug){
+  document.querySelectorAll('.case-card').forEach(c=>c.classList.remove('dragging','drag-over'));
+  _dragSrc=null;
+}
+function cardDragOver(ev, slug){
+  ev.preventDefault();
+  ev.dataTransfer.dropEffect='move';
+  if(slug!==_dragSrc){
+    document.querySelectorAll('.case-card.drag-over').forEach(c=>c.classList.remove('drag-over'));
+    const tgt=document.getElementById('card-'+slug);
+    if(tgt) tgt.classList.add('drag-over');
+  }
+}
+function cardDrop(ev, slug){
+  ev.preventDefault();
+  if(!_dragSrc||slug===_dragSrc) return;
+  const src=document.getElementById('card-'+_dragSrc);
+  const tgt=document.getElementById('card-'+slug);
+  if(!src||!tgt) return;
+  const rect=tgt.getBoundingClientRect();
+  const after=ev.clientY>rect.top+rect.height/2;
+  tgt.parentNode.insertBefore(src, after?tgt.nextSibling:tgt);
+  document.querySelectorAll('.case-card').forEach(c=>c.classList.remove('drag-over','dragging'));
 }
 
 function computeDensity(events, nBuckets){
@@ -1421,11 +1507,10 @@ function buildAnalysis(){
   const el = document.getElementById('an-body');
   if(!el || !cases.length) return;
 
-  // Pre-compute derived stats
-  const durs   = cases.map(c=>c.case_duration_days||0);
-  const short  = cases.filter(c=>c.case_duration_days<=90);
-  const long_  = cases.filter(c=>c.case_duration_days>90);
-  const vlong  = cases.filter(c=>c.case_duration_days>365);
+  const durs     = cases.map(c=>c.case_duration_days||0);
+  const short    = cases.filter(c=>c.case_duration_days<=90);
+  const long_    = cases.filter(c=>c.case_duration_days>90);
+  const vlong    = cases.filter(c=>c.case_duration_days>365);
   const sanctioned = cases.filter(c=>c.sanctioned_count>0);
   const noSanct    = cases.filter(c=>c.sanctioned_count===0);
 
@@ -1433,147 +1518,151 @@ function buildAnalysis(){
   const avg = arr => arr.length ? Math.round(d3.mean(arr)) : 0;
   const med = arr => arr.length ? Math.round(d3.median(arr)) : 0;
 
+  // Era pre-compute
+  const eraNames=['Early (2003–07)','Growth (2008–14)','Modern (2015+)'];
+  const eraData=eraNames.map(e=>{
+    const ec=cases.filter(c=>c.era===e);
+    return {label:e.split(' ')[0],era:e,cases:ec,
+      medDur:med(ec.map(c=>c.case_duration_days||0)),
+      sanctRate:ec.length?Math.round(ec.filter(c=>c.sanctioned_count>0).length/ec.length*100):0,
+      depRate:avg(ec.map(c=>Math.round((c.departure_rate||0)*100)))};
+  });
+
+  // Topic pre-compute (sorted by median duration desc)
+  const topicData=Object.keys(TOPICS).map(t=>{
+    const tc=cases.filter(c=>c.topic===t);
+    return {label:t,n:tc.length,medDur:med(tc.map(c=>c.case_duration_days||0)),
+      color:TOPICS[t].color};
+  }).filter(d=>d.n>=3).sort((a,b)=>b.medDur-a.medDur);
+
   el.innerHTML=`
   <div class="an-section">
-    <h2>Why does Wikipedia arbitration take so long?</h2>
+    <h2>20 years of arbitration — demystifying the process</h2>
     <p class="lede">
-      Arbitration cases at the English Wikipedia are often framed as judicial proceedings — a committee
-      of elected arbitrators reviews evidence, hears arguments, and issues remedies. In principle a case
-      should resolve in weeks. In practice, <strong>${pct(vlong.length,cases.length)} of cases last more than a year</strong>, and the
-      longest ran for <strong>${Math.round(Math.max(...durs)/365)} years</strong>. The data from ${cases.length} closed
-      cases tells a clear story: duration is driven not by complexity but by <em>participation collapse</em> —
-      the slow exit of everyone involved before the committee actually decides anything.
+      Wikipedia's Arbitration Committee is its highest court — a body of elected editors empowered
+      to resolve disputes that the community cannot. Across <strong>${cases.length} cases spanning 2003–2025</strong>,
+      the data reveals a consistent pattern: cases begin with many voices, but most participants exit
+      long before any decision is reached. The committee deliberates in a room that has quietly emptied.
     </p>
     <div class="an-callout">
-      <strong>Key finding:</strong> The median case lasts ${med(durs)} days, but the distribution is
-      sharply bimodal. ${short.length} cases resolve within 90 days (usually individual editor conduct).
-      ${vlong.length} cases exceed one year — these are almost always topic or content disputes where
-      consensus is structurally impossible without an external decision.
+      <strong>The central paradox:</strong> Median case length is only ${med(durs)} days,
+      yet ${pct(vlong.length,cases.length)} of cases exceed a full year.
+      This bimodal split — quick conduct rulings vs. drawn-out content wars — is the defining
+      structural feature of ArbCom's docket across two decades.
     </div>
   </div>
 
   <div class="an-section">
-    <h2>1 · Duration is not normally distributed</h2>
+    <h2>1 · Two types of conflict, two very different timelines</h2>
     <p class="lede">
-      Most cases are short and administrative. A long tail of ideologically contested topics drives the
-      average up dramatically — and skews every aggregate statistic.
+      The duration distribution is not a bell curve — it's two peaks. Most cases are quick
+      administrative actions against individual editors. A smaller group of cases about ideology,
+      territory, or religion drag on for years because no factual resolution is possible.
     </p>
-    <div class="an-chart"><div class="an-chart-title">Case duration distribution (days, log scale)</div>
+    <div class="an-chart"><div class="an-chart-title">Duration distribution — all ${cases.length} cases</div>
       <div id="ch-hist"></div>
-      <div class="an-finding">
-        <strong>${short.length} cases</strong> resolve in ≤90 days (${pct(short.length,cases.length)} of total).
-        <strong>${vlong.length} cases</strong> exceed one year. The gap between 90d and 365d has only
-        <strong>${cases.filter(c=>c.case_duration_days>90&&c.case_duration_days<=365).length} cases</strong> —
-        once a case escapes the fast lane, it tends to drag on for years.
-      </div>
     </div>
   </div>
 
   <div class="an-section">
-    <h2>2 · Long cases have more editors — who then leave</h2>
+    <h2>2 · Conflict topic predicts how long it will last</h2>
     <p class="lede">
-      More participants means more perspectives to reconcile, which delays evidence filing. But the more
-      damning pattern is <strong>departure rate</strong>: editors who filed or commented early simply stop
-      engaging long before the committee votes.
+      Geopolitical and religious content disputes take far longer to resolve than editor conduct cases.
+      This is structural: when the underlying disagreement is ideological, no arbiter can mandate
+      consensus — they can only regulate behavior around it.
+    </p>
+    <div class="an-chart"><div class="an-chart-title">Median duration by conflict topic (days)</div>
+      <div id="ch-topic-dur"></div>
+    </div>
+  </div>
+
+  <div class="an-section">
+    <h2>3 · Long cases attract more people — who then vanish</h2>
+    <p class="lede">
+      Contested topic cases draw a larger audience, but <strong>departure rate</strong> —
+      the share of active editors who stop engaging before resolution — climbs sharply with duration.
+      By the time arbitrators write their final decision, the parties have largely left the building.
     </p>
     <div class="an-two">
-      <div class="an-chart"><div class="an-chart-title">Avg editors — short vs long cases</div>
-        <div id="ch-eds"></div></div>
-      <div class="an-chart"><div class="an-chart-title">Departure rate — short vs long cases</div>
-        <div id="ch-dep"></div></div>
+      <div class="an-chart"><div class="an-chart-title">Avg editors per case</div><div id="ch-eds"></div></div>
+      <div class="an-chart"><div class="an-chart-title">Departure rate</div><div id="ch-dep"></div></div>
     </div>
     <div class="an-finding">
-      Cases lasting &gt;90 days average <strong>${avg(long_.map(c=>c.total_editors))} editors</strong>
-      vs <strong>${avg(short.map(c=>c.total_editors))}</strong> for short cases.
-      But departure rate jumps from <strong>${avg(short.map(c=>c.departure_rate*100))}%</strong> to
-      <strong>${avg(long_.map(c=>c.departure_rate*100))}%</strong> — meaning in a long case,
-      nearly two-thirds of participants give up before resolution.
+      In cases lasting &gt;90 days, departure rate reaches
+      <strong>${avg(long_.map(c=>c.departure_rate*100))}%</strong> on average —
+      compared to <strong>${avg(short.map(c=>c.departure_rate*100))}%</strong> in quick cases.
+      When only ${med(cases.filter(c=>c.starters>0).map(c=>Math.round(c.retention_rate*100)))}% of
+      original participants stay through to the end, the committee hears largely from editors who
+      were never the core of the conflict.
     </div>
   </div>
 
   <div class="an-section">
-    <h2>3 · Retention collapses — most starters don't finish</h2>
+    <h2>4 · Wikipedia changed — did its conflicts?</h2>
     <p class="lede">
-      "Starter retention" tracks editors active in the first quarter of a case who are still active
-      in the final quarter. This is the most direct measure of whether participants believe the process
-      will produce a fair outcome.
+      The Early era (2003–07) saw Wikipedia define its norms, often through painful individual cases.
+      The Growth era (2008–14) brought coordinated editing campaigns around geopolitics and ideology.
+      Modern cases (2015+) are fewer but increasingly complex, with higher sanction rates reflecting
+      a committee that has become more decisive.
     </p>
-    <div class="an-chart"><div class="an-chart-title">Starter retention by case (sorted by duration)</div>
-      <div id="ch-ret"></div>
-      <div class="an-finding">
-        Across all ${cases.length} cases, median retention is
-        <strong>${med(cases.filter(c=>c.starters>0).map(c=>Math.round(c.retention_rate*100)))}%</strong>.
-        <strong>${cases.filter(c=>c.starters>0&&c.retention_rate<0.25).length}</strong> of
-        ${cases.filter(c=>c.starters>0).length} cases with enough starters saw fewer than 25% remain.
-        The arbitrators who must ultimately decide are deliberating largely without the parties who
-        filed the case.
-      </div>
+    <div class="an-chart"><div class="an-chart-title">Median duration &amp; sanction rate by era</div>
+      <div id="ch-era"></div>
+    </div>
+    <div class="an-finding">
+      ${eraData.map(e=>`<strong>${e.label}</strong>: ${e.cases.length} cases · ${e.medDur}d median · ${e.sanctRate}% sanctioned`).join('&emsp;·&emsp;')}
     </div>
   </div>
 
   <div class="an-section">
-    <h2>4 · Evidence and Workshop dominate — main page is theatre</h2>
+    <h2>5 · Where editors fight — evidence dominates</h2>
     <p class="lede">
-      ArbCom's process has four formal stages. The main filing page captures the accusation;
-      evidence is where participants try to win the argument; workshop and proposed decision are
-      the committee's deliberative space. The editing data reveals where participants actually focus.
+      ArbCom cases have four formal pages: the main filing, evidence, workshop, and proposed decision.
+      The evidence page is where participants invest the most energy — it is the only place where
+      they can influence the narrative. By the time the proposed decision is written, most have
+      already stopped watching.
     </p>
-    <div class="an-chart"><div class="an-chart-title">Edit share by phase across all cases</div>
+    <div class="an-chart"><div class="an-chart-title">Edit share by phase (each row = one case)</div>
       <div id="ch-phase"></div>
-      <div class="an-finding">
-        Evidence + Workshop together account for a median of
-        <strong>${med(cases.map(c=>{const pe=c.phase_edits||{};const t=Object.values(pe).reduce((s,v)=>s+v,0)||1;return Math.round(((pe.evidence||0)+(pe.workshop||0))/t*100);}))}%</strong>
-        of edits per case. The proposed decision page — where the actual remedy is written — receives
-        comparatively little traffic, because by the time arbitrators are writing it, most participants
-        have already disengaged.
-      </div>
     </div>
   </div>
 
   <div class="an-section">
-    <h2>5 · Sanctions predict duration, not the reverse</h2>
+    <h2>6 · Sanctions and duration — a two-way relationship</h2>
     <p class="lede">
-      Cases that result in sanctions (blocks, bans, topic restrictions) are the longest in the dataset.
-      But this is not because sanctions take longer to deliberate — it's because sanctionable behavior
-      tends to be chronic, involving repeat offenders whose conduct generates iterative rounds of
-      evidence and dispute.
+      Cases with sanctions last longer — not because the committee deliberates more carefully, but
+      because the behavior that triggers sanctions is chronic. Repeat offenders generate iterative
+      evidence rounds that stretch every metric.
     </p>
-    <div class="an-chart"><div class="an-chart-title">Duration: sanctioned outcomes vs no sanction</div>
+    <div class="an-chart"><div class="an-chart-title">Median duration: sanctioned vs not sanctioned</div>
       <div id="ch-sanct"></div>
-      <div class="an-finding">
-        Cases with sanctions average <strong>${avg(sanctioned.map(c=>c.case_duration_days))} days</strong>
-        vs <strong>${avg(noSanct.map(c=>c.case_duration_days))} days</strong> for cases without.
-        All ${sanctioned.length} sanctioned cases in this dataset lasted more than
-        <strong>${Math.min(...sanctioned.map(c=>c.case_duration_days))} days</strong>.
-      </div>
     </div>
   </div>
 
   <div class="an-section">
-    <h2>Duration vs editors — scatter</h2>
+    <h2>7 · Editors vs duration — the full picture</h2>
     <p class="lede">
-      More participants correlates with longer cases, but the relationship is noisy.
-      A few multi-year cases with many editors (climate, politics) pull the trend line up.
-      Small cases can run long too — chronic individual conduct cases often have few participants
-      but draw out as evidence accumulates.
+      Each point is one case. More editors loosely predicts longer duration, but the relationship
+      is noisy — some small disputes become multi-year wars, some large mobilizations resolve quickly.
+      Sanctioned cases (red) cluster toward the top-left: many chronic offenders have few observers.
     </p>
     <div class="an-chart"><div id="ch-scatter"></div></div>
   </div>
   `;
 
-  // Render all charts
+  // Render charts
   _anHist(cases);
-  _anGroupBars('ch-eds', [
-    {label:'≤90 days',  v: avg(short.map(c=>c.total_editors))},
-    {label:'>90 days',  v: avg(long_.map(c=>c.total_editors))},
-  ], 'Avg editors', '#3366CC');
-  _anGroupBars('ch-dep', [
-    {label:'≤90 days',  v: avg(short.map(c=>c.departure_rate*100))},
-    {label:'>90 days',  v: avg(long_.map(c=>c.departure_rate*100))},
-  ], 'Avg departure %', '#B60000', 100);
-  _anRetention(cases);
+  _anTopicDuration(topicData);
+  _anGroupBars('ch-eds',[
+    {label:'≤90 days', v:avg(short.map(c=>c.total_editors))},
+    {label:'>90 days', v:avg(long_.map(c=>c.total_editors))},
+  ],'Avg editors','#3366CC');
+  _anGroupBars('ch-dep',[
+    {label:'≤90 days', v:avg(short.map(c=>c.departure_rate*100))},
+    {label:'>90 days', v:avg(long_.map(c=>c.departure_rate*100))},
+  ],'Avg departure %','#B60000',100);
+  _anEraChart(eraData);
   _anPhaseStack(cases);
-  _anSanctBars(sanctioned, noSanct);
+  _anSanctBars(sanctioned,noSanct);
   _anScatter(cases);
 }
 
@@ -1633,6 +1722,91 @@ function _anHist(cases){
     .attr('class','bl').attr('x',b=>xS(b.label)+xS.bandwidth()/2)
     .attr('y',b=>yS(b.count)-3).attr('text-anchor','middle')
     .attr('font-size',9).attr('fill','#54595D').text(b=>b.count);
+}
+
+// ── Topic median duration horizontal bar chart ──
+function _anTopicDuration(topicData){
+  const el=document.getElementById('ch-topic-dur');
+  if(!el||!topicData.length) return;
+  const W=el.clientWidth||640, rowH=28, mL=90,mR=60,mT=8,mB=8;
+  const H=rowH*topicData.length+mT+mB;
+  const iW=W-mL-mR;
+  const xMax=d3.max(topicData,d=>d.medDur)*1.15||1;
+  const xS=d3.scaleLinear().domain([0,xMax]).range([0,iW]);
+  const yS=d3.scaleBand().domain(topicData.map(d=>d.label)).range([0,rowH*topicData.length]).padding(.25);
+  const svg=d3.select(el).append('svg').attr('width',W).attr('height',H);
+  const g=svg.append('g').attr('transform',`translate(${mL},${mT})`);
+  // grid lines
+  g.append('g').attr('class','axis').attr('transform',`translate(0,${rowH*topicData.length})`)
+    .call(d3.axisBottom(xS).ticks(5).tickFormat(d=>d+'d').tickSize(-rowH*topicData.length))
+    .call(ax=>{ax.selectAll('.tick line').attr('stroke','#EAECF0');ax.select('.domain').remove();ax.selectAll('text').attr('font-size',9);});
+  // labels left
+  g.selectAll('text.tl').data(topicData).join('text').attr('class','tl')
+    .attr('x',-6).attr('y',d=>yS(d.label)+yS.bandwidth()/2+4)
+    .attr('text-anchor','end').attr('font-size',11).attr('fill','#202122').text(d=>d.label);
+  // bars
+  g.selectAll('rect').data(topicData).join('rect')
+    .attr('x',0).attr('y',d=>yS(d.label))
+    .attr('width',d=>xS(d.medDur)).attr('height',yS.bandwidth())
+    .attr('fill',d=>d.color||'#3366CC').attr('rx',3).attr('opacity',.85)
+    .on('mouseover',(ev,d)=>showTip(ev,`<strong>${d.label}</strong><br>Median: ${d.medDur}d<br>n=${d.n} cases`))
+    .on('mousemove',moveTip).on('mouseout',hideTip);
+  // value labels
+  g.selectAll('text.vl').data(topicData).join('text').attr('class','vl')
+    .attr('x',d=>xS(d.medDur)+5).attr('y',d=>yS(d.label)+yS.bandwidth()/2+4)
+    .attr('font-size',10).attr('font-weight',600).attr('fill','#54595D')
+    .text(d=>`${d.medDur}d`);
+}
+
+// ── Era comparison grouped bars (duration + sanction rate) ──
+function _anEraChart(eraData){
+  const el=document.getElementById('ch-era');
+  if(!el||!eraData.length) return;
+  const W=el.clientWidth||640, H=140;
+  const mL=40,mR=100,mT=10,mB=28;
+  const iW=W-mL-mR, iH=H-mT-mB;
+  const groups=eraData.map(e=>e.label);
+  const xG=d3.scaleBand().domain(groups).range([0,iW]).padding(.3);
+  const xS=d3.scaleBand().domain(['dur','sanct']).range([0,xG.bandwidth()]).padding(.1);
+  const durMax=d3.max(eraData,e=>e.medDur)*1.2||1;
+  const yDur=d3.scaleLinear().domain([0,durMax]).range([iH,0]);
+  const ySanct=d3.scaleLinear().domain([0,100]).range([iH,0]);
+
+  const svg=d3.select(el).append('svg').attr('width',W).attr('height',H);
+  const g=svg.append('g').attr('transform',`translate(${mL},${mT})`);
+
+  g.append('g').attr('class','axis').attr('transform',`translate(0,${iH})`)
+    .call(d3.axisBottom(xG).tickSize(0)).select('.domain').remove();
+  g.append('g').attr('class','axis')
+    .call(d3.axisLeft(yDur).ticks(4).tickFormat(d=>d+'d').tickSize(-iW))
+    .call(ax=>{ax.selectAll('.tick line').attr('stroke','#EAECF0');ax.select('.domain').remove();ax.selectAll('text').attr('font-size',9);});
+
+  eraData.forEach(e=>{
+    const gx=xG(e.label);
+    // duration bar
+    const dH=iH-yDur(e.medDur);
+    g.append('rect').attr('x',gx+xS('dur')).attr('y',yDur(e.medDur))
+      .attr('width',xS.bandwidth()).attr('height',dH).attr('fill','#3366CC').attr('rx',2).attr('opacity',.8)
+      .on('mouseover',ev=>showTip(ev,`<strong>${e.era}</strong><br>Median duration: ${e.medDur}d`))
+      .on('mousemove',moveTip).on('mouseout',hideTip);
+    g.append('text').attr('x',gx+xS('dur')+xS.bandwidth()/2).attr('y',yDur(e.medDur)-3)
+      .attr('text-anchor','middle').attr('font-size',9).attr('fill','#3366CC').attr('font-weight',600).text(e.medDur+'d');
+    // sanction bar (on secondary scale mapped to duration scale for visual comparison)
+    const sH=iH-ySanct(e.sanctRate);
+    g.append('rect').attr('x',gx+xS('sanct')).attr('y',ySanct(e.sanctRate))
+      .attr('width',xS.bandwidth()).attr('height',sH).attr('fill','#B60000').attr('rx',2).attr('opacity',.7)
+      .on('mouseover',ev=>showTip(ev,`<strong>${e.era}</strong><br>Sanction rate: ${e.sanctRate}%`))
+      .on('mousemove',moveTip).on('mouseout',hideTip);
+    g.append('text').attr('x',gx+xS('sanct')+xS.bandwidth()/2).attr('y',ySanct(e.sanctRate)-3)
+      .attr('text-anchor','middle').attr('font-size',9).attr('fill','#B60000').attr('font-weight',600).text(e.sanctRate+'%');
+  });
+
+  // Legend
+  const leg=g.append('g').attr('transform',`translate(${iW+10},0)`);
+  [{c:'#3366CC',t:'Median days'},{c:'#B60000',t:'Sanction %'}].forEach((d,i)=>{
+    leg.append('rect').attr('x',0).attr('y',i*18).attr('width',10).attr('height',10).attr('fill',d.c).attr('rx',2);
+    leg.append('text').attr('x',14).attr('y',i*18+9).attr('font-size',10).attr('fill','#202122').text(d.t);
+  });
 }
 
 // ── Simple bar group ──
