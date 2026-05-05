@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Wikipedia Arbitration — Four Arenas of Conflict</title>
+<title>Wikipedia Arbitration — Six Arenas of Conflict</title>
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <style>
 :root{
@@ -84,13 +84,14 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
   <a href="#v8">Heatmaps</a>
   <a href="#v9">Network</a>
   <a href="#v10">Race</a>
+  <a href="#v11">Fingerprints</a>
 </nav>
 
 <section id="hero">
-  <div class="hero-title">Four Arenas of Wikipedia Conflict</div>
-  <div class="hero-sub">25 arbitration cases spanning 20 years — Politics, Religion, Science &amp; Social disputes that shaped the encyclopedia</div>
+  <div class="hero-title">Six Arenas of Wikipedia Conflict</div>
+  <div class="hero-sub">37 arbitration cases spanning 20 years — Politics, Religion, Science, Social, Geopolitics &amp; Policy disputes that shaped the encyclopedia</div>
   <div class="hero-stats">
-    <div class="stat-block"><span class="stat-val">25</span><span class="stat-lbl">Cases</span></div>
+    <div class="stat-block"><span class="stat-val" id="stat-cases">—</span><span class="stat-lbl">Cases</span></div>
     <div class="stat-block"><span class="stat-val" id="stat-editors">—</span><span class="stat-lbl">Unique Editors</span></div>
     <div class="stat-block"><span class="stat-val" id="stat-events">—</span><span class="stat-lbl">Total Events</span></div>
     <div class="stat-block"><span class="stat-val">2004–2025</span><span class="stat-lbl">Time Span</span></div>
@@ -227,6 +228,31 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
   <div class="svg-wrapper" id="v10-container"></div>
 </section>
 
+<!-- V11 -->
+<section class="viz-section" id="v11">
+  <div class="viz-header">
+    <div class="viz-meta">
+      <div class="viz-num">11 — Conflict Fingerprints</div>
+      <div class="viz-title">Each Case's Unique Signature</div>
+      <div class="viz-desc">Each row is one case divided into 60 equal time buckets. Each cell is colored by the dominant editing phase — article, evidence, workshop, proposed decision, or outcome. No two cases look the same.</div>
+    </div>
+    <div class="viz-controls" id="v11-legend"></div>
+  </div>
+  <div id="v11-container"></div>
+</section>
+
+<style>
+.fp-group{margin-bottom:40px}
+.fp-group-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+  margin-bottom:10px;padding-left:10px;border-left-width:3px;border-left-style:solid}
+.fp-row{display:flex;align-items:center;gap:8px;margin-bottom:3px}
+.fp-label{font-size:10px;text-align:right;width:128px;flex-shrink:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default}
+.fp-bar{display:flex;gap:1px;flex:1;min-width:0}
+.fp-cell{height:16px;flex:1;border-radius:1px;cursor:default;transition:opacity .1s}
+.fp-cell:hover{opacity:.65}
+</style>
+
 <script>
 // ─────────────────────────────────────────────────────────────────────────────
 // DATA DEFINITIONS
@@ -282,6 +308,30 @@ const GROUPS = [
       {slug:'manipulation_of_blps',           label:'Manipulation of BLPs',        short:'BLPs 2011'},
       {slug:'civility_in_infobox_discussions',label:'Civility in Infobox',         short:'Infobox 2018'},
       {slug:'transgender_healthcare_and_people',label:'Transgender Healthcare',    short:'TransHealth 2025'},
+    ]
+  },
+  {
+    id:'geopolitics', label:'Geopolitics', baseColor:'#f97316',
+    colors:['#ffedd5','#fed7aa','#fdba74','#fb923c','#f97316','#ea580c','#c2410c'],
+    cases:[
+      {slug:'israeli_apartheid',                    label:'Israeli Apartheid',              short:'IsrApart 2006'},
+      {slug:'israel-lebanon',                       label:'Israel–Lebanon Conflict',        short:'IsrLebanon 2006'},
+      {slug:'kosovo',                               label:'Kosovo',                         short:'Kosovo 2006'},
+      {slug:'palestineremembered',                  label:'PalestineRemembered',            short:'PalRemem 2007'},
+      {slug:'armenia-azerbaijan_2',                 label:'Armenia–Azerbaijan 2',           short:'ArmAze 2007'},
+      {slug:'ottoman_empire-turkey_naming_dispute', label:'Ottoman–Turkey Naming Dispute',  short:'Ottoman 2013'},
+      {slug:'armenia-azerbaijan_3',                 label:'Armenia–Azerbaijan 3',           short:'ArmAze 2023'},
+    ]
+  },
+  {
+    id:'policy', label:'Policy', baseColor:'#e879f9',
+    colors:['#fdf4ff','#fae8ff','#f0abfc','#e879f9','#d946ef','#a21caf','#701a75'],
+    cases:[
+      {slug:'civility_enforcement',                 label:'Civility Enforcement',           short:'Civility 2011'},
+      {slug:'banning_policy',                       label:'Banning Policy',                 short:'Banning 2014'},
+      {slug:'arbitration_enforcement',              label:'Arbitration Enforcement',        short:'ArbEnf 2015'},
+      {slug:'arbitration_enforcement_2',            label:'Arbitration Enforcement 2',      short:'ArbEnf2 2015'},
+      {slug:'conduct_in_deletion-related_editing',  label:'Conduct in Deletion Editing',    short:'Deletion 2022'},
     ]
   }
 ];
@@ -379,6 +429,7 @@ async function loadAll(){
 
   // Hero stats
   const allEditorNames = new Set(allCases.flatMap(c=>c.nodes.map(n=>n.username)));
+  document.getElementById('stat-cases').textContent   = allCases.length;
   document.getElementById('stat-editors').textContent = allEditorNames.size;
   document.getElementById('stat-events').textContent  = fmtK(d3.sum(allCases,c=>c.totalEvents));
 
@@ -413,6 +464,7 @@ async function loadAll(){
   buildV8(byGroup);
   buildV9(allCases, byGroup, groupEditorSets);
   buildV10(byGroup);
+  buildV11(byGroup);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -982,6 +1034,81 @@ function buildV10(byGroup){
       frame++; draw(curGroup,frame);
       if(frame>=STEPS){ clearInterval(timer); timer=null; document.getElementById('race-play-btn').textContent='▶ Replay'; }
     },40);
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// V11 — CONFLICT FINGERPRINTS
+// ─────────────────────────────────────────────────────────────────────────────
+function buildV11(byGroup){
+  const BUCKETS = 60;
+  const PT_ORDER = ['evidence','workshop','proposed_decision','outcome','article','main'];
+  const container = document.getElementById('v11-container');
+
+  // Legend
+  const legDiv = document.getElementById('v11-legend');
+  PT_ORDER.forEach(pt => {
+    const chip = document.createElement('span');
+    chip.style.cssText = 'display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);margin-right:10px';
+    chip.innerHTML = `<span style="width:12px;height:12px;border-radius:2px;background:${PAGE_COLOR[pt]};display:inline-block;flex-shrink:0"></span>${pt.replace(/_/g,' ')}`;
+    legDiv.appendChild(chip);
+  });
+
+  GROUPS.forEach(grp => {
+    const cases = byGroup[grp.id];
+    if (!cases || !cases.length) return;
+
+    const sec = document.createElement('div'); sec.className = 'fp-group';
+    const hdr = document.createElement('div'); hdr.className = 'fp-group-label';
+    hdr.style.color = grp.baseColor; hdr.style.borderLeftColor = grp.baseColor;
+    hdr.textContent = grp.label;
+    sec.appendChild(hdr);
+
+    cases.forEach(c => {
+      if (!c.events.length) return;
+      const durMs = c.t1 - c.t0;
+      const buckets = Array.from({length: BUCKETS}, () => ({}));
+      c.events.forEach(e => {
+        const frac = Math.max(0, Math.min(0.9999, (new Date(e.timestamp) - c.t0) / durMs));
+        const bi = Math.floor(frac * BUCKETS);
+        const pt = e.page_type || 'main';
+        buckets[bi][pt] = (buckets[bi][pt] || 0) + 1;
+      });
+
+      const domColors = buckets.map(b => {
+        const keys = Object.keys(b);
+        if (!keys.length) return '#1c2130';
+        // Pick dominant by count; break ties by PT_ORDER priority
+        let best = null, bestCnt = 0;
+        PT_ORDER.forEach(pt => {
+          const v = b[pt] || 0;
+          if (v > bestCnt) { bestCnt = v; best = pt; }
+        });
+        return PAGE_COLOR[best] || '#595959';
+      });
+
+      const row = document.createElement('div'); row.className = 'fp-row';
+      const lbl = document.createElement('div'); lbl.className = 'fp-label';
+      lbl.style.color = c.color; lbl.title = `${c.label} (${Math.round(c.durationDays)}d · ${c.totalEvents} events)`;
+      lbl.textContent = c.short;
+
+      const bar = document.createElement('div'); bar.className = 'fp-bar';
+      domColors.forEach((col, bi) => {
+        const cell = document.createElement('div'); cell.className = 'fp-cell';
+        cell.style.background = col;
+        const b = buckets[bi];
+        const bStr = PT_ORDER.filter(k => b[k])
+          .map(k => `<span style="color:${PAGE_COLOR[k]}">${k.replace(/_/g,' ')}</span>: ${b[k]}`).join('<br>');
+        cell.addEventListener('mouseenter', evt =>
+          showTip(`<b>${c.short}</b> · bucket ${bi+1}/60<br>${bStr || 'no events'}`, evt));
+        cell.addEventListener('mousemove', moveTip);
+        cell.addEventListener('mouseleave', hideTip);
+        bar.appendChild(cell);
+      });
+
+      row.appendChild(lbl); row.appendChild(bar); sec.appendChild(row);
+    });
+    container.appendChild(sec);
   });
 }
 
