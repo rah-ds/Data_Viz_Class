@@ -395,12 +395,6 @@ function buildGroupRow(root, grp, cases, avgEv, isTrapped, isMid) {  const evEnd
     <div class="grp-chevron">›</div>`;
   block.appendChild(toggle);
 
-  // One-sentence group description — always visible
-  const descEl = document.createElement('div');
-  descEl.className = 'grp-desc';
-  descEl.textContent = grp.desc;
-  block.appendChild(descEl);
-
   // Group avg fingerprint row — ALWAYS visible
   const avgRow = document.createElement('div');
   avgRow.className = 'fp-avg-row';
@@ -412,9 +406,11 @@ function buildGroupRow(root, grp, cases, avgEv, isTrapped, isMid) {  const evEnd
     cases.forEach(c => { const ph = c.dominantPhase[bi]; if (ph) cnt[ph]=(cnt[ph]||0)+1; });
     const ent = Object.entries(cnt);
     const dom = ent.length ? ent.sort((a,b)=>b[1]-a[1])[0][0] : null;
+    const isEvDom = dom === 'evidence';
     const cell = document.createElement('div');
-    cell.className = 'fp-avg-cell' + (dom==='evidence' ? ' ev' : '');
-    cell.style.cssText = `background:${dom?PCOLORS[dom]:'rgba(22,27,34,.4)'};opacity:${dom?'.72':'.15'}`;
+    cell.className = 'fp-avg-cell' + (isEvDom ? ' ev' : '');
+    cell.style.background = isEvDom ? '#E97500' : dom ? 'rgba(90,100,112,.28)' : 'rgba(22,27,34,.4)';
+    cell.style.opacity    = isEvDom ? '1' : dom ? '.7' : '.15';
     cell.addEventListener('mouseenter', e => showTip(
       `<b style="color:${grp.baseColor}">${grp.label}</b> group avg<br>`+
       `Window ${bi+1}/60 · ${Math.round(bi/(BUCKETS-1)*100)}% through<br>`+
@@ -446,8 +442,8 @@ function buildGroupRow(root, grp, cases, avgEv, isTrapped, isMid) {  const evEnd
       const cell  = document.createElement('div');
       cell.className = 'fp-cell' + (ended?' ended':'') + (isEv?' ev':'');
       if (!ended && ph) {
-        cell.style.background = PCOLORS[ph];
-        cell.style.opacity     = isEv ? '1' : '.6';
+        cell.style.background = isEv ? '#E97500' : 'rgba(90,100,112,.22)';
+        cell.style.opacity     = isEv ? '1' : '.8';
       } else if (!ended) {
         cell.style.background = 'rgba(22,27,34,.4)';
       }
@@ -490,6 +486,12 @@ function buildGroupRow(root, grp, cases, avgEv, isTrapped, isMid) {  const evEnd
     });
     detail.appendChild(sec);
   }
+
+  // Group description — at the bottom, out of the way
+  const descEl = document.createElement('div');
+  descEl.className = 'grp-desc';
+  descEl.textContent = grp.desc;
+  detail.appendChild(descEl);
 
   block.appendChild(detail);
 
