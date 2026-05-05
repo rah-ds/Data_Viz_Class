@@ -61,15 +61,8 @@ body{
   background:linear-gradient(90deg,var(--ev),transparent);margin:30px 0 0}
 
 /* PHASE LEGEND */
-.phase-legend{
-  display:flex;gap:18px;flex-wrap:wrap;
-  padding:15px 52px;max-width:1420px;margin:0 auto;
-  border-top:1px solid rgba(48,54,61,.4);border-bottom:1px solid rgba(48,54,61,.4);
-}
-.ph-item{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted)}
-.ph-swatch{width:12px;height:10px;border-radius:2px;flex-shrink:0}
-.ph-item.hl .ph-swatch{box-shadow:0 0 5px 1px rgba(233,117,0,.4)}
-.ph-item.hl{color:var(--text);font-weight:600}
+.phase-legend{display:none}
+
 
 /* SECTIONS */
 .section-wrap{max-width:1420px;margin:0 auto;padding:0 52px}
@@ -108,11 +101,6 @@ body{
   transition:transform .2s;line-height:1;
 }
 .grp-block.open .grp-chevron{transform:rotate(90deg)}
-.grp-spark-row{display:flex;align-items:stretch;margin-bottom:3px;height:28px}
-.grp-spark-lbl{width:168px;flex-shrink:0;font-size:7.5px;color:rgba(139,148,158,.28);
-  text-align:right;padding-right:10px;display:flex;align-items:flex-end;
-  justify-content:flex-end;padding-bottom:2px;font-style:italic;letter-spacing:.04em}
-.grp-spark-svg{flex:1;display:block}
 
 /* DETAIL / FINGERPRINTS */
 .grp-detail{display:none;padding-bottom:12px}
@@ -200,11 +188,6 @@ body{
     </div>
   </div>
   <div class="ph-divider"></div>
-</div>
-
-<div class="phase-legend" id="phase-legend"></div>
-<div style="padding:8px 52px 16px;max-width:1420px;margin:0 auto;font-size:11px;color:rgba(139,148,158,.42);font-style:italic;border-bottom:1px solid rgba(48,54,61,.3)">
-  A <span style="color:rgba(182,0,0,.6);font-style:normal;font-weight:600">proposed decision</span> is the committee's draft ruling — it remains open to community comment and formal appeals for weeks before it can be ratified and become binding, which is why cases often linger in this phase long after the debate appears settled.
 </div>
 
 <div class="section-wrap">
@@ -375,16 +358,6 @@ function enrichCase(c, json, grp) {
   };
 }
 
-function buildLegend() {
-  const el = document.getElementById('phase-legend');
-  PHASES.forEach(p => {
-    const d = document.createElement('div');
-    d.className = 'ph-item' + (p==='evidence' ? ' hl' : '');
-    d.innerHTML = `<div class="ph-swatch" style="background:${PCOLORS[p]}"></div>${PLABELS[p]}`;
-    el.appendChild(d);
-  });
-}
-
 // GROUP ROW (avg always visible; individual cases expand on click)
 function buildGroupRow(root, grp, cases, avgEv, isTrapped, isMid) {  const evEnd = (avgEv[BUCKETS-1]*100).toFixed(0);
 
@@ -404,18 +377,6 @@ function buildGroupRow(root, grp, cases, avgEv, isTrapped, isMid) {  const evEnd
     <div class="grp-chevron">›</div>`;
   block.appendChild(toggle);
 
-  // Per-group evidence sparkline with median line — always visible
-  const sparkRow = document.createElement('div');
-  sparkRow.className = 'grp-spark-row';
-  const sparkLbl = document.createElement('div');
-  sparkLbl.className = 'grp-spark-lbl';
-  sparkLbl.textContent = 'evidence %';
-  const sparkSvgWrap = document.createElement('div');
-  sparkSvgWrap.className = 'grp-spark-svg';
-  sparkRow.appendChild(sparkLbl);
-  sparkRow.appendChild(sparkSvgWrap);
-  block.appendChild(sparkRow);
-
   // Group avg fingerprint row — ALWAYS visible
   const avgRow = document.createElement('div');
   avgRow.className = 'fp-avg-row';
@@ -423,19 +384,24 @@ function buildGroupRow(root, grp, cases, avgEv, isTrapped, isMid) {  const evEnd
   const avgBar = document.createElement('div');
   avgBar.className = 'fp-avg-bar';
   for (let bi = 0; bi < BUCKETS; bi++) {
+    const ev  = avgEv[bi];
+    const cell = document.createElement('div');
+    cell.className = 'fp-avg-cell';
+    if (ev > 0.015) {
+      // Brightness scales with evidence fraction: soft power curve so even low values glow faintly
+      const t = Math.pow(Math.min(ev / 0.40, 1), 0.5);
+      cell.style.background = `rgba(233,117,0,${t.toFixed(3)})`;
+    } else {
+      cell.style.background = 'transparent';
+    }
     const cnt = {};
     cases.forEach(c => { const ph = c.dominantPhase[bi]; if (ph) cnt[ph]=(cnt[ph]||0)+1; });
     const ent = Object.entries(cnt);
     const dom = ent.length ? ent.sort((a,b)=>b[1]-a[1])[0][0] : null;
-    const isEvDom = dom === 'evidence';
-    const cell = document.createElement('div');
-    cell.className = 'fp-avg-cell' + (isEvDom ? ' ev' : '');
-    cell.style.background = isEvDom ? '#E97500' : dom ? 'rgba(90,100,112,.28)' : 'rgba(22,27,34,.4)';
-    cell.style.opacity    = isEvDom ? '1' : dom ? '.7' : '.15';
     cell.addEventListener('mouseenter', e => showTip(
       `<b style="color:${grp.baseColor}">${grp.label}</b> group avg<br>`+
       `Window ${bi+1}/60 · ${Math.round(bi/(BUCKETS-1)*100)}% through<br>`+
-      `Dominant phase: <span style="color:${dom?PCOLORS[dom]:'#666'}">${dom?PLABELS[dom]||dom:'none'}</span><br>`+
+      `Evidence activity: <b style="color:#E97500">${(ev*100).toFixed(0)}%</b><br>`+
       `<span style="opacity:.5">${cases.length} cases averaged</span>`, e));
     cell.addEventListener('mousemove', moveTip);
     cell.addEventListener('mouseleave', hideTip);
@@ -461,12 +427,9 @@ function buildGroupRow(root, grp, cases, avgEv, isTrapped, isMid) {  const evEnd
       const ended = bi > c.lastActive;
       const isEv  = ph === 'evidence' && !ended;
       const cell  = document.createElement('div');
-      cell.className = 'fp-cell' + (ended?' ended':'') + (isEv?' ev':'');
-      if (!ended && ph) {
-        cell.style.background = isEv ? '#E97500' : 'rgba(90,100,112,.22)';
-        cell.style.opacity     = isEv ? '1' : '.8';
-      } else if (!ended) {
-        cell.style.background = 'rgba(22,27,34,.4)';
+      cell.className = 'fp-cell' + (ended?' ended':'');
+      if (!ended) {
+        cell.style.background = isEv ? '#E97500' : 'transparent';
       }
       cell.addEventListener('mouseenter', e => showTip(
         `<b>${c.short}</b><br>`+
@@ -522,62 +485,6 @@ function buildGroupRow(root, grp, cases, avgEv, isTrapped, isMid) {  const evEnd
   });
 
   root.appendChild(block);
-
-  // Return deferred spark draw (needs layout width)
-  return () => drawGroupSpark(sparkSvgWrap, avgEv, grp.baseColor);
-}
-
-// Draw the per-group evidence sparkline + group-median reference line
-function drawGroupSpark(container, avgEv, color) {
-  const W = container.getBoundingClientRect().width;
-  if (!W) return;
-  const H = 28;
-  const sorted = [...avgEv].sort((a,b)=>a-b);
-  const medianEv = sorted[Math.floor(sorted.length/2)];
-  const localMax = Math.max(d3.max(avgEv)*1.25, ESCAPE*1.5, 0.06);
-
-  const x = d3.scaleLinear().domain([0, BUCKETS-1]).range([0, W]);
-  const y = d3.scaleLinear().domain([0, localMax]).range([H-1, 1]);
-
-  const svg = d3.select(container).append('svg')
-    .attr('width', W).attr('height', H).style('display','block');
-
-  // Area fill
-  svg.append('path')
-    .datum(avgEv)
-    .attr('fill', color)
-    .attr('opacity', .13)
-    .attr('d', d3.area().x((_,i)=>x(i)).y0(H-1).y1(d=>y(d)).curve(d3.curveCatmullRom.alpha(.5)));
-
-  // Line
-  svg.append('path')
-    .datum(avgEv)
-    .attr('fill','none')
-    .attr('stroke', color)
-    .attr('stroke-width', 1.5)
-    .attr('opacity', .75)
-    .attr('d', d3.line().x((_,i)=>x(i)).y(d=>y(d)).curve(d3.curveCatmullRom.alpha(.5)));
-
-  // Group median reference line
-  const medY = y(medianEv);
-  svg.append('line')
-    .attr('x1', 0).attr('x2', W)
-    .attr('y1', medY).attr('y2', medY)
-    .attr('stroke', color)
-    .attr('stroke-width', 1)
-    .attr('stroke-dasharray', '3,3')
-    .attr('opacity', .45);
-
-  // Median label
-  const pct = (medianEv*100).toFixed(0);
-  svg.append('text')
-    .attr('x', W - 3).attr('y', medY - 2)
-    .attr('text-anchor','end')
-    .attr('font-size', 7.5)
-    .attr('fill', color)
-    .attr('opacity', .6)
-    .attr('font-family','inherit')
-    .text(`median ${pct}%`);
 }
 
 // MAIN
@@ -608,20 +515,12 @@ async function loadAll() {
   }).filter(Boolean);
 
   const allAvg = groupData.flatMap(d => d.avgEv);
-  const maxEv  = Math.min(0.80, (d3.max(allAvg)||0.4) * 1.2);
-
-  buildLegend();
 
   const root = document.getElementById('groups-root');
 
-  const deferredSparks = [];
   groupData.forEach(d => {
-    const draw = buildGroupRow(root, d.grp, d.cases, d.avgEv, d.isTrapped, d.isMid);
-    deferredSparks.push(draw);
+    buildGroupRow(root, d.grp, d.cases, d.avgEv, d.isTrapped, d.isMid);
   });
-
-  // Draw sparklines after layout is complete
-  requestAnimationFrame(() => deferredSparks.forEach(fn => fn()));
 }
 
 loadAll();
