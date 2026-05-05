@@ -58,6 +58,15 @@ body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);hei
 .fb:not(:last-child){border-right:1px solid var(--border);}
 #sort-sel{padding:4px 8px;font-size:.7rem;border:1px solid var(--border);border-radius:4px;
   background:var(--surface);color:var(--text);outline:none;cursor:pointer;}
+#sort-sel.sort-hidden{display:none;}
+#sort-sel.sort-hidden.open{display:inline-block;}
+.sort-gear-btn{padding:4px 9px;font-size:.72rem;border:1px solid var(--border);border-radius:4px;
+  background:var(--surface);color:var(--muted);cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:4px;}
+.sort-gear-btn:hover,.sort-gear-btn.active{color:var(--link);border-color:var(--link);}
+#era-sel{padding:4px 8px;font-size:.7rem;border:1px solid var(--border);border-radius:4px;
+  background:var(--surface);color:var(--text);outline:none;cursor:pointer;}
+#clear-filters{display:none;font-size:.68rem;color:var(--link);cursor:pointer;white-space:nowrap;padding:2px 0;}
+#clear-filters:hover{text-decoration:underline;}
 .row-count{font-size:.68rem;color:var(--muted);margin-left:auto;}
 
 /* TABLE */
@@ -204,7 +213,7 @@ tbody tr:hover:not(.no-data) .case-name{color:var(--link);}
 
 /* ── TOOLTIP ── */
 #tip{position:fixed;background:#FFF;border:1px solid #A2A9B1;border-radius:5px;
-  padding:8px 11px;font-size:11px;line-height:1.5;pointer-events:none;max-width:260px;
+  padding:8px 11px;font-size:11px;line-height:1.5;pointer-events:none;max-width:290px;
   z-index:999;display:none;color:#202122;box-shadow:0 2px 8px rgba(0,0,0,.1);}
 #tip strong{font-weight:600;}
 #tip .m{color:#54595D;}
@@ -265,7 +274,6 @@ tbody tr:hover:not(.no-data) .case-name{color:var(--link);}
 .expand-btn.primary:hover{opacity:.88;}
 .expand-btn.cmp-active{background:var(--link);color:#fff;border-color:var(--link);}
 .card-nodata{padding:10px 12px;font-size:.68rem;color:var(--faint);font-style:italic;}
-.era-chips-row{border-top:none;padding-top:0;background:var(--surface2);}
 
 /* ── COMPARE ROWS ── */
 .cmp-row{display:flex;align-items:stretch;gap:0;margin-bottom:14px;border-radius:8px;overflow:hidden;border:1px solid var(--border-light);cursor:pointer;transition:box-shadow .15s;}
@@ -329,7 +337,6 @@ tbody tr:hover:not(.no-data) .case-name{color:var(--link);}
     <div class="stat-row" id="stat-row"><span style="color:var(--muted);font-size:.75rem">Loading…</span></div>
   </div>
   <div class="topic-chips" id="topic-chips"></div>
-  <div class="topic-chips era-chips-row" id="era-chips"></div>
   <div class="ov-controls">
     <input id="search" type="text" placeholder="Search cases…" oninput="filterAndRender()"/>
     <div class="filter-btns">
@@ -337,7 +344,11 @@ tbody tr:hover:not(.no-data) .case-name{color:var(--link);}
       <div class="fb" data-f="data" onclick="setFilter('data',this)">Has data</div>
       <div class="fb" data-f="none" onclick="setFilter('none',this)">Not collected</div>
     </div>
-    <select id="sort-sel" onchange="filterAndRender()">
+    <select id="era-sel" onchange="setEra(this.value)" title="Filter by Wikipedia era">
+      <option value="All">All eras</option>
+    </select>
+    <button class="sort-gear-btn" id="sort-gear-btn" onclick="toggleSortPanel()" title="Sort options">&#9881; <span id="sort-label">Sort</span></button>
+    <select id="sort-sel" class="sort-hidden" onchange="filterAndRender();setSortLabel()">
       <option value="name">Name A→Z</option>
       <option value="name_d">Name Z→A</option>
       <option value="date_d">Most recent first</option>
@@ -352,6 +363,7 @@ tbody tr:hover:not(.no-data) .case-name{color:var(--link);}
       <div class="vt" id="vt-table" onclick="setView('table')">&#8801; Table</div>
     </div>
     <span class="row-count" id="row-count"></span>
+    <span id="clear-filters" onclick="clearFilters()">&#10005; Clear filters</span>
   </div>
   <div class="tbl-wrap" id="tbl-wrap" style="display:none">
     <table id="case-table">
@@ -675,7 +687,7 @@ function setTopic(t){
 }
 
 function buildEraChips(){
-  const el=document.getElementById('era-chips');
+  const el=document.getElementById('era-sel');
   if(!el) return;
   const data=ALL.filter(c=>c.has_data);
   const counts=new Map([['All',data.length]]);
@@ -684,18 +696,49 @@ function buildEraChips(){
     if(n>0) counts.set(k,n);
   }
   el.innerHTML=[['All',null],...[...counts.entries()].filter(([k])=>k!=='All')].map(([k,n])=>{
-    const ed=ERAS[k]||{color:'#595959'};
-    const act=currentEra===k?' active':'';
     const cnt=n!=null?` (${n})`:'';
-    return `<div class="topic-chip era-chip${act}" data-e="${k}" style="color:${ed.color}"
-      title="${(ed.desc||'')}${cnt?'':(` · ${cnt} cases`)}"
-      onclick="setEra('${k}')">&#128197; ${k}${cnt}</div>`;
+    return `<option value="${k}">${k==='All'?'All eras':'📅 '+k}${cnt}</option>`;
   }).join('');
+  el.value=currentEra;
 }
 
 function setEra(e){
   currentEra=e;
-  document.querySelectorAll('.era-chip').forEach(c=>c.classList.toggle('active',c.dataset.e===e));
+  filterAndRender();
+}
+
+function toggleSortPanel(){
+  const sel=document.getElementById('sort-sel');
+  const btn=document.getElementById('sort-gear-btn');
+  const isOpen=sel.classList.toggle('open');
+  if(btn) btn.classList.toggle('active', isOpen);
+  if(isOpen) sel.focus();
+}
+
+function setSortLabel(){
+  const sel=document.getElementById('sort-sel');
+  const lbl=document.getElementById('sort-label');
+  const btn=document.getElementById('sort-gear-btn');
+  if(lbl){
+    const labels={name:'Sort',name_d:'Sort',date_d:'Recent',date_a:'Earliest',editors:'Editors',duration:'Duration',depart:'Departure',sanct:'Sanctioned'};
+    lbl.textContent=labels[sel?.value]||'Sort';
+  }
+  if(btn) btn.classList.toggle('active', sel?.value!=='name'&&sel?.value!=='name_d');
+  if(sel) sel.classList.remove('open');
+  filterAndRender();
+}
+
+function clearFilters(){
+  SELECTED_TOPICS.clear();
+  currentEra='All';
+  const srch=document.getElementById('search');
+  if(srch) srch.value='';
+  const sortSel=document.getElementById('sort-sel');
+  if(sortSel) sortSel.value='name';
+  const eraSel=document.getElementById('era-sel');
+  if(eraSel) eraSel.value='All';
+  setSortLabel();
+  buildTopicChips();
   filterAndRender();
 }
 
@@ -729,6 +772,11 @@ function filterAndRender(){
       return (sf[srt]||sf.name)(a,b);
     });
   document.getElementById('row-count').textContent=`${FILTERED.length} of ${ALL.length} cases`;
+  // Show clear-filters link when any filter is active
+  const q_=(document.getElementById('search')?.value||'');
+  const anyFilter=SELECTED_TOPICS.size>0||currentEra!=='All'||q_.length>0;
+  const cf=document.getElementById('clear-filters');
+  if(cf) cf.style.display=anyFilter?'':'none';
   // Update stat row to reflect current filter
   updateStatRow(FILTERED.filter(c=>c.has_data));
   const tblWrap=document.getElementById('tbl-wrap');
@@ -1031,6 +1079,33 @@ function renderAreaChart(events, meta, color, container, H){
         .attr('stroke-width',.8).attr('stroke-dasharray','3 5');
     });
   });
+}
+
+// ═════════════════════════════════════════════════════════
+// EDITOR SPARKLINE (tooltip)
+// ═════════════════════════════════════════════════════════
+function buildEditorSparkSVG(actor, events, w, h, color){
+  const edEvts=events.filter(e=>(e.type==='edit'||e.type==='revert')&&e.actor===actor);
+  if(edEvts.length<2) return '';
+  const ts=edEvts.map(e=>+new Date(e.timestamp)).filter(t=>!isNaN(t));
+  const t0=Math.min(...ts), t1=Math.max(...ts);
+  if(t0===t1) return '';
+  const n=20, buckets=new Array(n).fill(0);
+  edEvts.forEach(e=>{
+    const t=+new Date(e.timestamp);
+    if(isNaN(t)) return;
+    buckets[Math.min(n-1,Math.floor((t-t0)/(t1-t0)*n))]++;
+  });
+  const maxV=Math.max(1,...buckets);
+  const bw=w/n;
+  const bars=buckets.map((v,i)=>{
+    const barH=Math.max(1,(v/maxV)*h);
+    return `<rect x="${(i*bw).toFixed(1)}" y="${(h-barH).toFixed(1)}" width="${Math.max(1,bw-1).toFixed(1)}" height="${barH.toFixed(1)}" fill="${color}" opacity="0.75"/>`;
+  }).join('');
+  return `<div style="margin-top:6px;border-top:1px solid #EAECF0;padding-top:5px">
+    <div style="font-size:9px;color:#A2A9B1;margin-bottom:2px">${edEvts.length} edits by ${actor}</div>
+    <svg width="${w}" height="${h}" style="display:block;overflow:visible">${bars}</svg>
+  </div>`;
 }
 
 // ═════════════════════════════════════════════════════════
@@ -1472,11 +1547,14 @@ function renderTimeline(data, container){
     .on('mouseover',function(ev,d){
       const nd=nodes.find(n=>n.username===d.actor)||{};
       const ts=new Date(d.timestamp).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'});
+      const dotColor=PAGE_COLOR[d.page_type]||'#595959';
+      const spark=buildEditorSparkSVG(d.actor, events, 150, 30, dotColor);
       showTip(ev,`<strong>${d.actor}</strong> <span class="m">${nd.role||''}</span><br>
         <span class="m">${ts} · ${d.page_type.replace(/_/g,' ')}</span>
         ${d.section?`<br><span class="m">§ ${d.section}</span>`:''}
         ${d.comment?`<br><span style="color:#54595D;font-size:10px">${d.comment}</span>`:''}
-        ${d.type==='revert'?`<br><span style="color:#B60000">⟳ revert${d.reverted?' of '+d.reverted:''}</span>`:''}`);
+        ${d.type==='revert'?`<br><span style="color:#B60000">⟳ revert${d.reverted?' of '+d.reverted:''}</span>`:''}
+        ${spark}`);
     })
     .on('mousemove',moveTip).on('mouseout',hideTip);
 
