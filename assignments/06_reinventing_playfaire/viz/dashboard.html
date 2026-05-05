@@ -164,7 +164,11 @@ tbody tr:hover:not(.no-data) .case-name{color:var(--link);}
    ANALYSIS
 ══════════════════════════════════ */
 #pane-analysis{overflow-y:auto;flex-direction:column;}
-.an-body{padding:22px 28px;max-width:1100px;}
+.an-back-wrap{padding:14px 28px 0;max-width:1100px;}
+.an-back-btn{background:none;border:1px solid var(--border);border-radius:6px;padding:6px 14px;
+  font-size:.8rem;color:var(--muted);cursor:pointer;transition:color .15s,border-color .15s;}
+.an-back-btn:hover{color:var(--link);border-color:var(--link);}
+.an-body{padding:16px 28px 22px;max-width:1100px;}
 .an-section{margin-bottom:36px;}
 .an-section h2{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;
   color:var(--muted);margin-bottom:4px;padding-bottom:6px;border-bottom:1px solid var(--border-light);}
@@ -417,6 +421,9 @@ tbody tr:hover:not(.no-data) .case-name{color:var(--link);}
 
 <!-- ANALYSIS -->
 <div id="pane-analysis" class="pane">
+  <div class="an-back-wrap">
+    <button class="an-back-btn" onclick="goOverview()">← Back to cases</button>
+  </div>
   <div class="an-body" id="an-body">
     <div class="loading">Loading analysis…</div>
   </div>
