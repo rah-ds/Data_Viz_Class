@@ -81,7 +81,7 @@ a{color:inherit}
 .cp-seg:hover{opacity:1!important;filter:brightness(1.2)}
 .cp-int-bar{width:72px;height:8px;background:rgba(255,255,255,.06);border-radius:4px;flex-shrink:0;overflow:hidden}
 .cp-int-fill{height:100%;border-radius:4px;transition:width .3s}
-.cp-dep{cursor:default;align-self:center;transition:opacity .15s}
+.cp-dep{width:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:default;transition:opacity .15s}
 .cp-dep:hover{opacity:1!important}
 #vp-container{padding:28px 28px 16px;background:linear-gradient(180deg,rgba(22,27,34,.96),rgba(28,33,48,.82));
   border:1px solid rgba(48,54,61,.9);border-radius:24px;box-shadow:0 18px 40px rgba(0,0,0,.18)}
@@ -528,8 +528,8 @@ function buildV3(allCases, byGroup, groupEditorSets){
 // ─────────────────────────────────────────────────────────────────────────────
 function buildProfiles(byGroup){
   const PHASE_ORDER = ['article','evidence','workshop','proposed_decision','outcome','main'];
-  const PHASE_LABELS = {article:'Article',evidence:'Evidence',workshop:'Workshop',
-    proposed_decision:'Proposed Dec.',outcome:'Outcome',main:'Main talk'};
+  const PHASE_LABELS = {article:'Edits',evidence:'Evidence',workshop:'Workshop',
+    proposed_decision:'Decision',outcome:'Outcome',main:'Discussion'};
 
   const allFlat = GROUPS.flatMap(g => byGroup[g.id] || []);
   const maxIntensity = d3.max(allFlat, c => c.totalEvents / Math.max(c.durationDays, 1)) || 1;
@@ -605,8 +605,7 @@ function buildProfiles(byGroup){
       const dotSize = Math.round(4 + c.departurePct * 14);
       const depDot = document.createElement('div'); depDot.className = 'cp-dep';
       depDot.style.cssText = `width:${dotSize}px;height:${dotSize}px;border-radius:50%;
-        background:${c.color};opacity:${(0.25 + c.departurePct * 0.75).toFixed(2)};
-        margin:0 auto`;
+        background:${c.color};opacity:${(0.25 + c.departurePct * 0.75).toFixed(2)}`;
       depDot.addEventListener('mouseenter', evt =>
         showTip(`<b>${c.short}</b><br>Departure rate: <b>${(c.departurePct*100).toFixed(0)}%</b><br>${c.departed} of ${c.totalEditors} editors left`, evt));
       depDot.addEventListener('mousemove', moveTip);
