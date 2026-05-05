@@ -225,7 +225,9 @@ tbody tr:hover:not(.no-data) .case-name{color:var(--link);}
 .case-card.in-compare{border-color:var(--link);box-shadow:0 0 0 2px rgba(51,102,204,.2);}
 .card-head{padding:10px 12px 8px;cursor:pointer;}
 .card-head:hover .card-name{color:var(--link);}
-.card-topic-badge{display:inline-flex;align-items:center;gap:3px;font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:1px 6px;border-radius:10px;border:1px solid currentColor;margin-bottom:5px;opacity:.85;}
+.card-topic-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.card-topic-badge{display:inline-flex;align-items:center;gap:3px;font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:1px 6px;border-radius:10px;border:1px solid currentColor;opacity:.85;}
+.card-era-badge{font-size:.56rem;color:var(--muted);white-space:nowrap;font-weight:500;opacity:.8;}
 .card-name{font-size:.76rem;font-weight:600;color:var(--text);line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .card-meta{display:flex;gap:8px;font-size:.63rem;color:var(--muted);margin-top:5px;align-items:center;}
 .card-phase-mini{display:flex;height:4px;border-radius:2px;overflow:hidden;width:60px;}
@@ -234,6 +236,7 @@ tbody tr:hover:not(.no-data) .case-name{color:var(--link);}
 .cs{text-align:center;padding:4px 0;}
 .cs .cv{font-size:.85rem;font-weight:700;color:var(--text);}
 .cs .cl{font-size:.57rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;}
+.card-sanct-row{margin:-2px 0 8px;}
 .card-actions{display:flex;gap:6px;}
 .ca-btn{flex:1;padding:4px 0;font-size:.63rem;border-radius:4px;cursor:pointer;text-align:center;border:1px solid var(--border);background:var(--surface);color:var(--muted);transition:all .1s;}
 .ca-btn:hover{border-color:var(--link);color:var(--link);}
@@ -242,6 +245,7 @@ tbody tr:hover:not(.no-data) .case-name{color:var(--link);}
 .card-expand.open{display:block;}
 .sparkline-lbl{font-size:.58rem;color:var(--muted);margin:6px 0 2px;}
 .card-nodata{padding:10px 12px;font-size:.68rem;color:var(--faint);font-style:italic;}
+.era-chips-row{border-top:none;padding-top:0;background:var(--surface2);}
 
 /* ── COMPARE BAR ── */
 #compare-bar{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:2px solid var(--link);padding:8px 20px;display:none;align-items:center;gap:8px;z-index:100;box-shadow:0 -2px 12px rgba(0,0,0,.1);}
@@ -300,6 +304,7 @@ tbody tr:hover:not(.no-data) .case-name{color:var(--link);}
     <div class="stat-row" id="stat-row"><span style="color:var(--muted);font-size:.75rem">Loading…</span></div>
   </div>
   <div class="topic-chips" id="topic-chips"></div>
+  <div class="topic-chips era-chips-row" id="era-chips"></div>
   <div class="ov-controls">
     <input id="search" type="text" placeholder="Search cases…" oninput="filterAndRender()"/>
     <div class="filter-btns">
@@ -436,13 +441,34 @@ const M={top:38,right:40,bottom:12,left:LABEL_W};
 // TOPIC CLASSIFICATION
 // ═════════════════════════════════════════════════════════
 const TOPICS={
-  Science:    {color:'#0057AF',icon:'&#9879;',re:/cold.fus|homeopat|climate|evolut|vaccine|pseudosci|physics|biolog|chemi|medicin|fringe.sci|electromagn|chiropr|nuclear|quantum|astron|cosmos|geolog|paleont|scientif.method/i},
-  Geopolitics:{color:'#006733',icon:'&#x2295;',re:/israel|palestin|\barab\b|iran|iraq|russia|ukrain|china|taiwan|india|kashmir|armenia|azerbaij|tibet|occupy|balkan|serbian|yugoslav|turk|nagorno|cyprus|lebanes|afghan|myanmar|burma|north.korea|south.korea|korea|vietnam|cambodia|apartheid|british.india|colonial/i},
-  Religion:   {color:'#9E5400',icon:'&#10022;',re:/christian|cathol|islam|muslim|jewish|judais|hindu|buddh|church|scientolog|\bcofs\b|religion|creat|faith|mosque|theolog|mormon|jehovah|atheist|quran|torah|bible|pagan|cult/i},
-  Social:     {color:'#B60000',icon:'&#9672;',re:/gender|feminism|\blgbt\b|trans\b|racism|race\b|\bsex\b|ethnic|misog|diversit|women|rape|harass|biograph|\bblp\b|living.person|disabilit|mental.health/i},
-  Policy:     {color:'#5B2D8E',icon:'&#167;',re:/notabilit|sourcing|policy|guideline|\badmin\b|sockpuppet|editing.dispute|process|appeal|naming.conv|deletion|arbcom.policy|article.creati|image/i},
-  Conduct:    {color:'#595959',icon:'&#9873;',re:/.*/}
+  Science:    {color:'#0057AF',icon:'&#9879;',desc:'Scientific content',
+    re:/cold.fus|homeopat|climate|evolut|vaccine|pseudosci|physics|biolog|chemi|medicin|fringe.sci|electromagn|chiropr|nuclear|quantum|astron|cosmos|geolog|paleont|scientif.method|genetically.modified|\bgmo\b|depleted.uranium|neuro.linguistic|acupuncture|waldorf|austrian.econ|bogdanov|shakespeare.author/i},
+  Geopolitics:{color:'#006733',icon:'&#x2295;',desc:'Territorial & political content',
+    re:/israel|palestin|\barab\b|iran|iraq|russia|ukrain|china|taiwan|india|kashmir|armenia|azerbaij|tibet|occupy|balkan|serbian|yugoslav|turk|nagorno|cyprus|lebanes|afghan|myanmar|burma|north.korea|south.korea|\bkorea\b|vietnam|cambodia|apartheid|british.india|colonial|eastern.europ|east.europ|kurds|kurdistan|senkaku|liancourt|west.bank|judea|deir.yassin|german.war|world.war|great.irish.famine|horn.of.africa|war.of.the.pacific|antisemitism|macedon|franco.mongol|tang.dynasty/i},
+  Religion:   {color:'#9E5400',icon:'&#10022;',desc:'Religious content',
+    re:/christian|cathol|islam|muslim|jewish|judais|hindu|buddh|church|scientolog|\bcofs\b|religion|creat|faith|mosque|theolog|mormon|jehovah|atheist|quran|torah|bible|pagan|cult|falun.gong|prem.rawat|transcendental.medit|chabad|new.world.trans|attachment.therap|landmark.worldwide|francis.schuck|ebionite|st.christopher/i},
+  Social:     {color:'#B60000',icon:'&#9672;',desc:'Social issues content',
+    re:/gender|feminism|\blgbt\b|trans\b|racism|race\b|\bsex\b|ethnic|misog|diversit|women|rape|harass|biograph|\bblp\b|living.person|disabilit|mental.health|pedophilia|manning.naming|gun.control|bowling|winter.soldier|attack.site|manipulation.of.blp/i},
+  Politics:   {color:'#7600EC',icon:'&#9733;',desc:'Political content',
+    re:/american.polit|canadian.polit|venezuelan.polit|obama|trump|sarah.palin|tea.party|ted.kennedy|warren.kinsella|lyndon.laro|ayn.rand|camera.lobby|waterboard/i},
+  Policy:     {color:'#5B2D8E',icon:'&#167;',desc:'Wikipedia governance',
+    re:/notabilit|sourcing|policy|guideline|sockpuppet|arbitration.enfor|wheel.war|naming.conv|deletion|arbcom.policy|article.creati|date.delink|civility.enforc|civility.in.info|conflict.of.interest|media.viewer|wikiproject|episodes.and.char|article.title|manipulation|reversion|block.appeal|clarif|amend/i},
+  Conduct:    {color:'#595959',icon:'&#9873;',desc:'Editor conduct',re:/.*/}
 };
+
+const ERAS={
+  'Early (2003–07)':  {color:'#7B5200', range:[2003,2007], desc:'Foundational era of Wikipedia governance'},
+  'Growth (2008–14)': {color:'#00607A', range:[2008,2014], desc:'Expanding scope & policy refinement'},
+  'Modern (2015+)':   {color:'#1B5E20', range:[2015,2099], desc:'Contemporary arbitration'}
+};
+
+function getEra(c){
+  const yr=parseInt((c.case_start||'').slice(0,4));
+  if(!yr||isNaN(yr)) return 'Unknown';
+  if(yr<=2007) return 'Early (2003–07)';
+  if(yr<=2014) return 'Growth (2008–14)';
+  return 'Modern (2015+)';
+}
 function classifyTopic(c){
   const name=(c.case_name||'');
   for(const [k,v] of Object.entries(TOPICS)){if(v.re.test(name))return k;}
@@ -465,7 +491,7 @@ function hideTip(){tip.style.display='none';}
 // ═════════════════════════════════════════════════════════
 // STATE
 // ═════════════════════════════════════════════════════════
-let ALL=[], FILTERED=[], filterMode='all', currentRec=null, currentTopic='All', currentView='cards';
+let ALL=[], FILTERED=[], filterMode='all', currentRec=null, currentTopic='All', currentEra='All', currentView='cards';
 const D3_CACHE={}, COMPARE_SET=new Map();
 
 // ═════════════════════════════════════════════════════════
@@ -538,8 +564,9 @@ function goBack(){
 // LOAD MANIFEST
 // ═════════════════════════════════════════════════════════
 d3.json('../data/processed/d3/manifest.json').then(m=>{
-  ALL=m.cases.map(c=>({...c,color:c.has_data?caseColor(c.case_name):'#A2A9B1',topic:classifyTopic(c)}));
+  ALL=m.cases.map(c=>({...c,color:c.has_data?caseColor(c.case_name):'#A2A9B1',topic:classifyTopic(c),era:getEra(c)}));
   buildTopicChips();
+  buildEraChips();
   buildStatRow(m);
   filterAndRender();
   // Pre-build analysis so it's ready instantly when clicked
@@ -553,10 +580,14 @@ d3.json('../data/processed/d3/manifest.json').then(m=>{
 });
 
 function buildStatRow(m){
+  const closed=m.cases.filter(c=>c.outcome_status==='closed').length;
+  const open=m.cases.filter(c=>c.outcome_status==='open').length;
   document.getElementById('stat-row').innerHTML=`
     <div class="stat-pill green"><span class="num">${m.cases_with_data}</span><span class="lbl">cases with data</span></div>
     <div class="stat-pill grey"><span class="num">${m.cases_no_data}</span><span class="lbl">not yet collected</span></div>
     <div class="stat-pill"><span class="num">${m.total_cases}</span><span class="lbl">total known cases</span></div>
+    <div class="stat-pill"><span class="num">${closed}</span><span class="lbl">closed</span></div>
+    <div class="stat-pill" style="color:var(--red)"><span class="num">${open}</span><span class="lbl">open</span></div>
   `;
 }
 
@@ -593,6 +624,31 @@ function setTopic(t){
   filterAndRender();
 }
 
+function buildEraChips(){
+  const el=document.getElementById('era-chips');
+  if(!el) return;
+  const data=ALL.filter(c=>c.has_data);
+  const counts=new Map([['All',data.length]]);
+  for(const k of Object.keys(ERAS)){
+    const n=data.filter(c=>c.era===k).length;
+    if(n>0) counts.set(k,n);
+  }
+  el.innerHTML=[['All',null],...[...counts.entries()].filter(([k])=>k!=='All')].map(([k,n])=>{
+    const ed=ERAS[k]||{color:'#595959'};
+    const act=currentEra===k?' active':'';
+    const cnt=n!=null?` (${n})`:'';
+    return `<div class="topic-chip era-chip${act}" data-e="${k}" style="color:${ed.color}"
+      title="${(ed.desc||'')}${cnt?'':(` · ${cnt} cases`)}"
+      onclick="setEra('${k}')">&#128197; ${k}${cnt}</div>`;
+  }).join('');
+}
+
+function setEra(e){
+  currentEra=e;
+  document.querySelectorAll('.era-chip').forEach(c=>c.classList.toggle('active',c.dataset.e===e));
+  filterAndRender();
+}
+
 function setView(v){
   currentView=v;
   document.getElementById('vt-cards')?.classList.toggle('active',v==='cards');
@@ -617,6 +673,7 @@ function filterAndRender(){
     .filter(c=>c.case_name.toLowerCase().includes(q))
     .filter(c=>filterMode==='all'?true:filterMode==='data'?c.has_data:!c.has_data)
     .filter(c=>currentTopic==='All'||c.topic===currentTopic)
+    .filter(c=>currentEra==='All'||c.era===currentEra)
     .sort((a,b)=>{
       if(filterMode==='all'){const dd=(b.has_data?1:0)-(a.has_data?1:0);if(dd) return dd;}
       return (sf[srt]||sf.name)(a,b);
@@ -690,7 +747,7 @@ function renderCards(){
           <div class="card-nodata">Not yet collected</div>
         </div></div>`;
     }
-    const td=TOPICS[c.topic]||{color:'#595959',icon:'&#9873;'};
+    const td=TOPICS[c.topic]||{color:'#595959',icon:'&#9873;',desc:'Editor conduct'};
     const yr0=c.case_start?.slice(0,4)||'?', yr1=c.case_end?.slice(0,4)||'?';
     const dur=c.case_duration_days>=365?(c.case_duration_days/365).toFixed(1)+'y':c.case_duration_days+'d';
     const pe=c.phase_edits||{};
@@ -703,9 +760,14 @@ function renderCards(){
     const cardClass=inCmp?' in-compare':'';
     const cmpClass=inCmp?' cmp-active':'';
     const dataRec=JSON.stringify(c).replace(/'/g,'&apos;');
+    const sanctChip=c.sanctioned_count>0?`<span class="sanct-chip" title="${c.sanctioned_count} editor(s) sanctioned">&#9878; ${c.sanctioned_count} sanctioned</span>`:'';
+    const eraLabel=`<span class="card-era-badge" style="color:${(ERAS[c.era]||{color:'#888'}).color}">${c.era||''}</span>`;
     return `<div class="case-card${cardClass}" id="card-${c.slug}">
       <div class="card-head" onclick='clickCase(${dataRec})'>
-        <div class="card-topic-badge" style="color:${td.color}">${td.icon} ${c.topic}</div>
+        <div class="card-topic-row">
+          <div class="card-topic-badge" style="color:${td.color}">${td.icon} ${td.desc}</div>
+          ${eraLabel}
+        </div>
         <div class="card-name">${c.case_name}</div>
         <div class="card-meta">
           <span>${yr0===yr1?yr0:yr0+'&#8211;'+yr1}</span>
@@ -719,6 +781,7 @@ function renderCards(){
           <div class="cs"><div class="cv">${dep}</div><div class="cl">departed</div></div>
           <div class="cs"><div class="cv">${ret}</div><div class="cl">retained</div></div>
         </div>
+        ${sanctChip?`<div class="card-sanct-row">${sanctChip}</div>`:''}
         <div class="card-actions">
           <div class="ca-btn${cmpClass}" id="cmp-btn-${c.slug}"
             onclick="toggleCompare('${c.slug}',event)">${inCmp?'&#10003; Selected':'+ Compare'}</div>
@@ -1376,7 +1439,7 @@ function buildAnalysis(){
     <p class="lede">
       Arbitration cases at the English Wikipedia are often framed as judicial proceedings — a committee
       of elected arbitrators reviews evidence, hears arguments, and issues remedies. In principle a case
-      should resolve in weeks. In practice, <strong>30% of cases last more than a year</strong>, and the
+      should resolve in weeks. In practice, <strong>${pct(vlong.length,cases.length)} of cases last more than a year</strong>, and the
       longest ran for <strong>${Math.round(Math.max(...durs)/365)} years</strong>. The data from ${cases.length} closed
       cases tells a clear story: duration is driven not by complexity but by <em>participation collapse</em> —
       the slow exit of everyone involved before the committee actually decides anything.
