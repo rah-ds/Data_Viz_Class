@@ -170,6 +170,25 @@ a{color:inherit}
 /* Duration pill */
 .fp-dur{width:38px;flex-shrink:0;font-size:9px;padding-left:6px;
   font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--muted)}
+/* Row wrapper and expand panel */
+.fp-row-wrap{cursor:pointer}
+.fp-row-wrap:hover .fp-row{background:rgba(255,255,255,.025);border-radius:6px}
+.fp-expand{display:none;padding:20px 24px 24px;margin:4px 0 12px;
+  background:rgba(22,27,34,.96);border:1px solid rgba(51,102,204,.18);
+  border-radius:16px;animation:expandIn .18s ease}
+.fp-expand.open{display:block}
+@keyframes expandIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.fp-expand-decision{font-size:13px;line-height:1.55;color:#c8d1db;
+  padding-left:14px;border-left:3px solid var(--expand-color,#3388cc);margin-bottom:16px}
+.fp-expand-stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.fp-expand-stat{background:rgba(13,17,23,.6);border:1px solid rgba(48,54,61,.8);
+  border-radius:10px;padding:8px 14px;display:flex;flex-direction:column;gap:2px}
+.fp-expand-stat-val{font-size:18px;font-weight:700;letter-spacing:-.02em}
+.fp-expand-stat-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.fp-network-wrap{background:rgba(13,17,23,.5);border:1px solid rgba(48,54,61,.6);
+  border-radius:12px;overflow:hidden}
+.fp-network-legend{display:flex;gap:16px;flex-wrap:wrap;padding:10px 16px 6px;font-size:10px;color:var(--muted)}
+.fp-network-legend span{display:flex;align-items:center;gap:5px}
 /* Editor arrivals/departures spark strip */
 .fp-spark{display:flex;gap:1px;height:14px;margin-bottom:2px}
 .fp-spark-cell{flex:1;display:flex;flex-direction:column;justify-content:center;min-width:0;position:relative}
@@ -191,28 +210,40 @@ const GROUPS = [
     colors:['#fca5a5','#f87171','#ef4444','#dc2626','#b91c1c','#f59e0b','#d97706','#b45309','#78350f','#92400e','#7c2d12','#451a03'],
     cases:[
       {slug:'user:polishpoliticians',  label:'Polish Politicians',        short:'Polish 2004',
+       decision:'ArbCom banned several editors for nationalist sourcing in Polish political articles and established reliability standards for Polish-language sources.',
        note:'Early Wikipedia norms were unwritten; what counted as a reliable Polish source was genuinely unclear, requiring extended deliberation.'},
       {slug:'election',                label:'2006 Election Conflict',    short:'Election 2006',
+       decision:'ArbCom topic-banned the most disruptive editors and imposed partisan-editing restrictions across 2006 US election articles.',
        note:'US election coverage attracted partisan editors in waves timed to real-world campaign cycles, stretching the dispute across multiple news peaks.'},
       {slug:'article_titles_and_capitalisation', label:'Article Titles & Capitalisation', short:'Titles 2012',
+       decision:'ArbCom ruled that article titles must follow the most common name in English reliable sources, affecting naming conventions across thousands of articles.',
        note:'⏱ Longer than typical — Meta-policy disputes affecting thousands of article titles require cross-wiki consensus and are never truly "closed"; editors keep relitigating edge cases.'},
       {slug:'race_and_politics',       label:'Race and Politics',         short:'Race 2013',
+       decision:'ArbCom restricted several editors who had been tendentiously editing the intersection of race and US political topics.',
        note:'The intersection of race and electoral politics brought editors from two already-contentious topic areas, compounding the usual delays.'},
       {slug:'manning_naming_dispute',  label:'Manning Naming Dispute',    short:'Manning 2013',
+       decision:'ArbCom ruled that Chelsea Manning\'s preferred name should be used throughout her Wikipedia article following her public transition announcement.',
        note:'⚡ Resolved quickly — The arbcom question was binary (use Chelsea Manning\'s new name?), giving editors a clear decision that wrapped in weeks.'},
       {slug:'american_politics',       label:'American Politics',         short:'AmPol 2014',
+       decision:'ArbCom established broad discretionary sanctions for American politics, allowing admins to restrict editors violating neutral point-of-view standards.',
        note:'The scale of US political coverage means any conduct ruling ripples across hundreds of articles, requiring careful scoping before a decision.'},
       {slug:'american_politics_2',     label:'American Politics II',      short:'AmPol 2015',
+       decision:'ArbCom extended and tightened the American Politics sanctions regime in response to continued partisan editing after the first case.',
        note:'⏱ Longer than typical — A follow-up case after the first left unresolved tensions; returning grievances always extend proceedings.'},
       {slug:'blp_issues_on_british_politics_articles', label:'British Politics BLP', short:'BritBLP 2018',
+       decision:'ArbCom sanctioned editors who had systematically added poorly sourced contentious claims to biographies of living British politicians.',
        note:'⏱ Longer than typical — UK defamation law adds legal risk to biographies of living persons; ArbCom weighed legal concerns alongside editing conduct.'},
       {slug:'canadian_politics',       label:'Canadian Politics',         short:'Canada 2019',
+       decision:'ArbCom found nationalistic editing patterns in Canadian politics articles and placed the topic area under discretionary sanctions.',
        note:'Filed during a Canadian federal election year — real-world campaign events kept injecting new content disputes into an open case.'},
       {slug:'iranian_politics',        label:'Iranian Politics',          short:'Iran 2021',
+       decision:'ArbCom banned several editors and topic-restricted others for systematically promoting pro-regime or anti-regime narratives in Iranian politics.',
        note:'⏱ Longer than typical — Diaspora editors and state-aligned accounts brought fundamentally different source ecosystems, making neutral rulings unusually complex.'},
       {slug:'venezuelan_politics',     label:'Venezuelan Politics',       short:'Venezuela 2024',
+       decision:'ArbCom sanctioned editors promoting government or opposition political narratives in Venezuelan political articles.',
        note:'Very recent case — competing government-aligned and opposition-aligned editors import an unresolved real-world political conflict directly into article space.'},
       {slug:'indian_military_history', label:'Indian Military History',   short:'IndMilitary 2025',
+       decision:'ArbCom placed Indian military history under discretionary sanctions after finding systematic nationalist bias in sourcing and article framing.',
        note:'Very recent — nationalist editing of military history is among Wikipedia\'s hardest categories; source reliability disputes often mask deeper identity conflicts.'},
     ]
   },
@@ -221,18 +252,25 @@ const GROUPS = [
     colors:['#ede9fe','#c4b5fd','#a78bfa','#8b5cf6','#7c3aed','#5b21b6','#4c1d95','#2e1065'],
     cases:[
       {slug:'st_christopher',                 label:'St Christopher',              short:'StChris 2006',
+       decision:'ArbCom sanctioned an editor for repeatedly inserting fringe historical claims about Saint Christopher without reliable sourcing.',
        note:'⚡ Resolved quickly — A narrow dispute over a single saint\'s article; ArbCom closed it before entrenched camps formed.'},
       {slug:'ebionites',                      label:'Ebionites',                   short:'Ebionites 2007',
+       decision:'ArbCom found an editor was promoting a fringe interpretation of early Christian history and imposed editing restrictions on early Christianity topics.',
        note:'⏱ Longer than typical — Fringe early-Christian topics attract tenacious single-purpose accounts with deep personal investment in the narrative.'},
       {slug:'international_churches_of_christ',label:'Intl Churches of Christ',   short:'ICC 2008',
+       decision:'ArbCom banned church members from editing International Churches of Christ articles due to undisclosed conflicts of interest.',
        note:'Active members of a living religious organization were editing their own article, creating a conflict of interest ArbCom had to carefully untangle.'},
       {slug:'scientology',                    label:'Scientology',                 short:'Scientology 2009',
+       decision:'ArbCom banned the official Scientology IP range and several editors on both sides for coordinated campaigning and harassment.',
        note:'⏱ Longer than typical — Organized Scientology PR teams vs. a large critic community created one of Wikipedia\'s most sustained coordinated editing battles.'},
       {slug:'ebionites_3',                    label:'Ebionites 3',                 short:'Ebionites 2013',
+       decision:'ArbCom extended prior restrictions and banned an editor who had repeatedly returned after previous sanctions to promote the same fringe views.',
        note:'⏱ Longer than typical — The third case on the same topic; editors who refused prior rulings kept returning, each time requiring fresh documentation.'},
       {slug:'christianity_and_sexuality',     label:'Christianity & Sexuality',    short:'C&S 2015',
+       decision:'ArbCom placed Christianity and sexuality articles under discretionary sanctions and restricted several editors for overt advocacy editing.',
        note:'Competing moral frameworks meant no source was ever neutral enough — the dispute restarted each time a ruling tried to close it.'},
       {slug:'world_war_ii_and_the_history_of_jews_in_poland', label:'WWII & Jews in Poland', short:'WWII Jews 2023',
+       decision:'ArbCom imposed editing restrictions on editors importing Polish nationalist framing into articles on Jewish communities and the Holocaust in Poland.',
        note:'⏱ Longer than typical — Polish national identity is deeply intertwined with Holocaust historiography; editors from both communities held fundamentally different historical frames.'},
     ]
   },
@@ -241,20 +279,28 @@ const GROUPS = [
     colors:['#cffafe','#a5f3fc','#67e8f9','#22d3ee','#06b6d4','#0891b2','#0e7490','#155e75'],
     cases:[
       {slug:'theresa_knott_vs._mr-natural-health', label:'Theresa Knott vs MrNatural', short:'Theresa 2004',
+       decision:'ArbCom ruled in favor of Theresa Knott and banned Mr-Natural-Health from alternative medicine articles for persistent fringe health claims.',
        note:'⚡ Resolved quickly — A named-editor conduct case; once the behavior pattern was documented the ruling was straightforward.'},
       {slug:'mr-natural-health',              label:'Mr-Natural-Health',           short:'MrNatural 2004',
+       decision:'ArbCom banned Mr-Natural-Health from editing alternative medicine articles for continued insertion of unverified health claims.',
        note:'Individual conduct targeting one recurring alternative-medicine account — narrow scope meant ArbCom could rule without broad precedent-setting.'},
       {slug:'climate_change_dispute',         label:'Climate Change Dispute',      short:'Climate 2005',
+       decision:'ArbCom restricted editors engaged in climate-change denialism and affirmed scientific consensus as the baseline for article content.',
        note:'Early in Wikipedia\'s life, what counted as a reliable source for climate science was still being established community-wide.'},
       {slug:'climate_change_dispute_2',       label:'Climate Change Dispute 2',    short:'Climate2 2005',
+       decision:'ArbCom sanctioned further editors disrupting climate science articles and reinforced that fringe views must not receive undue weight.',
        note:'A follow-up opened within months of the first; back-to-back cases signal an unresolved core dispute beneath the surface conduct issues.'},
       {slug:'pseudoscience',                  label:'Pseudoscience',               short:'Pseudosci 2006',
+       decision:'ArbCom established that Wikipedia articles on pseudoscience must reflect mainstream scientific consensus, placing the area under long-term discretionary sanctions.',
        note:'⏱ Much longer than typical — Defining "pseudoscience" affects thousands of articles; no ruling can fully satisfy either camp, so the case never formally closes.'},
       {slug:'martinphi-scienceapologist',     label:'ScienceApologist',            short:'SciApp 2007',
+       decision:'ArbCom banned ScienceApologist for incivility and tendentious editing despite his edits often being scientifically accurate.',
        note:'⏱ Longer than typical — One editor\'s conduct, but their network of disputed fringe-science articles widened the investigation beyond a typical conduct case.'},
       {slug:'climate_change',                 label:'Climate Change (2010)',        short:'Climate 2010',
+       decision:'ArbCom banned coordinated climate-skeptic editors for harassment and placed climate topics under broad discretionary sanctions.',
        note:'⏱ Much longer than typical — Climate-denial editors returned in waves aligned with real-world policy debates (Kyoto, Copenhagen, Paris); politically motivated editing has no natural endpoint.'},
       {slug:'skepticism_and_coordinated_editing', label:'Skepticism & Coordinated Editing', short:'Skepticism 2022',
+       decision:'ArbCom found off-wiki coordination among skepticism-topic editors and imposed bans and editing restrictions on those involved.',
        note:'⏱ Longer than typical — Coordinated off-wiki campaigns are harder to investigate than individual misconduct; gathering evidence from outside Wikipedia is slow.'},
     ]
   },
@@ -263,18 +309,25 @@ const GROUPS = [
     colors:['#dcfce7','#bbf7d0','#86efac','#4ade80','#22c55e','#16a34a','#15803d'],
     cases:[
       {slug:'transnistria',                   label:'Transnistria',                short:'Transnistria 2007',
+       decision:'ArbCom sanctioned editors on both sides of the Moldovan–Transnistrian dispute for failing to maintain a neutral point of view.',
        note:'An unrecognized state with limited independent sources; editors from both sides of the Dniester brought incompatible source ecosystems into the dispute.'},
       {slug:'abortion',                       label:'Abortion',                    short:'Abortion 2011',
+       decision:'ArbCom placed abortion articles under discretionary sanctions and restricted several editors for sustained advocacy editing.',
        note:'⏱ Longer than typical — High editor turnover on contentious articles means new participants keep restarting old debates from scratch.'},
       {slug:'manipulation_of_blps',           label:'Manipulation of BLPs',        short:'BLPs 2011',
+       decision:'ArbCom ruled that biographies of living persons must not include contentious unsourced claims and sanctioned editors who had systematically added them.',
        note:'⏱ Longer than typical — BLP manipulation is systemic, not article-specific; ArbCom had to craft rules applying across thousands of biography pages.'},
       {slug:'racepacket',                     label:'Racepacket',                  short:'Racepacket 2011',
+       decision:'ArbCom banned the racepacket sockpuppet network and issued a site ban on the underlying editor for evading multiple prior bans.',
        note:'⏱ Much longer than typical — The "racepacket" family of sockpuppet accounts evaded bans repeatedly; each new account reopened the investigation.'},
       {slug:'sexology',                       label:'Sexology',                    short:'Sexology 2013',
+       decision:'ArbCom restricted several editors from sexology articles after finding a pattern of inserting fringe claims about sexuality and gender.',
        note:'⚡ Resolved quickly — A focused conduct case with clear fringe-editing patterns and well-documented behavior; ArbCom\'s ruling was narrow and decisive.'},
       {slug:'civility_in_infobox_discussions',label:'Civility in Infobox',         short:'Infobox 2018',
+       decision:'ArbCom sanctioned editors for uncivil behavior in infobox talk-page discussions and clarified that civility standards apply across all talk formats.',
        note:'The dispute was bounded to a specific type of talk-page interaction, making it easier to define targeted remedies without broad precedent.'},
       {slug:'transgender_healthcare_and_people',label:'Transgender Healthcare',    short:'TransHealth 2025',
+       decision:'ArbCom placed transgender healthcare articles under discretionary sanctions after finding systematic ideologically motivated editing.',
        note:'Very recent — politically polarized topic with editors from starkly different ideological positions importing real-world culture-war dynamics.'},
     ]
   },
@@ -283,26 +336,37 @@ const GROUPS = [
     colors:['#ffedd5','#fed7aa','#fdba74','#fb923c','#f97316','#ea580c','#c2410c','#9a3412','#7c2d12','#78350f','#451a03'],
     cases:[
       {slug:'israeli_apartheid',                    label:'Israeli Apartheid',              short:'IsrApart 2006',
+       decision:'ArbCom ruled that "Israeli apartheid" language must reflect mainstream scholarly views and sanctioned editors for promoting a single framing.',
        note:'"Apartheid" was itself the dispute — definitional fights over a single loaded term are unresolvable without external political consensus.'},
       {slug:'israel-lebanon',                       label:'Israel–Lebanon Conflict',        short:'IsrLebanon 2006',
+       decision:'ArbCom placed Israel–Lebanon conflict articles under sanctions and topic-banned several editors for one-sided editing during the 2006 war.',
        note:'An active military conflict during the case meant real-world events kept injecting new content, restarting edit wars mid-arbitration.'},
       {slug:'kosovo',                               label:'Kosovo',                         short:'Kosovo 2006',
+       decision:'ArbCom placed Kosovo articles under sanctions and restricted editors on both the Serbian and Albanian sides for nationalist editing.',
        note:'Sovereignty is unresolved internationally; Wikipedia cannot settle what the UN has not — editors kept importing the real geopolitical dispute.'},
       {slug:'palestineremembered',                  label:'PalestineRemembered',            short:'PalRemem 2007',
+       decision:'ArbCom restricted use of PalestineRemembered.com as a source, finding it was not a neutral reliable secondary source.',
        note:'⚡ Resolved relatively quickly — The question was narrow: should one pro-Palestinian website be cited? A clear reliability question resolved faster than the broader conflict.'},
       {slug:'india-pakistan',                       label:'India–Pakistan',                 short:'India-Pak 2007',
+       decision:'ArbCom rapidly restricted editors on both sides from Kashmir-related articles, resolving the dispute before entrenched camps could form.',
        note:'⚡ Resolved very quickly — ArbCom\'s early intervention before camps entrenched, targeting a narrow set of Kashmir articles, kept this brief.'},
       {slug:'armenia-azerbaijan_2',                 label:'Armenia–Azerbaijan 2',           short:'ArmAze 2007',
+       decision:'ArbCom sanctioned editors for nationalist editing of Armenia–Azerbaijan articles and placed the conflict topic under discretionary sanctions.',
        note:'Filed at a peak of Nagorno-Karabakh tensions; real-world political salience drove intense short-burst editing that resolved once the acute moment passed.'},
       {slug:'ottoman_empire-turkey_naming_dispute', label:'Ottoman–Turkey Naming Dispute',  short:'Ottoman 2013',
+       decision:'ArbCom ruled that "Armenian Genocide" is the appropriate Wikipedia terminology based on mainstream scholarly consensus.',
        note:'⏱ Longer than typical — Genocide recognition is official Turkish state policy; Turkish and Armenian diaspora editors brought incompatible legal and historical frameworks.'},
       {slug:'palestine-israel_articles_3',          label:'Palestine-Israel Articles 3',    short:'PalIsrael3 2015',
+       decision:'ArbCom issued broad sanctions on the Israel-Palestine topic area, banning several editors and imposing general editing restrictions.',
        note:'⏱ Longer than typical — Filed during the 2014 Gaza war; the active conflict continuously generated new article content to dispute.'},
       {slug:'palestine-israel_articles_4',          label:'Palestine-Israel Articles 4',    short:'PalIsrael4 2019',
+       decision:'ArbCom renewed and expanded the Israel-Palestine topic sanctions to address new patterns of nationalist and ideological editing.',
        note:'⏱ Longer than typical — The fourth iteration; each case inherits unresolved structural tensions from the last and must relitigate old ground.'},
       {slug:'armenia-azerbaijan_3',                 label:'Armenia–Azerbaijan 3',           short:'ArmAze 2023',
+       decision:'ArbCom imposed topic bans on editors found to be systematically promoting pro-Azerbaijani narratives following the 2020 and 2023 wars.',
        note:'⏱ Longer than typical — Post-2020 Second Nagorno-Karabakh War and 2023 Azerbaijani offensive created intense real-world pressure that spilled directly into editing.'},
       {slug:'palestine-israel_articles_5',          label:'Palestine-Israel Articles 5',    short:'PalIsrael5 2024',
+       decision:'ArbCom issued emergency restrictions during the 2023 Gaza war and permanently banned several editors for coordinated POV-pushing.',
        note:'⏱ Much longer than typical — Filed during the 2023 Gaza war; among the most heavily contested articles in Wikipedia\'s history at the time of filing.'},
     ]
   },
@@ -311,20 +375,28 @@ const GROUPS = [
     colors:['#fdf4ff','#fae8ff','#f0abfc','#e879f9','#d946ef','#a21caf','#701a75','#4a044e'],
     cases:[
       {slug:'civility_enforcement',                 label:'Civility Enforcement',             short:'Civility 2011',
+       decision:'ArbCom sanctioned systematic offenders and affirmed that civility is an enforceable obligation, not merely aspirational guidance.',
        note:'"Civility" is inherently subjective; every editor interprets it differently, making consistent enforcement rulings hard to finalize.'},
       {slug:'arbitration_enforcement_sanction_handling', label:'Arbitration Enforcement Sanctions', short:'ArbSanctions 2011',
+       decision:'ArbCom defined procedures for how administrators may impose, appeal, and modify sanctions under existing ArbCom decisions.',
        note:'⏱ Much longer than typical — Meta-rules about how ArbCom enforces its own sanctions evolve continuously; every new sanction issued during the case becomes evidence in the case.'},
       {slug:'banning_policy',                       label:'Banning Policy',                   short:'Banning 2014',
+       decision:'ArbCom formalized Wikipedia\'s banning policy with clearer criteria distinguishing community bans, ArbCom bans, and office actions.',
        note:'⏱ Longer than typical — Wikipedia\'s own banning rules were being rewritten in parallel; policy moved while the case was open, requiring constant re-scoping.'},
       {slug:'arbitration_enforcement',              label:'Arbitration Enforcement',           short:'ArbEnf 2015',
+       decision:'ArbCom affirmed that admins may proactively impose sanctions in designated topic areas without requiring a new full case.',
        note:'⏱ Longer than typical — Enforcement scope cases attract appeals; every new sanction issued during the case becomes a datapoint that reopens proceedings.'},
       {slug:'arbitration_enforcement_2',            label:'Arbitration Enforcement 2',         short:'ArbEnf2 2015',
+       decision:'ArbCom refined enforcement procedures after appeals revealed ambiguities in the scope and process defined in the first case.',
        note:'⏱ Longer than typical — A follow-up inheriting unresolved scope questions from the first; meta-policy disputes compound with each new iteration.'},
       {slug:'editor_conduct_in_e-cigs_articles',    label:'Editor Conduct in E-cigs Articles', short:'E-cigs 2015',
+       decision:'ArbCom banned several editors with apparent industry connections from e-cigarette articles for systematic conflict-of-interest editing.',
        note:'⚡ Resolved quickly — A contained topic area with a well-documented pattern of industry-linked editing; scope was clear and ArbCom could rule narrowly.'},
       {slug:'conduct_of_mister_wiki_editors',       label:'Conduct of Mister Wiki Editors',   short:'MisterWiki 2017',
+       decision:'ArbCom issued site bans against the MisterWiki sockpuppet network after repeated ban evasion across multiple accounts.',
        note:'⏱ Much longer than typical — The "MisterWiki" sockpuppet network evaded successive blocks; each new account required fresh investigation, extending the case by years.'},
       {slug:'conduct_in_deletion-related_editing',  label:'Conduct in Deletion Editing',       short:'Deletion 2022',
+       decision:'ArbCom sanctioned editors gaming deletion processes and clarified standards of conduct for AfD and related deletion forums.',
        note:'Deletion norms apply community-wide; a ruling had to be broad enough for all deletion venues, requiring extensive consultation before anything could be finalized.'},
     ]
   }
@@ -441,6 +513,166 @@ async function loadAll(){
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// NETWORK GRAPH — editor edits and reverts for a single case
+// ─────────────────────────────────────────────────────────────────────────────
+function renderCaseNetwork(c, container) {
+  const W = container.clientWidth || 800;
+  const H = 320;
+  const MAX_NODES = 50; // cap for performance
+
+  // Build per-editor stats from events
+  const editorStats = {};
+  c.events.forEach(e => {
+    const u = e.actor || e.username; if (!u) return;
+    if (!editorStats[u]) editorStats[u] = {edits: 0, reverts: 0, phases: {}};
+    editorStats[u].edits++;
+    if (e.type === 'revert') editorStats[u].reverts++;
+    const pt = e.page_type || 'main';
+    editorStats[u].phases[pt] = (editorStats[u].phases[pt] || 0) + 1;
+  });
+
+  // Revert edges
+  const revertEdges = [];
+  const revertPairs = new Set();
+  c.events.filter(e => e.type === 'revert' && e.reverted).forEach(e => {
+    const actor = e.actor || e.username;
+    if (!actor) return;
+    const key = actor + '|' + e.reverted;
+    if (!revertPairs.has(key)) { revertPairs.add(key); }
+    const existing = revertEdges.find(l => l.source === actor && l.target === e.reverted);
+    if (existing) { existing.count++; } else { revertEdges.push({source: actor, target: e.reverted, count: 1, type: 'revert'}); }
+  });
+
+  // Co-edit edges: editors who share the same page_type bucket
+  const phaseEditors = {};
+  c.events.forEach(e => {
+    const actor = e.actor || e.username;
+    if (!actor) return;
+    const pt = e.page_type || 'main';
+    phaseEditors[pt] = phaseEditors[pt] || new Set();
+    phaseEditors[pt].add(actor);
+  });
+  const coEditEdges = [];
+  const coEditPairs = new Set();
+  Object.values(phaseEditors).forEach(edSet => {
+    const arr = [...edSet];
+    for (let i = 0; i < arr.length; i++) {
+      for (let j = i + 1; j < arr.length; j++) {
+        const key = [arr[i], arr[j]].sort().join('|');
+        if (!coEditPairs.has(key)) { coEditPairs.add(key); coEditEdges.push({source: arr[i], target: arr[j], type: 'coedit'}); }
+      }
+    }
+  });
+
+  // Nodes: merge c.nodes metadata with event stats
+  const nodeMap = {};
+  c.nodes.forEach(n => { nodeMap[n.username] = n; });
+
+  // Pick top nodes by edit count; always include editors involved in reverts
+  const revertUsers = new Set([...revertEdges.flatMap(l => [l.source, l.target])]);
+  const allUsers = [...new Set(Object.keys(editorStats))];
+  const sorted = allUsers.sort((a, b) => (editorStats[b]?.edits || 0) - (editorStats[a]?.edits || 0));
+  const topUsers = new Set([...sorted.slice(0, MAX_NODES), ...revertUsers].slice(0, MAX_NODES));
+
+  const graphNodes = [...topUsers].map(u => {
+    const meta = nodeMap[u] || {};
+    const stats = editorStats[u] || {edits: 1, reverts: 0, phases: {}};
+    const dominant = Object.entries(stats.phases).sort((a,b) => b[1]-a[1])[0]?.[0] || 'main';
+    return { id: u, role: meta.role || 'participant', edits: stats.edits, reverts: stats.reverts,
+      dominant, departed: meta.departed || false };
+  });
+  const graphNodeIds = new Set(graphNodes.map(n => n.id));
+
+  const graphLinks = [
+    ...revertEdges.filter(l => graphNodeIds.has(l.source) && graphNodeIds.has(l.target)),
+    ...coEditEdges.filter(l => graphNodeIds.has(l.source) && graphNodeIds.has(l.target))
+  ];
+
+  // D3 force simulation
+  const PAGE_COLOR_NET = {main:'#595959',article:'#3366CC',evidence:'#E97500',
+    workshop:'#54A823',proposed_decision:'#B60000',outcome:'#72777D'};
+
+  const maxEdits = d3.max(graphNodes, n => n.edits) || 1;
+  const rScale = d => Math.max(3, Math.min(14, 4 + Math.sqrt(d.edits / maxEdits) * 10));
+
+  const svg = d3.select(container).append('svg')
+    .attr('width', '100%').attr('height', H)
+    .attr('viewBox', `0 0 ${W} ${H}`)
+    .style('background', 'transparent');
+
+  const defs = svg.append('defs');
+  const arrowId = 'arr-' + c.short.replace(/\W/g,'');
+  defs.append('marker').attr('id', arrowId)
+    .attr('viewBox','0 -4 8 8').attr('refX',10).attr('refY',0)
+    .attr('markerWidth',6).attr('markerHeight',6).attr('orient','auto')
+    .append('path').attr('d','M0,-4L8,0L0,4').attr('fill','#f85149').attr('opacity',.7);
+
+  const g = svg.append('g');
+
+  // Zoom
+  svg.call(d3.zoom().scaleExtent([0.4, 3]).on('zoom', evt => g.attr('transform', evt.transform)));
+
+  const link = g.append('g').selectAll('line').data(graphLinks).join('line')
+    .attr('stroke', d => d.type === 'revert' ? '#f85149' : 'rgba(139,148,158,.15)')
+    .attr('stroke-width', d => d.type === 'revert' ? Math.min(3, 1 + (d.count || 1) * 0.5) : 0.5)
+    .attr('stroke-dasharray', d => d.type === 'revert' ? '4,2' : null)
+    .attr('marker-end', d => d.type === 'revert' ? `url(#${arrowId})` : null)
+    .attr('opacity', d => d.type === 'revert' ? 0.7 : 0.3);
+
+  const node = g.append('g').selectAll('g').data(graphNodes).join('g')
+    .call(d3.drag()
+      .on('start', (evt, d) => { if (!evt.active) sim.alphaTarget(0.3).restart(); d.fx=d.x; d.fy=d.y; })
+      .on('drag',  (evt, d) => { d.fx=evt.x; d.fy=evt.y; })
+      .on('end',   (evt, d) => { if (!evt.active) sim.alphaTarget(0); d.fx=null; d.fy=null; }));
+
+  const isArb = d => d.role === 'arbitrator' || d.role === 'arbitrator_candidate';
+
+  node.append('circle')
+    .attr('r', rScale)
+    .attr('fill', d => isArb(d) ? 'none' : PAGE_COLOR_NET[d.dominant] || '#595959')
+    .attr('fill-opacity', d => isArb(d) ? 0 : (d.departed ? 0.35 : 0.85))
+    .attr('stroke', d => {
+      if (isArb(d)) return '#8b949e';
+      if (d.reverts > 0) return '#f85149';
+      return PAGE_COLOR_NET[d.dominant] || '#595959';
+    })
+    .attr('stroke-width', d => isArb(d) ? 1.5 : (d.reverts > 0 ? 2 : 0.5))
+    .attr('stroke-dasharray', d => isArb(d) ? '2,2' : null);
+
+  // Labels for top editors only (top 12 by edits)
+  const topN = new Set([...graphNodes].sort((a,b) => b.edits - a.edits).slice(0, 12).map(n => n.id));
+  node.filter(d => topN.has(d.id)).append('text')
+    .text(d => d.id.length > 14 ? d.id.slice(0, 13) + '…' : d.id)
+    .attr('dy', d => -rScale(d) - 3)
+    .attr('text-anchor', 'middle')
+    .attr('font-size', '8px')
+    .attr('fill', 'rgba(230,237,243,.6)')
+    .attr('pointer-events', 'none');
+
+  node.on('mouseenter', (evt, d) => {
+    const phases = Object.entries(editorStats[d.id]?.phases || {})
+      .sort((a,b) => b[1]-a[1]).slice(0,3)
+      .map(([k,v]) => `<span style="color:${PAGE_COLOR_NET[k]}">${k.replace(/_/g,' ')}</span> ${v}`)
+      .join(', ');
+    showTip(`<b>${d.id}</b><br>Role: ${d.role}<br>Edits: ${d.edits}  Reverts: ${d.reverts}<br>${phases}`, evt);
+  }).on('mousemove', moveTip).on('mouseleave', hideTip);
+
+  const sim = d3.forceSimulation(graphNodes)
+    .force('link', d3.forceLink(graphLinks).id(d => d.id).distance(d => d.type === 'revert' ? 60 : 40).strength(d => d.type === 'revert' ? 0.8 : 0.1))
+    .force('charge', d3.forceManyBody().strength(-120))
+    .force('center', d3.forceCenter(W/2, H/2))
+    .force('collide', d3.forceCollide().radius(d => rScale(d) + 4))
+    .on('tick', () => {
+      link.attr('x1', d => d.source.x).attr('y1', d => d.source.y)
+          .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
+      node.attr('transform', d => `translate(${d.x},${d.y})`);
+    });
+
+  // Stop after a while for performance
+  setTimeout(() => sim.stop(), 4000);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // V11 — CONFLICT FINGERPRINTS
 // ─────────────────────────────────────────────────────────────────────────────
 function buildV11(byGroup){
@@ -486,7 +718,7 @@ function buildV11(byGroup){
         const bi = Math.floor(frac * BUCKETS);
         const pt = e.page_type || 'main';
         buckets[bi][pt] = (buckets[bi][pt] || 0) + 1;
-        const u = e.username;
+        const u = e.actor || e.username;
         if (firstBucket[u] === undefined || bi < firstBucket[u]) firstBucket[u] = bi;
         if (lastBucket[u] === undefined || bi > lastBucket[u]) lastBucket[u] = bi;
       });
@@ -516,9 +748,18 @@ function buildV11(byGroup){
       const row = document.createElement('div'); row.className = 'fp-row';
 
       const lbl = document.createElement('div'); lbl.className = 'fp-label';
-      lbl.style.color = c.color;
-      lbl.title = `${c.label}\n${durDays} days · ${c.totalEvents} events`;
-      lbl.textContent = c.short;
+      lbl.style.cssText = `color:${c.color};display:flex;flex-direction:column;gap:1px;cursor:pointer`;
+
+      const lblName = document.createElement('div');
+      lblName.textContent = c.short;
+
+      const lblDec = document.createElement('div');
+      lblDec.style.cssText = 'font-size:8px;color:rgba(139,148,158,.65);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-style:italic;max-width:128px';
+      lblDec.textContent = c.decision || '';
+      lblDec.title = c.decision || '';
+
+      lbl.appendChild(lblName);
+      lbl.appendChild(lblDec);
 
       // Wrap bar + spark in a flex-column div
       const col = document.createElement('div');
@@ -591,7 +832,63 @@ function buildV11(byGroup){
 
       col.appendChild(bar);
       row.appendChild(lbl); row.appendChild(col); row.appendChild(dur);
-      sec.appendChild(row);
+
+      // Wrap row + expand panel together
+      const wrap = document.createElement('div'); wrap.className = 'fp-row-wrap';
+      wrap.style.setProperty('--expand-color', c.color);
+
+      // Expand panel (lazy — network rendered on first open)
+      const expandPanel = document.createElement('div'); expandPanel.className = 'fp-expand';
+      expandPanel.dataset.rendered = '0';
+
+      // Decision text
+      const decDiv = document.createElement('div'); decDiv.className = 'fp-expand-decision';
+      decDiv.textContent = c.decision || '';
+      expandPanel.appendChild(decDiv);
+
+      // Stats row
+      const statsRow = document.createElement('div'); statsRow.className = 'fp-expand-stats';
+      const durDaysDisplay = durDays >= 365 ? (durDays/365).toFixed(1)+' yrs' : durDays+' days';
+      [
+        [durDaysDisplay, 'Duration'],
+        [c.totalEditors, 'Editors'],
+        [c.totalEvents, 'Events'],
+        [(c.departurePct*100).toFixed(0)+'%', 'Departed'],
+      ].forEach(([val, lbl2]) => {
+        const sb = document.createElement('div'); sb.className = 'fp-expand-stat';
+        sb.innerHTML = `<span class="fp-expand-stat-val" style="color:${c.color}">${val}</span><span class="fp-expand-stat-lbl">${lbl2}</span>`;
+        statsRow.appendChild(sb);
+      });
+      expandPanel.appendChild(statsRow);
+
+      // Network container (rendered lazily on first open)
+      const netWrap = document.createElement('div'); netWrap.className = 'fp-network-wrap';
+      const netLegend = document.createElement('div'); netLegend.className = 'fp-network-legend';
+      netLegend.innerHTML = `
+        <span><svg width="12" height="12"><circle cx="6" cy="6" r="5" fill="${c.color}" fill-opacity=".9"/></svg> Participant</span>
+        <span><svg width="12" height="12"><circle cx="6" cy="6" r="5" fill="none" stroke="#8b949e" stroke-width="1.5"/></svg> Arbitrator</span>
+        <span><svg width="12" height="12"><circle cx="6" cy="6" r="5" fill="${c.color}" stroke="#f85149" stroke-width="2"/></svg> High reverts</span>
+        <span><svg width="28" height="12"><line x1="0" y1="6" x2="28" y2="6" stroke="#f85149" stroke-width="1.5" stroke-dasharray="3,2"/></svg> Revert</span>
+        <span><svg width="28" height="12"><line x1="0" y1="6" x2="28" y2="6" stroke="rgba(139,148,158,.3)" stroke-width="1"/></svg> Co-edit</span>
+      `;
+      netWrap.appendChild(netLegend);
+      const netSvgContainer = document.createElement('div');
+      netSvgContainer.style.cssText = 'width:100%;height:320px';
+      netWrap.appendChild(netSvgContainer);
+      expandPanel.appendChild(netWrap);
+
+      wrap.appendChild(row);
+      wrap.appendChild(expandPanel);
+      sec.appendChild(wrap);
+
+      // Toggle on click
+      row.addEventListener('click', () => {
+        const isOpen = expandPanel.classList.toggle('open');
+        if (isOpen && expandPanel.dataset.rendered === '0') {
+          expandPanel.dataset.rendered = '1';
+          renderCaseNetwork(c, netSvgContainer);
+        }
+      });
     });
     container.appendChild(sec);
   });
