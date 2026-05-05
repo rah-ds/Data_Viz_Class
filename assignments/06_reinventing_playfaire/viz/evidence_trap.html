@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>The Evidence Trap — Wikipedia Arbitration</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+:root{
+  --bg:#0d1117;--surface:rgba(22,27,34,.92);--border:#30363d;
+  --text:#e6edf3;--muted:#8b949e;--accent:#3388cc;
+  --ev:#E97500;--ev-dim:rgba(233,117,0,.18);--ev-glow:rgba(233,117,0,.38);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 14% 0%,rgba(233,117,0,.14),transparent 30%),
+    radial-gradient(circle at 86% 6%,rgba(51,102,204,.09),transparent 26%),
+    radial-gradient(circle at 50% 100%,rgba(233,117,0,.07),transparent 30%),
+    #0d1117;
+  color:var(--text);font-family:system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-size:14px;line-height:1.6;
+}
+#tooltip{
+  position:fixed;pointer-events:none;z-index:999;display:none;
+  background:rgba(22,27,34,.97);border:1px solid var(--border);
+  border-radius:10px;padding:10px 14px;font-size:12px;line-height:1.65;
+  color:var(--text);max-width:280px;box-shadow:0 8px 24px rgba(0,0,0,.45);
+}
+/* ── NAV ── */
+#topnav{
+  position:sticky;top:0;z-index:100;background:rgba(13,17,23,.9);
+  backdrop-filter:blur(14px);border-bottom:1px solid rgba(233,117,0,.12);
+  padding:14px 32px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  box-shadow:0 10px 30px rgba(0,0,0,.22);
+}
+#topnav .site-title{font-weight:700;font-size:13px;letter-spacing:.04em}
+#topnav a{color:var(--muted);text-decoration:none;font-size:12px;transition:color .15s}
+#topnav a:hover{color:var(--text)}
+.back-link{color:var(--accent)!important;font-weight:600}
+.nav-divider{color:var(--border);margin:0 4px}
+.nav-spacer{flex:1}
+.wiki-w{color:#3388cc;font-weight:900;font-size:15px;margin-right:2px}
+/* ── HEADER ── */
+.page-header{padding:72px 52px 48px;max-width:1400px;margin:0 auto}
+.page-header::after{
+  content:'';display:block;width:120px;height:3px;border-radius:999px;
+  background:linear-gradient(90deg,var(--ev),rgba(233,117,0,.2));
+  margin-top:28px;
+}
+.ph-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;
+  color:rgba(233,117,0,.65);margin-bottom:14px}
+.ph-title{font-size:clamp(36px,4.5vw,58px);font-weight:800;line-height:1.05;
+  letter-spacing:-.04em;margin-bottom:8px}
+.ph-title em{color:var(--ev);font-style:normal}
+.ph-sub{font-size:16px;color:var(--muted);margin-bottom:18px}
+.ph-thesis{
+  font-size:14px;color:rgba(200,209,219,.75);max-width:700px;line-height:1.8;
+  border-left:3px solid rgba(233,117,0,.4);padding-left:16px;font-style:italic;
+}
+/* ── PHASE LEGEND ── */
+.phase-legend{
+  display:flex;gap:18px;flex-wrap:wrap;
+  padding:18px 52px;max-width:1400px;margin:0 auto;
+  border-top:1px solid rgba(48,54,61,.5);border-bottom:1px solid rgba(48,54,61,.5);
+}
+.ph-item{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--muted)}
+.ph-swatch{width:13px;height:11px;border-radius:2px;flex-shrink:0}
+.ph-item.hl .ph-swatch{box-shadow:0 0 6px 1px rgba(233,117,0,.5)}
+.ph-item.hl{color:var(--text);font-weight:600}
+/* ── VIZ WRAP ── */
+.viz-wrap{max-width:1400px;margin:0 auto;padding:36px 52px 80px}
+/* ── GROUP BLOCK ── */
+.grp-block{margin-bottom:52px;position:relative}
+.grp-block::before{
+  content:'';position:absolute;left:0;right:0;top:0;height:1px;
+  background:linear-gradient(90deg,var(--grp-color,#555),transparent 60%);
+}
+.grp-head{display:flex;align-items:center;gap:12px;padding-top:18px;margin-bottom:10px;flex-wrap:wrap}
+.grp-name{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em}
+.grp-nc{font-size:11px;color:var(--muted)}
+.grp-badge{
+  font-size:10px;padding:3px 10px;border-radius:20px;border:1px solid;
+  margin-left:auto;white-space:nowrap;font-weight:600;letter-spacing:.03em;
+}
+.grp-badge.trapped{background:rgba(233,117,0,.1);color:rgba(233,117,0,.9);border-color:rgba(233,117,0,.3)}
+.grp-badge.mid{background:rgba(139,148,158,.08);color:rgba(139,148,158,.7);border-color:rgba(139,148,158,.22)}
+.grp-badge.clear{background:rgba(83,168,35,.09);color:rgba(83,168,35,.8);border-color:rgba(83,168,35,.25)}
+/* ── CURVE ROW ── */
+.curve-row{display:flex;align-items:stretch;width:100%;margin-bottom:4px}
+.row-label{
+  width:168px;flex-shrink:0;font-size:8.5px;color:rgba(233,117,0,.5);
+  font-style:italic;text-align:right;padding-right:10px;
+  display:flex;align-items:center;justify-content:flex-end;
+}
+.curve-wrap{flex:1;position:relative}
+/* ── FINGERPRINT ROWS ── */
+.fp-avg-row{display:flex;align-items:center;height:15px;margin-bottom:3px}
+.fp-avg-lbl{
+  width:168px;flex-shrink:0;font-size:8px;color:rgba(139,148,158,.38);
+  text-align:right;padding-right:10px;font-style:italic;
+}
+.fp-avg-bar{flex:1;display:flex;height:100%}
+.fp-avg-cell{flex:1;height:100%}
+.fp-row{display:flex;align-items:center;height:12px;margin-bottom:2px}
+.fp-lbl{
+  width:168px;flex-shrink:0;font-size:8px;color:var(--muted);
+  text-align:right;padding-right:10px;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;cursor:default;line-height:1;
+}
+.fp-bar{flex:1;display:flex;height:100%}
+.fp-cell{flex:1;height:100%}
+.fp-cell.ev{filter:brightness(1.2);z-index:1;position:relative}
+.fp-cell.ended{
+  background:rgba(13,17,23,.4)!important;
+  background-image:repeating-linear-gradient(
+    45deg,rgba(255,255,255,.04) 0,rgba(255,255,255,.04) 1px,transparent 0,transparent 50%
+  )!important;
+  background-size:4px 4px!important;
+}
+.grp-foot{
+  padding-left:168px;padding-top:6px;
+  font-size:10px;color:rgba(139,148,158,.38);font-style:italic;
+}
+/* ── FOOTER ── */
+.page-footer{
+  max-width:1400px;margin:0 auto;padding:28px 52px 64px;
+  border-top:1px solid var(--border);display:flex;align-items:center;gap:20px;
+}
+.footer-back{color:var(--muted);text-decoration:none;font-size:13px}
+.footer-back:hover{color:var(--text)}
+.footer-label{font-size:12px;color:rgba(139,148,158,.28)}
+</style>
+</head>
+<body>
+<div id="tooltip"></div>
+
+<nav id="topnav">
+  <a href="politics2.html" class="back-link">← Conflict Fingerprints</a>
+  <span class="nav-divider">|</span>
+  <a href="insights.html">Ten Lenses</a>
+  <span class="nav-spacer"></span>
+  <span class="site-title"><span class="wiki-w">W</span> The Evidence Trap</span>
+</nav>
+
+<div class="page-header">
+  <div class="ph-label">Deep Dive · Arbitration Analysis · 53 Cases · 2004–2025</div>
+  <div class="ph-title">The <em>Evidence</em> Trap</div>
+  <div class="ph-sub">Why fact-based conflicts never settle</div>
+  <div class="ph-thesis">
+    In political cases, the committee gathers evidence, rules, and moves on —
+    the evidence phase clears within the first third of the timeline.
+    In science and geopolitics, the evidence phase never fully releases.
+    The argument loops back, demands more proof, and the case starves for a decision
+    that facts alone cannot deliver.
+    <br><br>
+    Each group below shows its average evidence-phase activity curve (orange ribbon)
+    above the individual case fingerprints. The dashed line is the
+    <em>escape threshold</em> — groups whose curve stays above it are still gathering.
+    Groups whose curve drops below it have moved on.
+  </div>
+</div>
+
+<div class="phase-legend" id="phase-legend"></div>
+<div class="viz-wrap" id="viz-root"></div>
+
+<div class="page-footer">
+  <a href="politics2.html" class="footer-back">← Conflict Fingerprints</a>
+  <a href="insights.html" class="footer-back">Ten Lenses</a>
+  <span class="footer-label">SARC 5400 · UVA Data Viz · Final Project</span>
+</div>
+
+<script>
+// ── TOOLTIP ──────────────────────────────────────────────────────────────────
+const tip = document.getElementById('tooltip');
+function showTip(html,e){tip.innerHTML=html;tip.style.display='block';moveTip(e)}
+function moveTip(e){
+  const x=e.clientX+14,y=e.clientY+14,tw=tip.offsetWidth,th=tip.offsetHeight;
+  tip.style.left=(x+tw>window.innerWidth?x-tw-28:x)+'px';
+  tip.style.top=(y+th>window.innerHeight?y-th-28:y)+'px';
+}
+function hideTip(){tip.style.display='none'}
+
+// ── CONSTANTS ────────────────────────────────────────────────────────────────
+const BUCKETS = 60;
+const PHASES  = ['article','evidence','workshop','proposed_decision','outcome','main'];
+const PCOLORS = {
+  article:'#3366CC', evidence:'#E97500', workshop:'#54A823',
+  proposed_decision:'#B60000', outcome:'#72777D', main:'#595959'
+};
+const PLABELS = {
+  article:'Article edits', evidence:'Evidence', workshop:'Workshop',
+  proposed_decision:'Proposed decision', outcome:'Outcome', main:'Discussion'
+};
+const ESCAPE_THRESHOLD = 0.14; // avg evidence % below this = "escaped"
+
+const GROUPS = [
+  {id:'politics',  label:'Politics',    baseColor:'#ef4444', cases:[
+    {slug:'user:polishpoliticians',      short:'Polish 2004'},
+    {slug:'election',                    short:'Election 2006'},
+    {slug:'article_titles_and_capitalisation', short:'Titles 2012'},
+    {slug:'race_and_politics',           short:'Race 2013'},
+    {slug:'manning_naming_dispute',      short:'Manning 2013'},
+    {slug:'american_politics',           short:'AmPol 2014'},
+    {slug:'american_politics_2',         short:'AmPol 2015'},
+    {slug:'blp_issues_on_british_politics_articles', short:'BritBLP 2018'},
+    {slug:'canadian_politics',           short:'Canada 2019'},
+    {slug:'iranian_politics',            short:'Iran 2021'},
+    {slug:'venezuelan_politics',         short:'Venezuela 2024'},
+    {slug:'indian_military_history',     short:'IndMilitary 2025'},
+  ]},
+  {id:'religion',  label:'Religion',    baseColor:'#8b5cf6', cases:[
+    {slug:'st_christopher',              short:'StChris 2006'},
+    {slug:'ebionites',                   short:'Ebionites 2007'},
+    {slug:'international_churches_of_christ', short:'ICC 2008'},
+    {slug:'scientology',                 short:'Scientology 2009'},
+    {slug:'ebionites_3',                 short:'Ebionites 2013'},
+    {slug:'christianity_and_sexuality',  short:'C&S 2015'},
+    {slug:'world_war_ii_and_the_history_of_jews_in_poland', short:'WWII Jews 2023'},
+  ]},
+  {id:'science',   label:'Science',     baseColor:'#06b6d4', cases:[
+    {slug:'theresa_knott_vs._mr-natural-health', short:'Theresa 2004'},
+    {slug:'mr-natural-health',           short:'MrNatural 2004'},
+    {slug:'climate_change_dispute',      short:'Climate 2005'},
+    {slug:'climate_change_dispute_2',    short:'Climate2 2005'},
+    {slug:'pseudoscience',               short:'Pseudosci 2006'},
+    {slug:'martinphi-scienceapologist',  short:'SciApp 2007'},
+    {slug:'climate_change',              short:'Climate 2010'},
+    {slug:'skepticism_and_coordinated_editing', short:'Skepticism 2022'},
+  ]},
+  {id:'social',    label:'Social',      baseColor:'#22c55e', cases:[
+    {slug:'transnistria',                short:'Transnistria 2007'},
+    {slug:'abortion',                    short:'Abortion 2011'},
+    {slug:'manipulation_of_blps',        short:'BLPs 2011'},
+    {slug:'racepacket',                  short:'Racepacket 2011'},
+    {slug:'sexology',                    short:'Sexology 2013'},
+    {slug:'civility_in_infobox_discussions', short:'Infobox 2018'},
+    {slug:'transgender_healthcare_and_people', short:'TransHealth 2025'},
+  ]},
+  {id:'geopolitics',label:'Geopolitics',baseColor:'#f97316', cases:[
+    {slug:'israeli_apartheid',           short:'IsrApart 2006'},
+    {slug:'israel-lebanon',              short:'IsrLebanon 2006'},
+    {slug:'kosovo',                      short:'Kosovo 2006'},
+    {slug:'palestineremembered',         short:'PalRemem 2007'},
+    {slug:'india-pakistan',              short:'India-Pak 2007'},
+    {slug:'armenia-azerbaijan_2',        short:'ArmAze 2007'},
+    {slug:'ottoman_empire-turkey_naming_dispute', short:'Ottoman 2013'},
+    {slug:'palestine-israel_articles_3', short:'PalIsrael3 2015'},
+    {slug:'palestine-israel_articles_4', short:'PalIsrael4 2019'},
+    {slug:'armenia-azerbaijan_3',        short:'ArmAze 2023'},
+    {slug:'palestine-israel_articles_5', short:'PalIsrael5 2024'},
+  ]},
+  {id:'policy',    label:'Policy',      baseColor:'#e879f9', cases:[
+    {slug:'civility_enforcement',        short:'Civility 2011'},
+    {slug:'arbitration_enforcement_sanction_handling', short:'ArbSanctions 2011'},
+    {slug:'banning_policy',              short:'Banning 2014'},
+    {slug:'arbitration_enforcement',     short:'ArbEnf 2015'},
+    {slug:'arbitration_enforcement_2',   short:'ArbEnf2 2015'},
+    {slug:'editor_conduct_in_e-cigs_articles', short:'E-cigs 2015'},
+    {slug:'conduct_of_mister_wiki_editors', short:'MisterWiki 2017'},
+    {slug:'conduct_in_deletion-related_editing', short:'Deletion 2022'},
+  ]},
+];
+
+// ── ENRICH ───────────────────────────────────────────────────────────────────
+function enrichCase(c, json, grp) {
+  const events = json.events || [];
+  if (events.length < 2) return null;
+  const times = events.map(e => new Date(e.timestamp)).filter(d => !isNaN(d));
+  if (times.length < 2) return null;
+  const t0 = Math.min(...times), t1 = Math.max(...times);
+  const durMs = t1 - t0, durationDays = durMs / 86400000;
+  if (durationDays < 1) return null;
+
+  const buckets = Array.from({length:BUCKETS}, () => ({}));
+  events.forEach(e => {
+    const frac = Math.max(0, Math.min(.9999, (new Date(e.timestamp) - t0) / durMs));
+    const bi   = Math.floor(frac * BUCKETS);
+    const pt   = e.page_type || 'main';
+    buckets[bi][pt] = (buckets[bi][pt] || 0) + 1;
+  });
+
+  const dominantPhase = buckets.map(bk => {
+    const ent = Object.entries(bk);
+    return ent.length ? ent.sort((a,b)=>b[1]-a[1])[0][0] : null;
+  });
+  const evidencePct = buckets.map(bk => {
+    const tot = Object.values(bk).reduce((a,b)=>a+b,0);
+    return tot > 0 ? (bk.evidence||0)/tot : 0;
+  });
+
+  let lastActive = -1;
+  for (let i = BUCKETS-1; i >= 0; i--) {
+    if (Object.keys(buckets[i]).length) { lastActive = i; break; }
+  }
+
+  const totalEditors = new Set(events.map(e=>e.actor||e.username).filter(Boolean)).size;
+  return {
+    ...c, groupId:grp.id, color:grp.baseColor, durationDays,
+    dominantPhase, evidencePct, lastActive, totalEditors, totalEvents:events.length
+  };
+}
+
+// ── PHASE LEGEND ─────────────────────────────────────────────────────────────
+function buildLegend() {
+  const el = document.getElementById('phase-legend');
+  PHASES.forEach(p => {
+    const d = document.createElement('div');
+    d.className = 'ph-item' + (p==='evidence' ? ' hl' : '');
+    d.innerHTML = `<div class="ph-swatch" style="background:${PCOLORS[p]}"></div>${PLABELS[p]}`;
+    el.appendChild(d);
+  });
+}
+
+// ── GROUP SECTION ─────────────────────────────────────────────────────────────
+function buildGroupSection(root, grp, cases, maxEv) {
+  const block = document.createElement('div');
+  block.className = 'grp-block';
+  block.style.setProperty('--grp-color', grp.baseColor);
+
+  // Avg evidence per bucket
+  const avgEv = Array.from({length:BUCKETS}, (_,bi) =>
+    d3.mean(cases, c => c.evidencePct[bi]) || 0
+  );
+
+  // Last bucket where avgEv > escape threshold (scan right→left)
+  let clearBucket = -1;
+  for (let i = BUCKETS-1; i >= 0; i--) {
+    if (avgEv[i] > ESCAPE_THRESHOLD) { clearBucket = i; break; }
+  }
+  const clearPct  = clearBucket > 0 ? Math.round(clearBucket / (BUCKETS-1) * 100) : 0;
+  const evAtEnd   = avgEv[BUCKETS-1];
+  const avgEvAll  = d3.mean(avgEv);
+  const isTrapped = clearPct > 64;
+  const isMid     = clearPct > 38 && !isTrapped;
+
+  // ── header ────
+  const hdr = document.createElement('div');
+  hdr.className = 'grp-head';
+  const bCls  = isTrapped ? 'trapped' : isMid ? 'mid' : 'clear';
+  const bTxt  = isTrapped
+    ? `⚠ Evidence active past ${clearPct}% of timeline`
+    : isMid
+      ? `Evidence lingers to ~${clearPct}%`
+      : clearPct > 0 ? `✓ Evidence clears ~${clearPct}%` : '✓ Minimal evidence phase';
+  hdr.innerHTML = `
+    <span class="grp-name" style="color:${grp.baseColor}">${grp.label}</span>
+    <span class="grp-nc">${cases.length} cases</span>
+    <span class="grp-badge ${bCls}">${bTxt}</span>`;
+  block.appendChild(hdr);
+
+  // ── evidence curve row ────
+  const curveRow = document.createElement('div');
+  curveRow.className = 'curve-row';
+  const curveLbl = document.createElement('div');
+  curveLbl.className = 'row-label';
+  curveLbl.textContent = '▸ evidence';
+  curveRow.appendChild(curveLbl);
+  const svgWrap = document.createElement('div');
+  svgWrap.className = 'curve-wrap';
+  curveRow.appendChild(svgWrap);
+  block.appendChild(curveRow);
+
+  // ── group avg fingerprint row ────
+  const avgRow = document.createElement('div');
+  avgRow.className = 'fp-avg-row';
+  const avgLbl = document.createElement('div');
+  avgLbl.className = 'fp-avg-lbl';
+  avgLbl.textContent = 'group avg';
+  avgRow.appendChild(avgLbl);
+  const avgBar = document.createElement('div');
+  avgBar.className = 'fp-avg-bar';
+  for (let bi = 0; bi < BUCKETS; bi++) {
+    const cnt = {};
+    cases.forEach(c => { const ph = c.dominantPhase[bi]; if (ph) cnt[ph]=(cnt[ph]||0)+1; });
+    const ent = Object.entries(cnt);
+    const dom = ent.length ? ent.sort((a,b)=>b[1]-a[1])[0][0] : null;
+    const cell = document.createElement('div');
+    cell.className = 'fp-avg-cell';
+    cell.style.cssText = `background:${dom?PCOLORS[dom]:'rgba(22,27,34,.4)'};opacity:${dom?'.72':'.2'}`;
+    avgBar.appendChild(cell);
+  }
+  avgRow.appendChild(avgBar);
+  block.appendChild(avgRow);
+
+  // ── individual case rows ────
+  cases.forEach(c => {
+    const row = document.createElement('div');
+    row.className = 'fp-row';
+    const lbl = document.createElement('div');
+    lbl.className = 'fp-lbl'; lbl.textContent = c.short; lbl.title = c.short;
+    row.appendChild(lbl);
+    const bar = document.createElement('div');
+    bar.className = 'fp-bar';
+    for (let bi = 0; bi < BUCKETS; bi++) {
+      const ph    = c.dominantPhase[bi];
+      const ended = bi > c.lastActive;
+      const isEv  = ph === 'evidence' && !ended;
+      const cell  = document.createElement('div');
+      cell.className = 'fp-cell' + (ended ? ' ended' : '') + (isEv ? ' ev' : '');
+      if (!ended && ph) {
+        cell.style.background = PCOLORS[ph];
+        cell.style.opacity = isEv ? '1' : '.65';
+      } else if (!ended) {
+        cell.style.background = 'rgba(22,27,34,.5)';
+      }
+      cell.addEventListener('mouseenter', e => showTip(
+        `<b>${c.short}</b><br>`+
+        `Window ${bi+1}/60 · ${Math.round(bi/(BUCKETS-1)*100)}% through<br>`+
+        `Phase: <span style="color:${ph?PCOLORS[ph]:'#888'}">${ph?PLABELS[ph]||ph:'—'}</span><br>`+
+        `Evidence activity: <b style="color:#E97500">${(c.evidencePct[bi]*100).toFixed(0)}%</b><br>`+
+        `<span style="opacity:.55">${c.totalEditors} editors · ${Math.round(c.durationDays)} days</span>`, e));
+      cell.addEventListener('mousemove', moveTip);
+      cell.addEventListener('mouseleave', hideTip);
+      bar.appendChild(cell);
+    }
+    row.appendChild(bar);
+    block.appendChild(row);
+  });
+
+  // ── footer annotation ────
+  const foot = document.createElement('div');
+  foot.className = 'grp-foot';
+  foot.textContent = isTrapped
+    ? `Evidence still active at ${(evAtEnd*100).toFixed(0)}% in final window — this group never fully escapes the gathering phase`
+    : isMid
+      ? `Evidence activity fades to ${(evAtEnd*100).toFixed(0)}% by end — slow exit from the gathering phase`
+      : `Evidence drops to ${(evAtEnd*100).toFixed(0)}% at close — committee acts decisively once it has what it needs`;
+  block.appendChild(foot);
+  root.appendChild(block);
+
+  // Return deferred SVG builder (needs layout to know width)
+  return function buildCurve() {
+    const W  = svgWrap.getBoundingClientRect().width || 900;
+    const H  = 68, iw = W, ih = H - 8;
+    const x  = d3.scaleLinear().domain([0, BUCKETS-1]).range([0, iw]);
+    const y  = d3.scaleLinear().domain([0, maxEv]).range([ih, 2]);
+    const thY = y(ESCAPE_THRESHOLD);
+
+    const svg = d3.select(svgWrap).append('svg').attr('width',W).attr('height',H);
+    const g   = svg.append('g');
+
+    // Background: "trapped zone" (above threshold) subtle orange
+    g.append('rect').attr('x',0).attr('y',2).attr('width',iw).attr('height',thY-2)
+      .attr('fill','rgba(233,117,0,.03)');
+
+    // Horizontal gridlines
+    [.25,.5,.75,1].forEach(f => {
+      g.append('line').attr('x1',0).attr('x2',iw).attr('y1',y(maxEv*f)).attr('y2',y(maxEv*f))
+        .attr('stroke','rgba(48,54,61,.3)').attr('stroke-dasharray','2,4');
+    });
+
+    // Escape threshold dashed line
+    g.append('line').attr('x1',0).attr('x2',iw).attr('y1',thY).attr('y2',thY)
+      .attr('stroke','rgba(233,117,0,.3)').attr('stroke-dasharray','5,4').attr('stroke-width',1);
+    g.append('text').attr('x',4).attr('y',thY-3)
+      .attr('font-size',7.5).attr('fill','rgba(233,117,0,.35)').text('escape threshold');
+
+    // Area fill
+    const areaGen = d3.area().x((_,i)=>x(i)).y0(ih).y1(d=>y(d))
+      .curve(d3.curveCatmullRom.alpha(.5));
+    g.append('path').datum(avgEv).attr('fill','#E97500').attr('opacity',.18).attr('d',areaGen);
+
+    // Orange glow fill (narrower, brighter strip near line)
+    const areaGen2 = d3.area().x((_,i)=>x(i)).y0(d=>Math.min(ih,y(d)+8)).y1(d=>y(d))
+      .curve(d3.curveCatmullRom.alpha(.5));
+    g.append('path').datum(avgEv).attr('fill','#E97500').attr('opacity',.28).attr('d',areaGen2);
+
+    // Evidence curve line
+    const lineGen = d3.line().x((_,i)=>x(i)).y(d=>y(d)).curve(d3.curveCatmullRom.alpha(.5));
+    g.append('path').datum(avgEv).attr('fill','none')
+      .attr('stroke','#E97500').attr('stroke-width',2.2).attr('opacity',.92).attr('d',lineGen);
+
+    // Vertical clearance marker
+    if (clearBucket > 2 && clearBucket < BUCKETS-3) {
+      g.append('line')
+        .attr('x1',x(clearBucket)).attr('x2',x(clearBucket)).attr('y1',2).attr('y2',ih)
+        .attr('stroke','rgba(233,117,0,.5)').attr('stroke-dasharray','3,3').attr('stroke-width',1);
+    }
+
+    // Y axis labels
+    svg.append('text').attr('x',3).attr('y',13).attr('font-size',8)
+      .attr('fill','rgba(233,117,0,.38)').text((maxEv*100).toFixed(0)+'%');
+    svg.append('text').attr('x',3).attr('y',ih+2).attr('font-size',8)
+      .attr('fill','rgba(48,54,61,.55)').text('0');
+
+    // End-value label with verdict
+    const endPx   = y(evAtEnd);
+    const verdict  = isTrapped ? ` ← still trapped` : isMid ? ` ← fading` : ` ← escaped`;
+    const vColor   = isTrapped ? 'rgba(233,117,0,.8)' : isMid ? 'rgba(139,148,158,.6)' : 'rgba(83,168,35,.7)';
+    svg.append('text')
+      .attr('x', iw - 4)
+      .attr('y', Math.max(12, Math.min(ih-2, endPx+3)))
+      .attr('text-anchor','end').attr('font-size',8.5).attr('font-weight','700')
+      .attr('fill', vColor)
+      .text(`${(evAtEnd*100).toFixed(0)}%${verdict}`);
+
+    // Interactive hover crosshair
+    const vline = g.append('line').attr('y1',2).attr('y2',ih)
+      .attr('stroke','rgba(233,117,0,.2)').attr('stroke-width',1).attr('display','none');
+    g.append('rect').attr('width',iw).attr('height',ih).attr('y',2).attr('fill','transparent')
+      .on('mousemove', evt => {
+        const [mx] = d3.pointer(evt);
+        const bi = Math.min(BUCKETS-1, Math.max(0, Math.round(x.invert(mx))));
+        vline.attr('display','block').attr('x1',mx).attr('x2',mx);
+        showTip(
+          `<b style="color:${grp.baseColor}">${grp.label}</b> at <b>${Math.round(bi/(BUCKETS-1)*100)}%</b> through<br>`+
+          `Avg evidence activity: <span style="color:#E97500;font-weight:700">${(avgEv[bi]*100).toFixed(1)}%</span><br>`+
+          `<span style="opacity:.5">${cases.length} cases averaged</span>`, evt);
+      })
+      .on('mouseleave', () => { vline.attr('display','none'); hideTip(); });
+  };
+}
+
+// ── MAIN ─────────────────────────────────────────────────────────────────────
+async function loadAll() {
+  const BASE = '../data/processed/d3/';
+  const all  = (await Promise.all(
+    GROUPS.flatMap(g => g.cases.map(c =>
+      fetch(BASE + encodeURIComponent(c.slug) + '.json')
+        .then(r => r.ok ? r.json() : null)
+        .then(json => json ? enrichCase(c, json, g) : null)
+        .catch(() => null)
+    ))
+  )).filter(Boolean);
+
+  // Global max avg evidence (consistent Y scale across groups)
+  const allAvg = GROUPS.flatMap(g => {
+    const gc = all.filter(c => c.groupId === g.id);
+    if (!gc.length) return [];
+    return Array.from({length:BUCKETS}, (_,bi) => d3.mean(gc, c=>c.evidencePct[bi])||0);
+  });
+  const maxEv = Math.min(0.82, (d3.max(allAvg)||0.5) * 1.18);
+
+  buildLegend();
+  const root    = document.getElementById('viz-root');
+  const curveFns = [];
+  GROUPS.forEach(g => {
+    const cases = all.filter(c => c.groupId === g.id);
+    if (!cases.length) return;
+    curveFns.push(buildGroupSection(root, g, cases, maxEv));
+  });
+
+  // Build SVG curves after DOM layout
+  requestAnimationFrame(() => curveFns.forEach(fn => fn()));
+}
+
+loadAll();
+</script>
+</body>
+</html>
