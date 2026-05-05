@@ -112,34 +112,14 @@ a{color:inherit}
   <a href="../viz/dashboard.html" class="back-link">← Dashboard</a>
   <span class="nav-divider">|</span>
   <span class="site-title"><span class="wiki-w">W</span> Arbitration Cases</span>
-  <span class="nav-spacer"></span>
-  <a href="#v11">Conflict Fingerprints</a>
 </nav>
-
-<section id="hero">
-  <div class="hero-badges">
-    <span class="wiki-badge">Final Presentation</span>
-    <span class="wiki-badge">53 Cases</span>
-    <span class="wiki-badge">2004–2025</span>
-  </div>
-  <div class="hero-title">Wikipedia's Six Arenas of Conflict</div>
-  <div class="hero-sub">Visualizing 53 arbitration cases across Politics, Religion, Science, Social, Geopolitics &amp; Policy</div>
-  <div class="hero-stats">
-    <div class="stat-block"><span class="stat-val" id="stat-cases">—</span><span class="stat-lbl">Cases</span></div>
-    <div class="stat-block"><span class="stat-val" id="stat-editors">—</span><span class="stat-lbl">Unique Editors</span></div>
-    <div class="stat-block"><span class="stat-val" id="stat-events">—</span><span class="stat-lbl">Total Events</span></div>
-    <div class="stat-block"><span class="stat-val">2004–2025</span><span class="stat-lbl">Time Span</span></div>
-  </div>
-  <div class="group-legend" id="group-legend"></div>
-</section>
 
 <!-- V11 -->
 <section class="viz-section" id="v11">
   <div class="viz-header">
     <div class="viz-meta">
-      <div class="viz-num">Conflict Fingerprints</div>
-      <div class="viz-title">Each Case's Unique Signature</div>
-      <div class="viz-desc">Each row is one case divided into 60 equal time buckets. Each cell is colored by the dominant editing phase — article, evidence, workshop, proposed decision, or outcome. No two cases look the same.</div>
+      <div class="viz-num">Conflict Categories</div>
+      <div class="viz-title">Visualizing Wikipedia's Arbitration Boundaries</div>
     </div>
     <div class="viz-controls" id="v11-legend"></div>
   </div>
@@ -534,23 +514,6 @@ async function loadAll(){
       c.groupMedian = median;
       c.isLong = median > 0 && c.durationDays > median * 1.5;
     });
-  });
-
-  // Hero stats
-  const allEditorNames = new Set(allCases.flatMap(c=>c.nodes.map(n=>n.username)));
-  document.getElementById('stat-cases').textContent   = allCases.length;
-  document.getElementById('stat-editors').textContent = allEditorNames.size;
-  document.getElementById('stat-events').textContent  = fmtK(d3.sum(allCases,c=>c.totalEvents));
-
-  // Group legend
-  const legend=document.getElementById('group-legend');
-  GROUPS.forEach(g=>{
-    const el=document.createElement('div');
-    el.className='group-item';
-    el.innerHTML=`<div class="group-swatch" style="background:${g.baseColor}"></div>
-      <span class="group-name">${g.label}</span>
-      <span class="group-count">${byGroup[g.id].length} cases</span>`;
-    legend.appendChild(el);
   });
 
   buildV11(byGroup);
