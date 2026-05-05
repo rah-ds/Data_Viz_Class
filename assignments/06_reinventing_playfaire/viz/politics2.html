@@ -218,6 +218,20 @@ a{color:inherit}
 .fp-bar{display:flex;gap:1px;flex:1;min-width:0}
 .fp-cell{height:16px;flex:1;border-radius:1px;cursor:default;transition:opacity .1s}
 .fp-cell:hover{opacity:.65}
+/* Tail = buckets after last event — hatched "dead zone" */
+.fp-tail{
+  background:repeating-linear-gradient(
+    45deg,
+    rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px,
+    transparent 1px, transparent 6px
+  ) !important;
+  border:none;
+}
+/* Thin right-border glow at the last active bucket */
+.fp-end{box-shadow:2px 0 0 0 rgba(255,255,255,0.55)}
+/* Duration pill */
+.fp-dur{width:38px;flex-shrink:0;font-size:9px;padding-left:6px;
+  font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--muted)}
 </style>
 
 <script>
@@ -230,22 +244,25 @@ const PAGE_COLOR = {main:'#595959',article:'#3366CC',evidence:'#E97500',
 const GROUPS = [
   {
     id:'politics', label:'Politics', baseColor:'#ef4444',
-    colors:['#fca5a5','#f87171','#ef4444','#dc2626','#b91c1c','#f59e0b','#d97706','#b45309','#78350f'],
+    colors:['#fca5a5','#f87171','#ef4444','#dc2626','#b91c1c','#f59e0b','#d97706','#b45309','#78350f','#92400e','#7c2d12','#451a03'],
     cases:[
       {slug:'user:polishpoliticians',  label:'Polish Politicians',        short:'Polish 2004'},
       {slug:'election',                label:'2006 Election Conflict',    short:'Election 2006'},
+      {slug:'article_titles_and_capitalisation', label:'Article Titles & Capitalisation', short:'Titles 2012'},
       {slug:'race_and_politics',       label:'Race and Politics',         short:'Race 2013'},
+      {slug:'manning_naming_dispute',  label:'Manning Naming Dispute',    short:'Manning 2013'},
       {slug:'american_politics',       label:'American Politics',         short:'AmPol 2014'},
       {slug:'american_politics_2',     label:'American Politics II',      short:'AmPol 2015'},
       {slug:'blp_issues_on_british_politics_articles', label:'British Politics BLP', short:'BritBLP 2018'},
       {slug:'canadian_politics',       label:'Canadian Politics',         short:'Canada 2019'},
       {slug:'iranian_politics',        label:'Iranian Politics',          short:'Iran 2021'},
       {slug:'venezuelan_politics',     label:'Venezuelan Politics',       short:'Venezuela 2024'},
+      {slug:'indian_military_history', label:'Indian Military History',   short:'IndMilitary 2025'},
     ]
   },
   {
     id:'religion', label:'Religion', baseColor:'#8b5cf6',
-    colors:['#ede9fe','#c4b5fd','#a78bfa','#8b5cf6','#7c3aed','#5b21b6'],
+    colors:['#ede9fe','#c4b5fd','#a78bfa','#8b5cf6','#7c3aed','#5b21b6','#4c1d95','#2e1065'],
     cases:[
       {slug:'st_christopher',                 label:'St Christopher',              short:'StChris 2006'},
       {slug:'ebionites',                      label:'Ebionites',                   short:'Ebionites 2007'},
@@ -253,52 +270,65 @@ const GROUPS = [
       {slug:'scientology',                    label:'Scientology',                 short:'Scientology 2009'},
       {slug:'ebionites_3',                    label:'Ebionites 3',                 short:'Ebionites 2013'},
       {slug:'christianity_and_sexuality',     label:'Christianity & Sexuality',    short:'C&S 2015'},
+      {slug:'world_war_ii_and_the_history_of_jews_in_poland', label:'WWII & Jews in Poland', short:'WWII Jews 2023'},
     ]
   },
   {
     id:'science', label:'Science', baseColor:'#06b6d4',
-    colors:['#cffafe','#a5f3fc','#67e8f9','#22d3ee','#06b6d4'],
+    colors:['#cffafe','#a5f3fc','#67e8f9','#22d3ee','#06b6d4','#0891b2','#0e7490','#155e75'],
     cases:[
+      {slug:'theresa_knott_vs._mr-natural-health', label:'Theresa Knott vs MrNatural', short:'Theresa 2004'},
       {slug:'mr-natural-health',              label:'Mr-Natural-Health',           short:'MrNatural 2004'},
       {slug:'climate_change_dispute',         label:'Climate Change Dispute',      short:'Climate 2005'},
       {slug:'climate_change_dispute_2',       label:'Climate Change Dispute 2',    short:'Climate2 2005'},
+      {slug:'pseudoscience',                  label:'Pseudoscience',               short:'Pseudosci 2006'},
       {slug:'martinphi-scienceapologist',     label:'ScienceApologist',            short:'SciApp 2007'},
+      {slug:'climate_change',                 label:'Climate Change (2010)',        short:'Climate 2010'},
       {slug:'skepticism_and_coordinated_editing', label:'Skepticism & Coordinated Editing', short:'Skepticism 2022'},
     ]
   },
   {
     id:'social', label:'Social', baseColor:'#22c55e',
-    colors:['#dcfce7','#bbf7d0','#86efac','#4ade80','#22c55e'],
+    colors:['#dcfce7','#bbf7d0','#86efac','#4ade80','#22c55e','#16a34a','#15803d'],
     cases:[
       {slug:'transnistria',                   label:'Transnistria',                short:'Transnistria 2007'},
       {slug:'abortion',                       label:'Abortion',                    short:'Abortion 2011'},
       {slug:'manipulation_of_blps',           label:'Manipulation of BLPs',        short:'BLPs 2011'},
+      {slug:'racepacket',                     label:'Racepacket',                  short:'Racepacket 2011'},
+      {slug:'sexology',                       label:'Sexology',                    short:'Sexology 2013'},
       {slug:'civility_in_infobox_discussions',label:'Civility in Infobox',         short:'Infobox 2018'},
       {slug:'transgender_healthcare_and_people',label:'Transgender Healthcare',    short:'TransHealth 2025'},
     ]
   },
   {
     id:'geopolitics', label:'Geopolitics', baseColor:'#f97316',
-    colors:['#ffedd5','#fed7aa','#fdba74','#fb923c','#f97316','#ea580c','#c2410c'],
+    colors:['#ffedd5','#fed7aa','#fdba74','#fb923c','#f97316','#ea580c','#c2410c','#9a3412','#7c2d12','#78350f','#451a03'],
     cases:[
       {slug:'israeli_apartheid',                    label:'Israeli Apartheid',              short:'IsrApart 2006'},
       {slug:'israel-lebanon',                       label:'Israel–Lebanon Conflict',        short:'IsrLebanon 2006'},
       {slug:'kosovo',                               label:'Kosovo',                         short:'Kosovo 2006'},
       {slug:'palestineremembered',                  label:'PalestineRemembered',            short:'PalRemem 2007'},
+      {slug:'india-pakistan',                       label:'India–Pakistan',                 short:'India-Pak 2007'},
       {slug:'armenia-azerbaijan_2',                 label:'Armenia–Azerbaijan 2',           short:'ArmAze 2007'},
       {slug:'ottoman_empire-turkey_naming_dispute', label:'Ottoman–Turkey Naming Dispute',  short:'Ottoman 2013'},
+      {slug:'palestine-israel_articles_3',          label:'Palestine-Israel Articles 3',    short:'PalIsrael3 2015'},
+      {slug:'palestine-israel_articles_4',          label:'Palestine-Israel Articles 4',    short:'PalIsrael4 2019'},
       {slug:'armenia-azerbaijan_3',                 label:'Armenia–Azerbaijan 3',           short:'ArmAze 2023'},
+      {slug:'palestine-israel_articles_5',          label:'Palestine-Israel Articles 5',    short:'PalIsrael5 2024'},
     ]
   },
   {
     id:'policy', label:'Policy', baseColor:'#e879f9',
-    colors:['#fdf4ff','#fae8ff','#f0abfc','#e879f9','#d946ef','#a21caf','#701a75'],
+    colors:['#fdf4ff','#fae8ff','#f0abfc','#e879f9','#d946ef','#a21caf','#701a75','#4a044e'],
     cases:[
-      {slug:'civility_enforcement',                 label:'Civility Enforcement',           short:'Civility 2011'},
-      {slug:'banning_policy',                       label:'Banning Policy',                 short:'Banning 2014'},
-      {slug:'arbitration_enforcement',              label:'Arbitration Enforcement',        short:'ArbEnf 2015'},
-      {slug:'arbitration_enforcement_2',            label:'Arbitration Enforcement 2',      short:'ArbEnf2 2015'},
-      {slug:'conduct_in_deletion-related_editing',  label:'Conduct in Deletion Editing',    short:'Deletion 2022'},
+      {slug:'civility_enforcement',                 label:'Civility Enforcement',             short:'Civility 2011'},
+      {slug:'arbitration_enforcement_sanction_handling', label:'Arbitration Enforcement Sanctions', short:'ArbSanctions 2011'},
+      {slug:'banning_policy',                       label:'Banning Policy',                   short:'Banning 2014'},
+      {slug:'arbitration_enforcement',              label:'Arbitration Enforcement',           short:'ArbEnf 2015'},
+      {slug:'arbitration_enforcement_2',            label:'Arbitration Enforcement 2',         short:'ArbEnf2 2015'},
+      {slug:'editor_conduct_in_e-cigs_articles',    label:'Editor Conduct in E-cigs Articles', short:'E-cigs 2015'},
+      {slug:'conduct_of_mister_wiki_editors',       label:'Conduct of Mister Wiki Editors',   short:'MisterWiki 2017'},
+      {slug:'conduct_in_deletion-related_editing',  label:'Conduct in Deletion Editing',       short:'Deletion 2022'},
     ]
   }
 ];
@@ -631,12 +661,21 @@ function buildV11(byGroup){
 
   // Legend
   const legDiv = document.getElementById('v11-legend');
+  const legLabels = {evidence:'Evidence',workshop:'Workshop',proposed_decision:'Decision',
+    outcome:'Outcome',article:'Edits',main:'Discussion'};
   PT_ORDER.forEach(pt => {
     const chip = document.createElement('span');
     chip.style.cssText = 'display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);margin-right:10px';
-    chip.innerHTML = `<span style="width:12px;height:12px;border-radius:2px;background:${PAGE_COLOR[pt]};display:inline-block;flex-shrink:0"></span>${pt.replace(/_/g,' ')}`;
+    chip.innerHTML = `<span style="width:12px;height:12px;border-radius:2px;background:${PAGE_COLOR[pt]};display:inline-block;flex-shrink:0"></span>${legLabels[pt]}`;
     legDiv.appendChild(chip);
   });
+  // Tail legend
+  const tailChip = document.createElement('span');
+  tailChip.style.cssText = 'display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);margin-right:10px;margin-left:6px';
+  tailChip.innerHTML = `<span style="width:12px;height:12px;border-radius:2px;display:inline-block;flex-shrink:0;
+    background:repeating-linear-gradient(45deg,rgba(255,255,255,.1) 0,rgba(255,255,255,.1) 1px,transparent 1px,transparent 6px);
+    border:1px solid rgba(255,255,255,.12)"></span>No activity (ended early)`;
+  legDiv.appendChild(tailChip);
 
   GROUPS.forEach(grp => {
     const cases = byGroup[grp.id];
@@ -659,38 +698,61 @@ function buildV11(byGroup){
         buckets[bi][pt] = (buckets[bi][pt] || 0) + 1;
       });
 
+      // Find last bucket with any activity
+      let lastActive = -1;
+      buckets.forEach((b, bi) => { if (Object.keys(b).length > 0) lastActive = bi; });
+
       const domColors = buckets.map(b => {
-        const keys = Object.keys(b);
-        if (!keys.length) return '#1c2130';
-        // Pick dominant by count; break ties by PT_ORDER priority
+        if (!Object.keys(b).length) return null;
         let best = null, bestCnt = 0;
-        PT_ORDER.forEach(pt => {
-          const v = b[pt] || 0;
-          if (v > bestCnt) { bestCnt = v; best = pt; }
-        });
+        PT_ORDER.forEach(pt => { const v = b[pt]||0; if (v > bestCnt){ bestCnt=v; best=pt; } });
         return PAGE_COLOR[best] || '#595959';
       });
 
+      // Duration label — color orange if ended before bucket 42 (top 30% empty tail)
+      const earlyEnd = lastActive >= 0 && lastActive < 42;
+      const durDays = Math.round(c.durationDays);
+      const durLabel = durDays >= 365 ? (durDays/365).toFixed(1)+'y' : durDays+'d';
+
       const row = document.createElement('div'); row.className = 'fp-row';
+
       const lbl = document.createElement('div'); lbl.className = 'fp-label';
-      lbl.style.color = c.color; lbl.title = `${c.label} (${Math.round(c.durationDays)}d · ${c.totalEvents} events)`;
+      lbl.style.color = c.color;
+      lbl.title = `${c.label}\n${durDays} days · ${c.totalEvents} events`;
       lbl.textContent = c.short;
 
       const bar = document.createElement('div'); bar.className = 'fp-bar';
       domColors.forEach((col, bi) => {
         const cell = document.createElement('div'); cell.className = 'fp-cell';
-        cell.style.background = col;
+        const isTail = bi > lastActive;
+        if (isTail) {
+          cell.classList.add('fp-tail');
+        } else {
+          cell.style.background = col || '#1c2130';
+        }
+        if (bi === lastActive && lastActive >= 0) cell.classList.add('fp-end');
+
         const b = buckets[bi];
         const bStr = PT_ORDER.filter(k => b[k])
-          .map(k => `<span style="color:${PAGE_COLOR[k]}">${k.replace(/_/g,' ')}</span>: ${b[k]}`).join('<br>');
+          .map(k => `<span style="color:${PAGE_COLOR[k]}">${legLabels[k]}</span>: ${b[k]}`).join('<br>');
+        const tailNote = isTail ? '<span style="opacity:.5">— no activity</span>' : (bStr || 'no events');
         cell.addEventListener('mouseenter', evt =>
-          showTip(`<b>${c.short}</b> · bucket ${bi+1}/60<br>${bStr || 'no events'}`, evt));
+          showTip(`<b>${c.short}</b> · segment ${bi+1}/60<br>${tailNote}`, evt));
         cell.addEventListener('mousemove', moveTip);
         cell.addEventListener('mouseleave', hideTip);
         bar.appendChild(cell);
       });
 
-      row.appendChild(lbl); row.appendChild(bar); sec.appendChild(row);
+      // Duration pill
+      const dur = document.createElement('div'); dur.className = 'fp-dur';
+      dur.textContent = durLabel;
+      dur.style.color = earlyEnd ? '#fb923c' : 'rgba(139,148,158,.55)';
+      dur.title = earlyEnd
+        ? `Resolved in ${durDays} days — activity stops at segment ${lastActive+1}/60`
+        : `Active for ${durDays} days`;
+
+      row.appendChild(lbl); row.appendChild(bar); row.appendChild(dur);
+      sec.appendChild(row);
     });
     container.appendChild(sec);
   });
