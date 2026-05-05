@@ -1,4 +1,4 @@
-.PHONY: help install export-svgs serve-vda serve-btw serve-lg serve-wiki serve-wiki-ideas serve-wiki-ideas2 serve-wiki-politics serve-wiki-politics2 sync-wiki-cases prepare-vda notebook lint fmt-py fmt-md clean
+.PHONY: help install export-svgs serve-vda serve-btw serve-lg serve-wiki serve-wiki-ideas serve-wiki-ideas2 serve-wiki-politics2 sync-wiki-cases prepare-vda notebook lint fmt-py fmt-md clean
 
 # ──────────────────────────────────────────────
 #  Colors (only when stdout is a terminal)
@@ -27,9 +27,8 @@ help:
 	@echo "    $(GREEN)serve-lg$(RESET)       Serve assignment 05 Observable Framework (port 3000)"
 	@echo "    $(GREEN)serve-wiki$(RESET)     Serve assignment 06 Wikipedia edit-conflict viz (port 8888)"
 	@echo "    $(GREEN)serve-wiki-ideas$(RESET)  Open Volume I experimental viz ideas"
-	@echo "    $(GREEN)serve-wiki-ideas2$(RESET) Open Volume II experimental viz ideas
-    $(GREEN)serve-wiki-politics$(RESET) Open politics cases standalone viz
-    $(GREEN)serve-wiki-politics2$(RESET) Open politics Vol. II (10 more viz)"
+	@echo "    $(GREEN)serve-wiki-ideas2$(RESET) Open Volume II experimental viz ideas"
+	@echo "    $(GREEN)serve-wiki-politics2$(RESET) Open four-group conflict viz (Politics, Religion, Science, Social)"
 	@echo "    $(GREEN)notebook$(RESET)       Launch Jupyter Notebook"
 	@echo ""
 	@echo "  $(CYAN)Data & Export$(RESET)"
@@ -74,11 +73,7 @@ serve-wiki-ideas:
 serve-wiki-ideas2:
 	uv run python assignments/06_reinventing_playfaire/scripts/serve.py --open viz/ideas2.html
 
-## serve-wiki-politics: open politics cases standalone viz
-serve-wiki-politics:
-	uv run python assignments/06_reinventing_playfaire/scripts/serve.py --open viz/politics.html
-
-## serve-wiki-politics2: open politics Vol. II viz
+## serve-wiki-politics2: open four-group conflict viz
 serve-wiki-politics2:
 	uv run python assignments/06_reinventing_playfaire/scripts/serve.py --open viz/politics2.html
 
