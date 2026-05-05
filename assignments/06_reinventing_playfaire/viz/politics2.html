@@ -67,7 +67,30 @@ a{color:inherit}
   background:linear-gradient(90deg,var(--section-color),transparent 78%)
 }
 #v3{--section-color:#3366CC}
+#v-profiles{--section-color:#54A823}
 #v11{--section-color:#e879f9}
+/* Conflict Profiles */
+.cp-group{margin-bottom:36px}
+.cp-group-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+  margin-bottom:10px;padding-left:10px;border-left-width:3px;border-left-style:solid}
+.cp-row{display:flex;align-items:center;gap:10px;margin-bottom:5px}
+.cp-label{font-size:10px;text-align:right;width:128px;flex-shrink:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default}
+.cp-stack{display:flex;flex:1;height:18px;border-radius:3px;overflow:hidden;gap:0}
+.cp-seg{height:100%;cursor:default;transition:opacity .1s}
+.cp-seg:hover{opacity:1!important;filter:brightness(1.2)}
+.cp-int-bar{width:72px;height:8px;background:rgba(255,255,255,.06);border-radius:4px;flex-shrink:0;overflow:hidden}
+.cp-int-fill{height:100%;border-radius:4px;transition:width .3s}
+.cp-dep{cursor:default;align-self:center;transition:opacity .15s}
+.cp-dep:hover{opacity:1!important}
+#vp-container{padding:28px 28px 16px;background:linear-gradient(180deg,rgba(22,27,34,.96),rgba(28,33,48,.82));
+  border:1px solid rgba(48,54,61,.9);border-radius:24px;box-shadow:0 18px 40px rgba(0,0,0,.18)}
+.cp-col-heads{display:flex;align-items:center;gap:10px;margin-bottom:8px;padding-bottom:8px;
+  border-bottom:1px solid rgba(48,54,61,.6)}
+.cp-col-heads .cp-label{color:var(--muted)}
+.cp-col-head-stack{flex:1;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.cp-col-head-int{width:72px;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;flex-shrink:0}
+.cp-col-head-dep{width:20px;font-size:10px;color:var(--muted);text-align:center;flex-shrink:0}
 .viz-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:30px;flex-wrap:wrap;gap:20px}
 .viz-meta{display:flex;flex-direction:column;gap:4px}
 .viz-meta::before{
@@ -122,6 +145,7 @@ a{color:inherit}
   <span class="site-title"><span class="wiki-w">W</span> Arbitration Cases</span>
   <span class="nav-spacer"></span>
   <a href="#v3">Chord Diagrams</a>
+  <a href="#v-profiles">Conflict Profiles</a>
   <a href="#v11">Fingerprints</a>
 </nav>
 
@@ -147,7 +171,7 @@ a{color:inherit}
 <section class="viz-section" id="v3">
   <div class="viz-header">
     <div class="viz-meta">
-      <div class="viz-num">03 — Crossing the Aisle</div>
+      <div class="viz-num">01 — Crossing the Aisle</div>
       <div class="viz-title">Editor Overlap Chord Diagrams</div>
       <div class="viz-desc">Left: which topic groups share the same editors — veterans moving between arenas. Right: within-group case-to-case overlaps per category.</div>
     </div>
@@ -158,11 +182,24 @@ a{color:inherit}
   </div>
 </section>
 
+<!-- V-PROFILES -->
+<section class="viz-section" id="v-profiles">
+  <div class="viz-header">
+    <div class="viz-meta">
+      <div class="viz-num">02 — Conflict Profiles</div>
+      <div class="viz-title">How Each Case Spent Its Time</div>
+      <div class="viz-desc">Phase composition (proportion of events in each editing stage), normalized editing intensity (events per day), and departure rate (dot size = editors who left). Cases with high departure and low deliberation resolved quickly; slow workshop-heavy cases dragged longest.</div>
+    </div>
+    <div class="viz-controls" id="vp-legend"></div>
+  </div>
+  <div id="vp-container"></div>
+</section>
+
 <!-- V11 -->
 <section class="viz-section" id="v11">
   <div class="viz-header">
     <div class="viz-meta">
-      <div class="viz-num">11 — Conflict Fingerprints</div>
+      <div class="viz-num">03 — Conflict Fingerprints</div>
       <div class="viz-title">Each Case's Unique Signature</div>
       <div class="viz-desc">Each row is one case divided into 60 equal time buckets. Each cell is colored by the dominant editing phase — article, evidence, workshop, proposed decision, or outcome. No two cases look the same.</div>
     </div>
@@ -384,6 +421,7 @@ async function loadAll(){
   });
 
   buildV3(allCases, byGroup, groupEditorSets);
+  buildProfiles(byGroup);
   buildV11(byGroup);
 }
 
@@ -482,6 +520,105 @@ function buildV3(allCases, byGroup, groupEditorSets){
       .on('mousemove',moveTip).on('mouseout',hideTip);
     wG.append('text').attr('text-anchor','middle').attr('y',5)
       .attr('fill',grp.baseColor).attr('font-size','9px').attr('font-weight','700').text(grp.label);
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// V02 — CONFLICT PROFILES
+// ─────────────────────────────────────────────────────────────────────────────
+function buildProfiles(byGroup){
+  const PHASE_ORDER = ['article','evidence','workshop','proposed_decision','outcome','main'];
+  const PHASE_LABELS = {article:'Article',evidence:'Evidence',workshop:'Workshop',
+    proposed_decision:'Proposed Dec.',outcome:'Outcome',main:'Main talk'};
+
+  const allFlat = GROUPS.flatMap(g => byGroup[g.id] || []);
+  const maxIntensity = d3.max(allFlat, c => c.totalEvents / Math.max(c.durationDays, 1)) || 1;
+
+  // Legend
+  const legDiv = document.getElementById('vp-legend');
+  PHASE_ORDER.forEach(pt => {
+    const chip = document.createElement('span');
+    chip.style.cssText = 'display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);margin-right:10px';
+    chip.innerHTML = `<span style="width:10px;height:10px;border-radius:2px;background:${PAGE_COLOR[pt]};display:inline-block;flex-shrink:0"></span>${PHASE_LABELS[pt]}`;
+    legDiv.appendChild(chip);
+  });
+  // Column headers
+  const container = document.getElementById('vp-container');
+  const colHead = document.createElement('div'); colHead.className = 'cp-col-heads';
+  colHead.innerHTML = `<div class="cp-label"></div>
+    <div class="cp-col-head-stack">Phase composition (% of events)</div>
+    <div class="cp-col-head-int">Events/day</div>
+    <div class="cp-col-head-dep">Dep.</div>`;
+  container.appendChild(colHead);
+
+  GROUPS.forEach(grp => {
+    const cases = byGroup[grp.id];
+    if (!cases || !cases.length) return;
+
+    const sec = document.createElement('div'); sec.className = 'cp-group';
+    const hdr = document.createElement('div'); hdr.className = 'cp-group-label';
+    hdr.style.color = grp.baseColor; hdr.style.borderLeftColor = grp.baseColor;
+    hdr.textContent = grp.label;
+    sec.appendChild(hdr);
+
+    cases.forEach(c => {
+      const total = PHASE_ORDER.reduce((s, pt) => s + (c.ptCounts[pt] || 0), 0) || 1;
+      const intensity = (c.totalEvents / Math.max(c.durationDays, 1)) / maxIntensity;
+
+      const row = document.createElement('div'); row.className = 'cp-row';
+
+      // Label
+      const lbl = document.createElement('div'); lbl.className = 'cp-label';
+      lbl.style.color = c.color;
+      lbl.title = `${c.label} · ${Math.round(c.durationDays)}d · ${c.totalEvents} events`;
+      lbl.textContent = c.short;
+
+      // Phase stack
+      const stack = document.createElement('div'); stack.className = 'cp-stack';
+      PHASE_ORDER.forEach(pt => {
+        const frac = (c.ptCounts[pt] || 0) / total;
+        if (frac < 0.004) return;
+        const seg = document.createElement('div'); seg.className = 'cp-seg';
+        seg.style.flex = frac;
+        seg.style.background = PAGE_COLOR[pt];
+        const cnt = c.ptCounts[pt] || 0;
+        seg.addEventListener('mouseenter', evt =>
+          showTip(`<b>${c.short}</b><br><span style="color:${PAGE_COLOR[pt]}">${PHASE_LABELS[pt]}</span>: ${cnt} events (${(frac*100).toFixed(1)}%)`, evt));
+        seg.addEventListener('mousemove', moveTip);
+        seg.addEventListener('mouseleave', hideTip);
+        stack.appendChild(seg);
+      });
+
+      // Intensity bar
+      const intBar = document.createElement('div'); intBar.className = 'cp-int-bar';
+      const intFill = document.createElement('div'); intFill.className = 'cp-int-fill';
+      intFill.style.width = (intensity * 100).toFixed(1) + '%';
+      intFill.style.background = c.color;
+      intFill.style.opacity = '0.72';
+      intBar.appendChild(intFill);
+      intBar.addEventListener('mouseenter', evt =>
+        showTip(`<b>${c.short}</b><br>Intensity: <b>${(c.totalEvents / Math.max(c.durationDays,1)).toFixed(1)}</b> events/day<br>Duration: ${Math.round(c.durationDays)} days`, evt));
+      intBar.addEventListener('mousemove', moveTip);
+      intBar.addEventListener('mouseleave', hideTip);
+
+      // Departure dot
+      const dotSize = Math.round(4 + c.departurePct * 14);
+      const depDot = document.createElement('div'); depDot.className = 'cp-dep';
+      depDot.style.cssText = `width:${dotSize}px;height:${dotSize}px;border-radius:50%;
+        background:${c.color};opacity:${(0.25 + c.departurePct * 0.75).toFixed(2)};
+        margin:0 auto`;
+      depDot.addEventListener('mouseenter', evt =>
+        showTip(`<b>${c.short}</b><br>Departure rate: <b>${(c.departurePct*100).toFixed(0)}%</b><br>${c.departed} of ${c.totalEditors} editors left`, evt));
+      depDot.addEventListener('mousemove', moveTip);
+      depDot.addEventListener('mouseleave', hideTip);
+
+      row.appendChild(lbl);
+      row.appendChild(stack);
+      row.appendChild(intBar);
+      row.appendChild(depDot);
+      sec.appendChild(row);
+    });
+    container.appendChild(sec);
   });
 }
 
