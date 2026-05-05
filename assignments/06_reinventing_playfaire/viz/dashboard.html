@@ -574,7 +574,8 @@ function goSummary(){
 }
 function goBack(){
   const active=document.querySelector('.pane.active')?.id;
-  if(active==='pane-viz') goSummary();
+  if(active==='pane-viz') goOverview();
+  else if(active==='pane-summary') goOverview();
   else goOverview();
 }
 
@@ -1144,9 +1145,7 @@ function renderCompareStats(recs, container){
 // ═════════════════════════════════════════════════════════
 function clickCase(rec){
   currentRec=rec;
-  buildSummary(rec);
-  showPane('summary');
-  setNav([{label:rec.case_name}]);
+  openViz('timeline');
   document.getElementById('nav-analysis-btn').classList.remove('active');
 }
 
@@ -1266,6 +1265,7 @@ function openViz(tab){
   if(!currentRec) return;
   showPane('viz');
   setNav([
+    {label:'Cases', onclick:goOverview},
     {label:currentRec.case_name, onclick:goSummary},
     {label:tab==='timeline'?'Timeline':'Network'}
   ]);
