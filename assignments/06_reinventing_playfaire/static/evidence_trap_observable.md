@@ -6,20 +6,62 @@
 2. Upload `evidence_trap_data.json` as a file attachment  
    (click the **paperclip icon** in the top-right, or drag it onto the notebook)
 3. Paste each cell below **in order** — each is a separate cell
+4. **All cells are JavaScript cells** — use the `{...}` button, not Markdown, even for Cell 1
 
 ---
 
-## Cell 1 — Title (Markdown cell)
+## Cell 1 — Styled Header (JavaScript cell — paste as JavaScript, NOT Markdown)
 
-```markdown
-# The Evidence Trap
-### Why fact-based conflicts never settle
-
-Wikipedia's Arbitration Committee is its court of last resort. Cases only reach it after every lower forum has failed.
-When those cases cluster around disputed **facts** rather than disputed **conduct**, they stay open longer —
-because the committee cannot rule on what reality is. It can only manage behavior around the disagreement.
-
-*53 arbitration cases · 2004–2025 · Click any group to expand individual cases*
+```javascript
+html`<div style="
+  background:
+    radial-gradient(circle at 14% 0%,rgba(233,117,0,.13),transparent 28%),
+    radial-gradient(circle at 86% 6%,rgba(51,102,204,.08),transparent 24%),
+    #0d1117;
+  color:#e6edf3;
+  font-family:system-ui,-apple-system,'Segoe UI',sans-serif;
+  padding:60px 52px 44px;
+  max-width:1420px;
+  margin:0 auto;
+">
+  <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;
+    color:rgba(233,117,0,.6);margin-bottom:14px">
+    53 Cases · 2004 to 2025
+  </div>
+  <div style="font-size:clamp(34px,4.5vw,56px);font-weight:800;line-height:1.05;
+    letter-spacing:-.04em;margin-bottom:8px">
+    The <span style="color:#E97500">Evidence</span> Trap
+  </div>
+  <div style="font-size:16px;color:#8b949e;margin-bottom:22px">
+    Why fact-based conflicts never settle
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;max-width:1040px;margin-top:4px">
+    <div style="font-size:13.5px;color:rgba(200,209,219,.72);line-height:1.85;
+      border-left:2px solid rgba(233,117,0,.28);padding-left:15px">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+        color:rgba(233,117,0,.5);margin-bottom:6px">The pattern</div>
+      In political cases, the committee gathers evidence, rules, and moves on.
+      The evidence phase clears within the first third of the timeline.
+      In science and geopolitics, the evidence phase never fully releases.
+      The argument loops back, demands more proof, and the case starves
+      for a decision that facts alone cannot deliver.
+    </div>
+    <div style="font-size:13.5px;color:rgba(200,209,219,.72);line-height:1.85;
+      border-left:2px solid rgba(233,117,0,.28);padding-left:15px">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+        color:rgba(233,117,0,.5);margin-bottom:6px">What Wikipedia's last resort reveals</div>
+      The Arbitration Committee is Wikipedia's court of <strong style="color:rgba(230,218,200,.9)">last resort</strong>.
+      Cases only reach it after every lower forum has failed.
+      When those cases cluster around disputed <strong style="color:rgba(230,218,200,.9)">facts</strong> rather than
+      disputed <strong style="color:rgba(230,218,200,.9)">conduct</strong>, they stay open longer because the committee
+      cannot rule on what reality is. It can only manage behavior around
+      the disagreement. The evidence trap is not a process failure.
+      It is a signal that some conflicts are structurally beyond arbitration's reach.
+    </div>
+  </div>
+  <div style="width:100px;height:2px;border-radius:999px;
+    background:linear-gradient(90deg,#E97500,transparent);margin:30px 0 0"></div>
+</div>`
 ```
 
 ---
