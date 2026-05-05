@@ -153,23 +153,31 @@ mean evidence fraction across all cases in the category, smoothed across the
 Individual case rows expand below it on click.
 The group average is the primary reading surface; individual cases provide
 ground truth for what drives the aggregate. I included some notes about the cases for the curious reader that clicks into the graphic for more detail.
+The interactive version is published at
+\href{https://observablehq.com/d/7bff75758de5a3c9}{\texttt{observablehq.com/d/7bff75758de5a3c9}};
+the full visualization is embedded on the following page.
 
-\begin{figure}[h]
+\clearpage
+\begin{figure}[p]
   \centering
-  \href{https://github.com/rah-ds/Data_Viz_Class/tree/main/assignments/06_reinventing_playfaire/viz}{%
-    \includegraphics[width=\linewidth]{../static/evidence_trap.pdf}%
+  \href{https://observablehq.com/d/7bff75758de5a3c9}{%
+    \includegraphics[width=\linewidth,height=0.88\textheight,keepaspectratio]{../static/evidence_trap.pdf}%
   }
   \caption{\small\textcolor{gray}{
-    The Evidence Trap (\texttt{evidence\_trap.html}).
-    Each row is one arbitration case sliced into 60 equal time windows.
-    \textcolor{ev}{Orange} intensity encodes the fraction of edits in that window
-    belonging to the evidence phase; all other phases are dark.
-    Diagonal hatching marks windows after the last recorded edit.
-    Science and Geopolitics (shown expanded) sustain orange well past the midpoint;
-    Politics and Policy clear fast and close cleanly.
+    Interactive visualization of all 53 ArbCom cases grouped by dispute type
+    (\href{https://observablehq.com/d/7bff75758de5a3c9}{live version}).
+    Each row is a case's \textbf{group average} evidence fraction across 60 equal time windows.
+    \textcolor{ev}{Orange} intensity = share of edits belonging to the evidence phase;
+    dark cells = no evidence activity.
+    \textbf{Fact-based groups} (Geopolitics, Science, Religion): orange persists well past the midpoint
+    --- the evidence record is never considered complete.
+    \textbf{Conduct-based groups} (Politics, Policy, Social): orange concentrates in the first third
+    then clears --- the committee gathers what it needs, rules, and closes.
+    Rows expand on click to reveal individual cases.
   }}
   \label{fig:evidence-trap}
 \end{figure}
+\clearpage
 
 %----------------------------------------------------------------------------------------
 %       SECTION 3
@@ -247,6 +255,9 @@ I did help use the Claude code to help draft the code for this viz. All prompts 
   \item \textbf{Data visualization coursework} (this assignment \& all visualizations):
     \href{https://github.com/rah-ds/Data_Viz_Class}%
          {github.com/rah-ds/Data\_Viz\_Class}
+  \item \textbf{Interactive visualization} (Observable notebook):
+    \href{https://observablehq.com/d/7bff75758de5a3c9}%
+         {observablehq.com/d/7bff75758de5a3c9}
 \end{itemize}}
 
 \end{document}
