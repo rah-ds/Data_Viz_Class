@@ -143,47 +143,36 @@ a{color:inherit}
     </div>
     <div class="viz-controls" id="v11-legend"></div>
   </div>
-  <!-- How-to-read guide -->
-  <div class="fp-guide">
-    <div class="fp-guide-title">How to read this chart</div>
+  <!-- How-to-read guide (collapsed by default) -->
+  <details class="fp-guide">
+    <summary class="fp-guide-title">How to read this chart <span class="fp-guide-arrow">›</span></summary>
     <div class="fp-guide-grid">
       <div class="fp-guide-item">
         <div class="fp-guide-label">One row = one case</div>
-        <div class="fp-guide-desc">Each row represents a single Wikipedia arbitration case. Rows are sorted by start date within each group.</div>
+        <div class="fp-guide-desc">Each row is a single Wikipedia arbitration case, sorted by start date within each group.</div>
       </div>
       <div class="fp-guide-item">
         <div class="fp-guide-label">60 segments = full timeline</div>
-        <div class="fp-guide-desc">The row is divided into 60 equal slices of the case's total lifespan. Each cell is colored by the dominant editing phase in that window.</div>
-      </div>
-      <div class="fp-guide-item">
-        <div class="fp-guide-label">Phase colors</div>
-        <div class="fp-guide-phases">
-          <span><i style="background:#3366CC"></i>Article edits — changes to the article under dispute</span>
-          <span><i style="background:#E97500"></i>Evidence — editors submitting evidence to the committee</span>
-          <span><i style="background:#54A823"></i>Workshop — collaborative drafting of proposed remedies</span>
-          <span><i style="background:#B60000"></i>Proposed decision — committee drafts its ruling</span>
-          <span><i style="background:#72777D"></i>Outcome — final ruling, appeals &amp; post-case activity</span>
-          <span><i style="background:#595959"></i>Discussion — general talk-page conversation</span>
-        </div>
+        <div class="fp-guide-desc">The row is sliced into 60 equal windows of the case's total lifespan. Each cell is colored by the dominant editing phase in that window.</div>
       </div>
       <div class="fp-guide-item">
         <div class="fp-guide-label">Spark strip <span style="color:#3fb950">▲</span> <span style="color:#f85149">▼</span></div>
-        <div class="fp-guide-desc">Thin bar above each row. <b style="color:#3fb950">Green bars rising up</b> = editors first joining the case that segment. <b style="color:#f85149">Red bars dropping down</b> = editors making their last edit that segment.</div>
+        <div class="fp-guide-desc"><b style="color:#3fb950">Green up</b> = editors joining that segment. <b style="color:#f85149">Red down</b> = editors making their last edit.</div>
       </div>
       <div class="fp-guide-item">
         <div class="fp-guide-label">Hatched tail ░░░</div>
-        <div class="fp-guide-desc">Diagonal-hatched cells after the last active segment mean the case ended early — activity stopped well before the timeline ran out.</div>
+        <div class="fp-guide-desc">Diagonal-hatched cells after the last active segment — the case resolved before the timeline ran out.</div>
       </div>
       <div class="fp-guide-item">
-        <div class="fp-guide-label">Duration pill <span style="color:#fb923c">●</span></div>
-        <div class="fp-guide-desc"><b style="color:#fb923c">Orange ⏱</b> = ran significantly longer than others in its group. <span style="color:rgba(139,148,158,.7)">Gray</span> = typical length. The <b style="color:rgba(251,146,60,.7)">amber-shaded region</b> on the bar shows time past the group median — hover the pill to see the explanation.</div>
+        <div class="fp-guide-label">Duration pill <span style="color:#fb923c">⏱</span></div>
+        <div class="fp-guide-desc"><b style="color:#fb923c">Orange ⏱</b> = ran longer than 1.5× the group median. The amber-shaded bar region shows time past the typical endpoint. Hover to see why.</div>
       </div>
       <div class="fp-guide-item">
         <div class="fp-guide-label">Case label <span style="opacity:.5">›</span></div>
-        <div class="fp-guide-desc">Click any case name to reveal the one-sentence ArbCom decision summary inline. Click again to collapse.</div>
+        <div class="fp-guide-desc">Click any case name to reveal the ArbCom decision summary inline. Click again to collapse.</div>
       </div>
     </div>
-  </div>
+  </details>
   <div id="v11-container"></div>
 </section>
 
@@ -225,19 +214,20 @@ a{color:inherit}
 .fp-dec.open{max-height:120px;opacity:1}
 /* Long case badge */
 .fp-long-badge{font-size:8px;color:#fb923c;flex-shrink:0}
-/* How-to-read guide */
+/* How-to-read guide (collapsible) */
 .fp-guide{background:rgba(22,27,34,.85);border:1px solid rgba(48,54,61,.8);border-radius:16px;
-  padding:24px 28px;margin:0 0 40px}
+  padding:16px 24px;margin:0 0 40px;cursor:pointer}
+.fp-guide[open]{padding-bottom:24px}
 .fp-guide-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;
-  color:var(--muted);margin-bottom:18px}
-.fp-guide-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px 28px}
+  color:var(--muted);list-style:none;display:flex;align-items:center;justify-content:space-between;
+  user-select:none}
+.fp-guide-title::-webkit-details-marker{display:none}
+.fp-guide-arrow{font-size:14px;opacity:.4;transition:transform .2s ease;display:inline-block}
+.fp-guide[open] .fp-guide-arrow{transform:rotate(90deg)}
+.fp-guide-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px 28px;margin-top:18px}
 @media(max-width:900px){.fp-guide-grid{grid-template-columns:repeat(2,1fr)}}
-.fp-guide-item{}
-.fp-guide-label{font-size:11px;font-weight:600;color:#c8d1db;margin-bottom:5px}
+.fp-guide-label{font-size:11px;font-weight:600;color:#c8d1db;margin-bottom:4px}
 .fp-guide-desc{font-size:11px;color:rgba(139,148,158,.8);line-height:1.55}
-.fp-guide-phases{display:flex;flex-direction:column;gap:4px;margin-top:4px}
-.fp-guide-phases span{display:flex;align-items:center;gap:7px;font-size:10.5px;color:rgba(139,148,158,.8);line-height:1.4}
-.fp-guide-phases i{display:inline-block;width:10px;height:10px;border-radius:2px;flex-shrink:0}
 </style>
 
 <script>
@@ -640,7 +630,6 @@ function buildV11(byGroup){
       const durLabel = durDays >= 365 ? (durDays/365).toFixed(1)+'y' : durDays+'d';
 
       const row = document.createElement('div'); row.className = 'fp-row';
-      if (c.isLong) row.style.boxShadow = 'inset 3px 0 0 0 rgba(251,146,60,.45)';
 
       const lbl = document.createElement('div'); lbl.className = 'fp-label';
       lbl.style.cssText = `color:${c.color};display:flex;flex-direction:column;gap:2px`;
