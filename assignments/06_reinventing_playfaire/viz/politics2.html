@@ -143,16 +143,53 @@ a{color:inherit}
     </div>
     <div class="viz-controls" id="v11-legend"></div>
   </div>
+  <!-- How-to-read guide -->
+  <div class="fp-guide">
+    <div class="fp-guide-title">How to read this chart</div>
+    <div class="fp-guide-grid">
+      <div class="fp-guide-item">
+        <div class="fp-guide-label">One row = one case</div>
+        <div class="fp-guide-desc">Each row represents a single Wikipedia arbitration case. Rows are sorted by start date within each group.</div>
+      </div>
+      <div class="fp-guide-item">
+        <div class="fp-guide-label">60 segments = full timeline</div>
+        <div class="fp-guide-desc">The row is divided into 60 equal slices of the case's total lifespan. Each cell is colored by the dominant editing phase in that window.</div>
+      </div>
+      <div class="fp-guide-item">
+        <div class="fp-guide-label">Phase colors</div>
+        <div class="fp-guide-phases">
+          <span><i style="background:#3366CC"></i>Article edits — changes to the article under dispute</span>
+          <span><i style="background:#E97500"></i>Evidence — editors submitting evidence to the committee</span>
+          <span><i style="background:#54A823"></i>Workshop — collaborative drafting of proposed remedies</span>
+          <span><i style="background:#B60000"></i>Proposed decision — committee drafts its ruling</span>
+          <span><i style="background:#72777D"></i>Outcome — final ruling, appeals &amp; post-case activity</span>
+          <span><i style="background:#595959"></i>Discussion — general talk-page conversation</span>
+        </div>
+      </div>
+      <div class="fp-guide-item">
+        <div class="fp-guide-label">Spark strip <span style="color:#3fb950">▲</span> <span style="color:#f85149">▼</span></div>
+        <div class="fp-guide-desc">Thin bar above each row. <b style="color:#3fb950">Green bars rising up</b> = editors first joining the case that segment. <b style="color:#f85149">Red bars dropping down</b> = editors making their last edit that segment.</div>
+      </div>
+      <div class="fp-guide-item">
+        <div class="fp-guide-label">Hatched tail ░░░</div>
+        <div class="fp-guide-desc">Diagonal-hatched cells after the last active segment mean the case ended early — activity stopped well before the timeline ran out.</div>
+      </div>
+      <div class="fp-guide-item">
+        <div class="fp-guide-label">Duration pill <span style="color:#fb923c">●</span></div>
+        <div class="fp-guide-desc"><b style="color:#fb923c">Orange</b> = resolved quickly relative to its group norm. <span style="color:rgba(139,148,158,.7)">Gray</span> = ran the full expected length. Hover for a detailed note.</div>
+      </div>
+    </div>
+  </div>
   <div id="v11-container"></div>
 </section>
 
 <style>
-.fp-group{margin-bottom:40px}
+.fp-group{margin-bottom:48px}
 .fp-group-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
-  margin-bottom:10px;padding-left:10px;border-left-width:3px;border-left-style:solid}
-.fp-row{display:flex;align-items:center;gap:8px;margin-bottom:3px}
-.fp-label{font-size:10px;text-align:right;width:128px;flex-shrink:0;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default}
+  margin-bottom:12px;padding-left:10px;border-left-width:3px;border-left-style:solid}
+.fp-row{display:flex;align-items:center;gap:10px;margin-bottom:6px;padding:2px 0}
+.fp-label{font-size:10px;text-align:right;width:160px;flex-shrink:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;line-height:1.3}
 .fp-bar{display:flex;gap:1px;flex:1;min-width:0}
 .fp-cell{height:16px;flex:1;border-radius:1px;cursor:default;transition:opacity .1s}
 .fp-cell:hover{opacity:.65}
@@ -170,31 +207,25 @@ a{color:inherit}
 /* Duration pill */
 .fp-dur{width:38px;flex-shrink:0;font-size:9px;padding-left:6px;
   font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--muted)}
-/* Row wrapper and expand panel */
-.fp-row-wrap{cursor:pointer}
-.fp-row-wrap:hover .fp-row{background:rgba(255,255,255,.025);border-radius:6px}
-.fp-expand{display:none;padding:20px 24px 24px;margin:4px 0 12px;
-  background:rgba(22,27,34,.96);border:1px solid rgba(51,102,204,.18);
-  border-radius:16px;animation:expandIn .18s ease}
-.fp-expand.open{display:block}
-@keyframes expandIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
-.fp-expand-decision{font-size:13px;line-height:1.55;color:#c8d1db;
-  padding-left:14px;border-left:3px solid var(--expand-color,#3388cc);margin-bottom:16px}
-.fp-expand-stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px}
-.fp-expand-stat{background:rgba(13,17,23,.6);border:1px solid rgba(48,54,61,.8);
-  border-radius:10px;padding:8px 14px;display:flex;flex-direction:column;gap:2px}
-.fp-expand-stat-val{font-size:18px;font-weight:700;letter-spacing:-.02em}
-.fp-expand-stat-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
-.fp-network-wrap{background:rgba(13,17,23,.5);border:1px solid rgba(48,54,61,.6);
-  border-radius:12px;overflow:hidden}
-.fp-network-legend{display:flex;gap:16px;flex-wrap:wrap;padding:10px 16px 6px;font-size:10px;color:var(--muted)}
-.fp-network-legend span{display:flex;align-items:center;gap:5px}
 /* Editor arrivals/departures spark strip */
 .fp-spark{display:flex;gap:1px;height:14px;margin-bottom:2px}
 .fp-spark-cell{flex:1;display:flex;flex-direction:column;justify-content:center;min-width:0;position:relative}
 .fp-arr{background:#3fb950;width:100%;position:absolute;bottom:50%;left:0;right:0;opacity:.85}
 .fp-dep{background:#f85149;width:100%;position:absolute;top:50%;left:0;right:0;opacity:.75}
 .fp-spark-center{position:absolute;top:50%;left:0;right:0;height:1px;background:rgba(139,148,158,.2)}
+/* How-to-read guide */
+.fp-guide{background:rgba(22,27,34,.85);border:1px solid rgba(48,54,61,.8);border-radius:16px;
+  padding:24px 28px;margin:0 0 40px}
+.fp-guide-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;
+  color:var(--muted);margin-bottom:18px}
+.fp-guide-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px 28px}
+@media(max-width:900px){.fp-guide-grid{grid-template-columns:repeat(2,1fr)}}
+.fp-guide-item{}
+.fp-guide-label{font-size:11px;font-weight:600;color:#c8d1db;margin-bottom:5px}
+.fp-guide-desc{font-size:11px;color:rgba(139,148,158,.8);line-height:1.55}
+.fp-guide-phases{display:flex;flex-direction:column;gap:4px;margin-top:4px}
+.fp-guide-phases span{display:flex;align-items:center;gap:7px;font-size:10.5px;color:rgba(139,148,158,.8);line-height:1.4}
+.fp-guide-phases i{display:inline-block;width:10px;height:10px;border-radius:2px;flex-shrink:0}
 </style>
 
 <script>
@@ -513,166 +544,6 @@ async function loadAll(){
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// NETWORK GRAPH — editor edits and reverts for a single case
-// ─────────────────────────────────────────────────────────────────────────────
-function renderCaseNetwork(c, container) {
-  const W = container.clientWidth || 800;
-  const H = 320;
-  const MAX_NODES = 50; // cap for performance
-
-  // Build per-editor stats from events
-  const editorStats = {};
-  c.events.forEach(e => {
-    const u = e.actor || e.username; if (!u) return;
-    if (!editorStats[u]) editorStats[u] = {edits: 0, reverts: 0, phases: {}};
-    editorStats[u].edits++;
-    if (e.type === 'revert') editorStats[u].reverts++;
-    const pt = e.page_type || 'main';
-    editorStats[u].phases[pt] = (editorStats[u].phases[pt] || 0) + 1;
-  });
-
-  // Revert edges
-  const revertEdges = [];
-  const revertPairs = new Set();
-  c.events.filter(e => e.type === 'revert' && e.reverted).forEach(e => {
-    const actor = e.actor || e.username;
-    if (!actor) return;
-    const key = actor + '|' + e.reverted;
-    if (!revertPairs.has(key)) { revertPairs.add(key); }
-    const existing = revertEdges.find(l => l.source === actor && l.target === e.reverted);
-    if (existing) { existing.count++; } else { revertEdges.push({source: actor, target: e.reverted, count: 1, type: 'revert'}); }
-  });
-
-  // Co-edit edges: editors who share the same page_type bucket
-  const phaseEditors = {};
-  c.events.forEach(e => {
-    const actor = e.actor || e.username;
-    if (!actor) return;
-    const pt = e.page_type || 'main';
-    phaseEditors[pt] = phaseEditors[pt] || new Set();
-    phaseEditors[pt].add(actor);
-  });
-  const coEditEdges = [];
-  const coEditPairs = new Set();
-  Object.values(phaseEditors).forEach(edSet => {
-    const arr = [...edSet];
-    for (let i = 0; i < arr.length; i++) {
-      for (let j = i + 1; j < arr.length; j++) {
-        const key = [arr[i], arr[j]].sort().join('|');
-        if (!coEditPairs.has(key)) { coEditPairs.add(key); coEditEdges.push({source: arr[i], target: arr[j], type: 'coedit'}); }
-      }
-    }
-  });
-
-  // Nodes: merge c.nodes metadata with event stats
-  const nodeMap = {};
-  c.nodes.forEach(n => { nodeMap[n.username] = n; });
-
-  // Pick top nodes by edit count; always include editors involved in reverts
-  const revertUsers = new Set([...revertEdges.flatMap(l => [l.source, l.target])]);
-  const allUsers = [...new Set(Object.keys(editorStats))];
-  const sorted = allUsers.sort((a, b) => (editorStats[b]?.edits || 0) - (editorStats[a]?.edits || 0));
-  const topUsers = new Set([...sorted.slice(0, MAX_NODES), ...revertUsers].slice(0, MAX_NODES));
-
-  const graphNodes = [...topUsers].map(u => {
-    const meta = nodeMap[u] || {};
-    const stats = editorStats[u] || {edits: 1, reverts: 0, phases: {}};
-    const dominant = Object.entries(stats.phases).sort((a,b) => b[1]-a[1])[0]?.[0] || 'main';
-    return { id: u, role: meta.role || 'participant', edits: stats.edits, reverts: stats.reverts,
-      dominant, departed: meta.departed || false };
-  });
-  const graphNodeIds = new Set(graphNodes.map(n => n.id));
-
-  const graphLinks = [
-    ...revertEdges.filter(l => graphNodeIds.has(l.source) && graphNodeIds.has(l.target)),
-    ...coEditEdges.filter(l => graphNodeIds.has(l.source) && graphNodeIds.has(l.target))
-  ];
-
-  // D3 force simulation
-  const PAGE_COLOR_NET = {main:'#595959',article:'#3366CC',evidence:'#E97500',
-    workshop:'#54A823',proposed_decision:'#B60000',outcome:'#72777D'};
-
-  const maxEdits = d3.max(graphNodes, n => n.edits) || 1;
-  const rScale = d => Math.max(3, Math.min(14, 4 + Math.sqrt(d.edits / maxEdits) * 10));
-
-  const svg = d3.select(container).append('svg')
-    .attr('width', '100%').attr('height', H)
-    .attr('viewBox', `0 0 ${W} ${H}`)
-    .style('background', 'transparent');
-
-  const defs = svg.append('defs');
-  const arrowId = 'arr-' + c.short.replace(/\W/g,'');
-  defs.append('marker').attr('id', arrowId)
-    .attr('viewBox','0 -4 8 8').attr('refX',10).attr('refY',0)
-    .attr('markerWidth',6).attr('markerHeight',6).attr('orient','auto')
-    .append('path').attr('d','M0,-4L8,0L0,4').attr('fill','#f85149').attr('opacity',.7);
-
-  const g = svg.append('g');
-
-  // Zoom
-  svg.call(d3.zoom().scaleExtent([0.4, 3]).on('zoom', evt => g.attr('transform', evt.transform)));
-
-  const link = g.append('g').selectAll('line').data(graphLinks).join('line')
-    .attr('stroke', d => d.type === 'revert' ? '#f85149' : 'rgba(139,148,158,.15)')
-    .attr('stroke-width', d => d.type === 'revert' ? Math.min(3, 1 + (d.count || 1) * 0.5) : 0.5)
-    .attr('stroke-dasharray', d => d.type === 'revert' ? '4,2' : null)
-    .attr('marker-end', d => d.type === 'revert' ? `url(#${arrowId})` : null)
-    .attr('opacity', d => d.type === 'revert' ? 0.7 : 0.3);
-
-  const node = g.append('g').selectAll('g').data(graphNodes).join('g')
-    .call(d3.drag()
-      .on('start', (evt, d) => { if (!evt.active) sim.alphaTarget(0.3).restart(); d.fx=d.x; d.fy=d.y; })
-      .on('drag',  (evt, d) => { d.fx=evt.x; d.fy=evt.y; })
-      .on('end',   (evt, d) => { if (!evt.active) sim.alphaTarget(0); d.fx=null; d.fy=null; }));
-
-  const isArb = d => d.role === 'arbitrator' || d.role === 'arbitrator_candidate';
-
-  node.append('circle')
-    .attr('r', rScale)
-    .attr('fill', d => isArb(d) ? 'none' : PAGE_COLOR_NET[d.dominant] || '#595959')
-    .attr('fill-opacity', d => isArb(d) ? 0 : (d.departed ? 0.35 : 0.85))
-    .attr('stroke', d => {
-      if (isArb(d)) return '#8b949e';
-      if (d.reverts > 0) return '#f85149';
-      return PAGE_COLOR_NET[d.dominant] || '#595959';
-    })
-    .attr('stroke-width', d => isArb(d) ? 1.5 : (d.reverts > 0 ? 2 : 0.5))
-    .attr('stroke-dasharray', d => isArb(d) ? '2,2' : null);
-
-  // Labels for top editors only (top 12 by edits)
-  const topN = new Set([...graphNodes].sort((a,b) => b.edits - a.edits).slice(0, 12).map(n => n.id));
-  node.filter(d => topN.has(d.id)).append('text')
-    .text(d => d.id.length > 14 ? d.id.slice(0, 13) + '…' : d.id)
-    .attr('dy', d => -rScale(d) - 3)
-    .attr('text-anchor', 'middle')
-    .attr('font-size', '8px')
-    .attr('fill', 'rgba(230,237,243,.6)')
-    .attr('pointer-events', 'none');
-
-  node.on('mouseenter', (evt, d) => {
-    const phases = Object.entries(editorStats[d.id]?.phases || {})
-      .sort((a,b) => b[1]-a[1]).slice(0,3)
-      .map(([k,v]) => `<span style="color:${PAGE_COLOR_NET[k]}">${k.replace(/_/g,' ')}</span> ${v}`)
-      .join(', ');
-    showTip(`<b>${d.id}</b><br>Role: ${d.role}<br>Edits: ${d.edits}  Reverts: ${d.reverts}<br>${phases}`, evt);
-  }).on('mousemove', moveTip).on('mouseleave', hideTip);
-
-  const sim = d3.forceSimulation(graphNodes)
-    .force('link', d3.forceLink(graphLinks).id(d => d.id).distance(d => d.type === 'revert' ? 60 : 40).strength(d => d.type === 'revert' ? 0.8 : 0.1))
-    .force('charge', d3.forceManyBody().strength(-120))
-    .force('center', d3.forceCenter(W/2, H/2))
-    .force('collide', d3.forceCollide().radius(d => rScale(d) + 4))
-    .on('tick', () => {
-      link.attr('x1', d => d.source.x).attr('y1', d => d.source.y)
-          .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
-      node.attr('transform', d => `translate(${d.x},${d.y})`);
-    });
-
-  // Stop after a while for performance
-  setTimeout(() => sim.stop(), 4000);
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
 // V11 — CONFLICT FINGERPRINTS
 // ─────────────────────────────────────────────────────────────────────────────
 function buildV11(byGroup){
@@ -748,13 +619,13 @@ function buildV11(byGroup){
       const row = document.createElement('div'); row.className = 'fp-row';
 
       const lbl = document.createElement('div'); lbl.className = 'fp-label';
-      lbl.style.cssText = `color:${c.color};display:flex;flex-direction:column;gap:1px;cursor:pointer`;
+      lbl.style.cssText = `color:${c.color};display:flex;flex-direction:column;gap:2px;cursor:default`;
 
       const lblName = document.createElement('div');
       lblName.textContent = c.short;
 
       const lblDec = document.createElement('div');
-      lblDec.style.cssText = 'font-size:8px;color:rgba(139,148,158,.65);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-style:italic;max-width:128px';
+      lblDec.style.cssText = 'font-size:9px;color:rgba(139,148,158,.75);white-space:normal;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-style:italic;max-width:160px;line-height:1.4';
       lblDec.textContent = c.decision || '';
       lblDec.title = c.decision || '';
 
@@ -832,63 +703,7 @@ function buildV11(byGroup){
 
       col.appendChild(bar);
       row.appendChild(lbl); row.appendChild(col); row.appendChild(dur);
-
-      // Wrap row + expand panel together
-      const wrap = document.createElement('div'); wrap.className = 'fp-row-wrap';
-      wrap.style.setProperty('--expand-color', c.color);
-
-      // Expand panel (lazy — network rendered on first open)
-      const expandPanel = document.createElement('div'); expandPanel.className = 'fp-expand';
-      expandPanel.dataset.rendered = '0';
-
-      // Decision text
-      const decDiv = document.createElement('div'); decDiv.className = 'fp-expand-decision';
-      decDiv.textContent = c.decision || '';
-      expandPanel.appendChild(decDiv);
-
-      // Stats row
-      const statsRow = document.createElement('div'); statsRow.className = 'fp-expand-stats';
-      const durDaysDisplay = durDays >= 365 ? (durDays/365).toFixed(1)+' yrs' : durDays+' days';
-      [
-        [durDaysDisplay, 'Duration'],
-        [c.totalEditors, 'Editors'],
-        [c.totalEvents, 'Events'],
-        [(c.departurePct*100).toFixed(0)+'%', 'Departed'],
-      ].forEach(([val, lbl2]) => {
-        const sb = document.createElement('div'); sb.className = 'fp-expand-stat';
-        sb.innerHTML = `<span class="fp-expand-stat-val" style="color:${c.color}">${val}</span><span class="fp-expand-stat-lbl">${lbl2}</span>`;
-        statsRow.appendChild(sb);
-      });
-      expandPanel.appendChild(statsRow);
-
-      // Network container (rendered lazily on first open)
-      const netWrap = document.createElement('div'); netWrap.className = 'fp-network-wrap';
-      const netLegend = document.createElement('div'); netLegend.className = 'fp-network-legend';
-      netLegend.innerHTML = `
-        <span><svg width="12" height="12"><circle cx="6" cy="6" r="5" fill="${c.color}" fill-opacity=".9"/></svg> Participant</span>
-        <span><svg width="12" height="12"><circle cx="6" cy="6" r="5" fill="none" stroke="#8b949e" stroke-width="1.5"/></svg> Arbitrator</span>
-        <span><svg width="12" height="12"><circle cx="6" cy="6" r="5" fill="${c.color}" stroke="#f85149" stroke-width="2"/></svg> High reverts</span>
-        <span><svg width="28" height="12"><line x1="0" y1="6" x2="28" y2="6" stroke="#f85149" stroke-width="1.5" stroke-dasharray="3,2"/></svg> Revert</span>
-        <span><svg width="28" height="12"><line x1="0" y1="6" x2="28" y2="6" stroke="rgba(139,148,158,.3)" stroke-width="1"/></svg> Co-edit</span>
-      `;
-      netWrap.appendChild(netLegend);
-      const netSvgContainer = document.createElement('div');
-      netSvgContainer.style.cssText = 'width:100%;height:320px';
-      netWrap.appendChild(netSvgContainer);
-      expandPanel.appendChild(netWrap);
-
-      wrap.appendChild(row);
-      wrap.appendChild(expandPanel);
-      sec.appendChild(wrap);
-
-      // Toggle on click
-      row.addEventListener('click', () => {
-        const isOpen = expandPanel.classList.toggle('open');
-        if (isOpen && expandPanel.dataset.rendered === '0') {
-          expandPanel.dataset.rendered = '1';
-          renderCaseNetwork(c, netSvgContainer);
-        }
-      });
+      sec.appendChild(row);
     });
     container.appendChild(sec);
   });
