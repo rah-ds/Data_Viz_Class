@@ -7,89 +7,132 @@
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <style>
 :root{
-  --bg:#0d1117;--surface:#161b22;--surface2:#1e2736;--border:#30363d;
-  --text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;
+  --bg:#0d1117;--surface:rgba(22,27,34,.92);--surface2:#1e2736;--surface3:#1c2130;--border:#30363d;
+  --text:#e6edf3;--muted:#8b949e;--accent:#3388cc;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,'Segoe UI',sans-serif;font-size:14px;line-height:1.6}
-/* Nav */
-#topnav{position:sticky;top:0;z-index:100;background:rgba(13,17,23,.94);backdrop-filter:blur(8px);
-  border-bottom:1px solid var(--border);padding:8px 28px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
-#topnav .site-title{font-weight:700;font-size:13px;color:var(--text);margin-right:4px;white-space:nowrap}
-#topnav a{color:var(--muted);text-decoration:none;font-size:12px;transition:color .15s;white-space:nowrap}
-#topnav a:hover{color:var(--text)}
-/* Hero */
-#hero{padding:64px 52px 52px;max-width:1440px;margin:0 auto}
-.hero-title{font-size:clamp(26px,3.5vw,46px);font-weight:800;line-height:1.15;margin-bottom:10px;letter-spacing:-.02em}
-.hero-sub{color:var(--muted);font-size:16px;margin-bottom:48px;max-width:640px}
-.hero-stats{display:flex;gap:48px;flex-wrap:wrap;margin-bottom:44px}
-.stat-block{display:flex;flex-direction:column;gap:2px}
-.stat-val{font-size:34px;font-weight:700;color:var(--accent);letter-spacing:-.02em}
-.stat-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
-.group-legend{display:flex;gap:16px;flex-wrap:wrap}
-.group-item{display:flex;align-items:center;gap:8px;padding:8px 16px;background:var(--surface);
-  border-radius:8px;border:1px solid var(--border)}
-.group-swatch{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(51,102,204,.2), transparent 30%),
+    radial-gradient(circle at 88% 8%, rgba(84,168,35,.12), transparent 26%),
+    radial-gradient(circle at 50% 100%, rgba(233,121,0,.12), transparent 30%),
+    #0d1117;
+  color:var(--text);font-family:system-ui,-apple-system,'Segoe UI',sans-serif;font-size:14px;line-height:1.6;
+}
+a{color:inherit}
+#topnav{
+  position:sticky;top:0;z-index:100;background:rgba(13,17,23,.88);backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(51,102,204,.18);padding:14px 32px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  box-shadow:0 10px 30px rgba(0,0,0,.22)
+}
+#topnav .site-title{font-weight:700;font-size:13px;color:var(--text);margin-right:4px;white-space:nowrap;letter-spacing:.04em}
+#topnav a{color:var(--muted);text-decoration:none;font-size:12px;transition:color .15s,transform .15s;white-space:nowrap}
+#topnav a:hover{color:var(--text);transform:translateY(-1px)}
+.back-link{color:var(--accent)!important;font-weight:600}
+.nav-divider{color:var(--border);margin:0 4px}
+.nav-spacer{flex:1}
+.wiki-w{color:#3388cc;font-weight:900;font-size:15px;margin-right:2px}
+#hero{padding:82px 52px 64px;max-width:1500px;margin:0 auto}
+.hero-badges{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.hero-title{font-size:clamp(34px,5vw,62px);font-weight:800;line-height:1.05;margin-bottom:14px;letter-spacing:-.03em;max-width:900px}
+.hero-sub{
+  color:#c8d1db;font-size:17px;margin-bottom:48px;max-width:760px;padding-left:18px;border-left:3px solid var(--accent)
+}
+.hero-stats{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:44px}
+.stat-block{
+  display:flex;flex-direction:column;gap:4px;min-width:132px;padding:16px 18px;border-radius:16px;
+  background:linear-gradient(180deg, rgba(22,27,34,.95), rgba(28,33,48,.86));
+  border:1px solid rgba(48,54,61,.9);box-shadow:0 14px 34px rgba(0,0,0,.16)
+}
+.stat-val{font-size:34px;font-weight:700;color:var(--accent);letter-spacing:-.03em}
+.stat-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em}
+.group-legend{display:flex;gap:14px;flex-wrap:wrap}
+.group-item{
+  display:flex;align-items:center;gap:8px;padding:10px 16px;background:linear-gradient(180deg, rgba(22,27,34,.96), rgba(28,33,48,.82));
+  border-radius:999px;border:1px solid rgba(48,54,61,.9);transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease
+}
+.group-item:hover{transform:translateY(-2px);border-color:rgba(51,136,204,.35);box-shadow:0 12px 24px rgba(0,0,0,.18)}
+.group-swatch{width:10px;height:10px;border-radius:999px;flex-shrink:0;box-shadow:0 0 0 3px rgba(255,255,255,.03)}
 .group-name{font-weight:600;font-size:13px}
 .group-count{color:var(--muted);font-size:12px}
-/* Viz sections */
-.viz-section{padding:52px 52px;max-width:1440px;margin:0 auto;border-top:1px solid var(--border)}
-.viz-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:16px}
+.wiki-badge{background:#1c2130;border:1px solid #3388cc33;border-radius:4px;padding:2px 8px;font-size:11px;color:#3388cc}
+.viz-section{
+  --section-color:var(--accent);
+  position:relative;padding:72px 52px;max-width:1500px;margin:0 auto
+}
+.viz-section::before{
+  content:'';position:absolute;left:52px;right:52px;top:0;height:1px;
+  background:linear-gradient(90deg,var(--section-color),transparent 78%)
+}
+#v3{--section-color:#3366CC}
+#v11{--section-color:#e879f9}
+.viz-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:30px;flex-wrap:wrap;gap:20px}
 .viz-meta{display:flex;flex-direction:column;gap:4px}
-.viz-num{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.12em}
-.viz-title{font-size:22px;font-weight:700;letter-spacing:-.01em}
-.viz-desc{font-size:13px;color:var(--muted);max-width:580px;margin-top:4px}
+.viz-meta::before{
+  content:'';display:block;width:84px;height:3px;border-radius:999px;background:var(--section-color);margin-bottom:14px
+}
+.viz-num{font-size:11px;color:var(--section-color);font-weight:700;text-transform:uppercase;letter-spacing:.16em}
+.viz-title{font-size:26px;font-weight:750;letter-spacing:-.02em}
+.viz-desc{font-size:14px;color:var(--muted);max-width:720px;margin-top:6px}
 .viz-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.btn{padding:5px 13px;border-radius:6px;border:1px solid var(--border);background:var(--surface);
-  color:var(--text);font-size:12px;cursor:pointer;transition:all .15s}
+.btn{padding:5px 13px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:12px;cursor:pointer;transition:all .15s}
 .btn:hover{background:var(--surface2)}
 .btn.active{background:var(--accent);color:#0d1117;border-color:var(--accent)}
-.svg-wrapper{overflow-x:auto}
-/* Group section headers used inside viz */
-.group-section-hdr{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
-  margin-bottom:10px;padding-left:10px;border-left-width:3px;border-left-style:solid}
-/* Chord layout */
-.chord-layout{display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:start}
-.within-chord-grid{display:flex;flex-wrap:wrap;gap:20px;align-items:start}
-/* Rings and wheels organized by group */
-.group-ring-section{margin-bottom:36px}
-.ring-row{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
-/* Heatmaps row */
-.heatmap-row{display:flex;gap:32px;flex-wrap:wrap;align-items:flex-start}
-/* Phase race */
-.race-controls{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:24px}
-.race-controls select{background:var(--surface);color:var(--text);border:1px solid var(--border);
-  padding:6px 12px;border-radius:6px;font-size:13px;cursor:pointer}
-#race-play-btn{padding:8px 22px;background:var(--accent);color:#0d1117;border:none;
-  border-radius:6px;cursor:pointer;font-weight:700;font-size:13px}
-/* Tooltip */
-#tooltip{position:fixed;pointer-events:none;background:rgba(13,17,23,.97);border:1px solid var(--border);
-  border-radius:8px;padding:10px 14px;font-size:12px;max-width:240px;opacity:0;
-  transition:opacity .12s;z-index:500;line-height:1.75}
+.chord-layout{display:grid;grid-template-columns:minmax(380px,460px) minmax(0,1fr);gap:28px;align-items:start}
+.within-chord-grid{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start}
+#v3-cross,#v3-within,#v11-container{
+  background:linear-gradient(180deg, rgba(22,27,34,.96), rgba(28,33,48,.82));
+  border:1px solid rgba(48,54,61,.9);border-radius:24px;box-shadow:0 18px 40px rgba(0,0,0,.18)
+}
+#v3-cross{padding:28px;display:flex;align-items:center;justify-content:center;min-height:420px}
+#v3-cross svg{display:block;max-width:100%;height:auto}
+#v3-within{padding:24px;min-height:420px;align-content:flex-start}
+#v3-within svg{background:rgba(13,17,23,.48);border:1px solid rgba(51,136,204,.08);border-radius:18px}
+#v11-container{padding:28px 28px 16px}
+.group-section-hdr{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;padding-left:10px;border-left-width:3px;border-left-style:solid}
+#tooltip{
+  position:fixed;pointer-events:none;background:rgba(13,17,23,.97);border:1px solid rgba(51,102,204,.25);
+  border-radius:10px;padding:10px 14px;font-size:12px;max-width:260px;opacity:0;transition:opacity .12s;
+  z-index:500;line-height:1.75;box-shadow:0 18px 36px rgba(0,0,0,.28)
+}
+@media (max-width: 980px){
+  #topnav{gap:12px;padding:12px 18px}
+  #hero,.viz-section{padding-left:20px;padding-right:20px}
+  .viz-section::before{left:20px;right:20px}
+  .chord-layout{grid-template-columns:1fr}
+  #v3-cross,#v3-within,#v11-container{padding:20px}
+}
+@media (max-width: 640px){
+  .nav-spacer{display:none}
+  .hero-title{font-size:clamp(30px,11vw,44px)}
+  .hero-sub{font-size:15px}
+  .stat-block{min-width:calc(50% - 9px)}
+  .fp-label{width:96px}
+}
 </style>
 </head>
 <body>
 <div id="tooltip"></div>
 
 <nav id="topnav">
-  <span class="site-title">Wikipedia Arbitration</span>
-  <a href="#v1">Parallel</a>
-  <a href="#v2">Ridge</a>
-  <a href="#v3">Chord</a>
-  <a href="#v4">24h Rings</a>
-  <a href="#v5">Streamgraph</a>
-  <a href="#v6">Departures</a>
-  <a href="#v7">Bubbles</a>
-  <a href="#v8">Heatmaps</a>
-  <a href="#v9">Network</a>
-  <a href="#v10">Race</a>
+  <a href="../viz/dashboard.html" class="back-link">← Dashboard</a>
+  <span class="nav-divider">|</span>
+  <span class="site-title"><span class="wiki-w">W</span> Arbitration Cases</span>
+  <span class="nav-spacer"></span>
+  <a href="#v3">Chord Diagrams</a>
   <a href="#v11">Fingerprints</a>
 </nav>
 
 <section id="hero">
-  <div class="hero-title">Six Arenas of Wikipedia Conflict</div>
-  <div class="hero-sub">37 arbitration cases spanning 20 years — Politics, Religion, Science, Social, Geopolitics &amp; Policy disputes that shaped the encyclopedia</div>
+  <div class="hero-badges">
+    <span class="wiki-badge">Final Presentation</span>
+    <span class="wiki-badge">37 Cases</span>
+    <span class="wiki-badge">2004–2025</span>
+  </div>
+  <div class="hero-title">Wikipedia's Six Arenas of Conflict</div>
+  <div class="hero-sub">Visualizing 37 arbitration cases across Politics, Religion, Science, Social, Geopolitics &amp; Policy</div>
   <div class="hero-stats">
     <div class="stat-block"><span class="stat-val" id="stat-cases">—</span><span class="stat-lbl">Cases</span></div>
     <div class="stat-block"><span class="stat-val" id="stat-editors">—</span><span class="stat-lbl">Unique Editors</span></div>
@@ -98,31 +141,6 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
     <div class="stat-block"><span class="stat-val" id="stat-cross">—</span><span class="stat-lbl">Cross-group Editors</span></div>
   </div>
   <div class="group-legend" id="group-legend"></div>
-</section>
-
-<!-- V1 -->
-<section class="viz-section" id="v1">
-  <div class="viz-header">
-    <div class="viz-meta">
-      <div class="viz-num">01 — Profile Space</div>
-      <div class="viz-title">Parallel Coordinates</div>
-      <div class="viz-desc">Each line is one case — six axes reveal the fingerprint of every conflict. Duration, editors, events, departure rate, evidence focus, workshop intensity.</div>
-    </div>
-    <div class="viz-controls" id="v1-controls"></div>
-  </div>
-  <div class="svg-wrapper" id="v1-container"></div>
-</section>
-
-<!-- V2 -->
-<section class="viz-section" id="v2">
-  <div class="viz-header">
-    <div class="viz-meta">
-      <div class="viz-num">02 — Temporal Shape</div>
-      <div class="viz-title">Edit Density Ridge Plot</div>
-      <div class="viz-desc">How activity rises and falls over each case's lifetime, normalized 0–100%. Mountains show where the fight was hottest.</div>
-    </div>
-  </div>
-  <div class="svg-wrapper" id="v2-container"></div>
 </section>
 
 <!-- V3 -->
@@ -138,94 +156,6 @@ body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,
     <div id="v3-cross"></div>
     <div class="within-chord-grid" id="v3-within"></div>
   </div>
-</section>
-
-<!-- V4 -->
-<section class="viz-section" id="v4">
-  <div class="viz-header">
-    <div class="viz-meta">
-      <div class="viz-num">04 — Circadian Conflict</div>
-      <div class="viz-title">24-Hour Activity Rings</div>
-      <div class="viz-desc">When do editors fight? Radial bars by UTC hour. Night owls, daytime warriors, or round-the-clock disputes across groups.</div>
-    </div>
-  </div>
-  <div id="v4-container"></div>
-</section>
-
-<!-- V5 -->
-<section class="viz-section" id="v5">
-  <div class="viz-header">
-    <div class="viz-meta">
-      <div class="viz-num">05 — Two Decades of Conflict</div>
-      <div class="viz-title">Absolute Activity Streamgraph</div>
-      <div class="viz-desc">Every case plotted against the real calendar — grouped by topic. See how Wikipedia arbitration evolved from the early encyclopedia to today.</div>
-    </div>
-  </div>
-  <div class="svg-wrapper" id="v5-container"></div>
-</section>
-
-<!-- V6 -->
-<section class="viz-section" id="v6">
-  <div class="viz-header">
-    <div class="viz-meta">
-      <div class="viz-num">06 — The Exit Pattern</div>
-      <div class="viz-title">Editor Departure Wheels</div>
-      <div class="viz-desc">Each spoke = one editor. Length = edit count; angle = when they left the case (top = early exit, bottom = stayed till the end).</div>
-    </div>
-  </div>
-  <div id="v6-container"></div>
-</section>
-
-<!-- V7 -->
-<section class="viz-section" id="v7">
-  <div class="viz-header">
-    <div class="viz-meta">
-      <div class="viz-num">07 — Scale at a Glance</div>
-      <div class="viz-title">Hierarchical Bubble Pack</div>
-      <div class="viz-desc">Cases sized by total events. Phase volumes shown as inner circles. Group-colored clusters reveal which arenas generated the most activity.</div>
-    </div>
-  </div>
-  <div class="svg-wrapper" id="v7-container"></div>
-</section>
-
-<!-- V8 -->
-<section class="viz-section" id="v8">
-  <div class="viz-header">
-    <div class="viz-meta">
-      <div class="viz-num">08 — Weekly Rhythm</div>
-      <div class="viz-title">Day × Hour Activity Heatmaps</div>
-      <div class="viz-desc">Aggregated edit activity by day-of-week and hour for each group. Which arenas are weekend conflicts? Which burn through the night?</div>
-    </div>
-  </div>
-  <div class="heatmap-row" id="v8-container"></div>
-</section>
-
-<!-- V9 -->
-<section class="viz-section" id="v9">
-  <div class="viz-header">
-    <div class="viz-meta">
-      <div class="viz-num">09 — The Connectors</div>
-      <div class="viz-title">Cross-Group Editor Network</div>
-      <div class="viz-desc">Editors who participated in cases across multiple topic groups. Node color = primary group; size = number of groups crossed. These are Wikipedia's most prolific conflict participants.</div>
-    </div>
-  </div>
-  <div class="svg-wrapper" id="v9-container"></div>
-</section>
-
-<!-- V10 -->
-<section class="viz-section" id="v10">
-  <div class="viz-header">
-    <div class="viz-meta">
-      <div class="viz-num">10 — The Race</div>
-      <div class="viz-title">Cumulative Activity Race</div>
-      <div class="viz-desc">Watch how cases within a group accumulate events over their lifetimes. Which exploded immediately? Which simmered for months?</div>
-    </div>
-  </div>
-  <div class="race-controls">
-    <select id="race-group-select"></select>
-    <button id="race-play-btn">▶ Play</button>
-  </div>
-  <div class="svg-wrapper" id="v10-container"></div>
 </section>
 
 <!-- V11 -->
@@ -421,7 +351,6 @@ async function loadAll(){
   GROUPS.forEach(g=>{ byGroup[g.id]=[]; });
   allCases.forEach(c=>{ if(byGroup[c.groupId]) byGroup[c.groupId].push(c); });
 
-  // Sort each group by start date and re-assign colors
   GROUPS.forEach(g=>{
     byGroup[g.id].sort((a,b)=>a.t0-b.t0);
     byGroup[g.id].forEach((c,i)=>{ c.color=g.colors[Math.min(i,g.colors.length-1)]; });
@@ -454,123 +383,8 @@ async function loadAll(){
     legend.appendChild(el);
   });
 
-  buildV1(allCases);
-  buildV2(byGroup);
   buildV3(allCases, byGroup, groupEditorSets);
-  buildV4(byGroup);
-  buildV5(allCases);
-  buildV6(byGroup);
-  buildV7(byGroup);
-  buildV8(byGroup);
-  buildV9(allCases, byGroup, groupEditorSets);
-  buildV10(byGroup);
   buildV11(byGroup);
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// V1 — PARALLEL COORDINATES
-// ─────────────────────────────────────────────────────────────────────────────
-function buildV1(allCases){
-  const W=1260,H=420,M={top:44,right:60,bottom:24,left:60};
-  const w=W-M.left-M.right, h=H-M.top-M.bottom;
-  const axes=[
-    {key:'durationDays', label:'Duration (days)', fmt:d=>Math.round(d)+'d'},
-    {key:'totalEditors', label:'Editors',          fmt:d=>d},
-    {key:'totalEvents',  label:'Events',           fmt:d=>d},
-    {key:'departurePct', label:'Departure %',      fmt:d=>pct(d)},
-    {key:'evidencePct',  label:'Evidence %',       fmt:d=>pct(d)},
-    {key:'workshopPct',  label:'Workshop %',       fmt:d=>pct(d)},
-  ];
-  const svg=d3.select('#v1-container').append('svg').attr('width',W).attr('height',H);
-  const g=svg.append('g').attr('transform',`translate(${M.left},${M.top})`);
-  const xSc=d3.scalePoint().domain(axes.map(a=>a.key)).range([0,w]).padding(0.1);
-  const yScales={};
-  axes.forEach(a=>{
-    yScales[a.key]=d3.scaleLinear()
-      .domain([0,d3.max(allCases,c=>c[a.key])*1.05]).range([h,0]);
-  });
-  function path(d){
-    return d3.line()(axes.map(a=>[xSc(a.key),yScales[a.key](d[a.key])]));
-  }
-  const lines=g.selectAll('.pcl').data(allCases).join('path').attr('class','pcl')
-    .attr('d',path).attr('fill','none')
-    .attr('stroke',d=>d.color).attr('stroke-width',1.6).attr('opacity',.38)
-    .on('mouseover',function(evt,d){
-      d3.select(this).attr('opacity',1).attr('stroke-width',3);
-      showTip(`<b>${d.label}</b><br><span style="color:${d.groupColor}">${d.groupLabel}</span><br>
-        ${Math.round(d.durationDays)}d · ${d.totalEditors} editors · ${d.totalEvents} events`,evt);
-    }).on('mousemove',moveTip)
-    .on('mouseout',function(){d3.select(this).attr('opacity',.38).attr('stroke-width',1.6);hideTip();});
-
-  axes.forEach(a=>{
-    const ax=g.append('g').attr('transform',`translate(${xSc(a.key)},0)`);
-    ax.call(d3.axisLeft(yScales[a.key]).ticks(5).tickFormat(a.fmt));
-    ax.selectAll('text').attr('fill','#8b949e').attr('font-size','10px');
-    ax.selectAll('.domain,.tick line').attr('stroke','#30363d');
-    ax.append('text').attr('y',-14).attr('text-anchor','middle')
-      .attr('fill','#e6edf3').attr('font-size','11px').attr('font-weight','600').text(a.label);
-  });
-
-  const ctrl=document.getElementById('v1-controls');
-  [{id:'all',label:'All Groups',baseColor:'#58a6ff'},...GROUPS].forEach(grp=>{
-    const btn=document.createElement('button');
-    btn.className='btn'+(grp.id==='all'?' active':'');
-    btn.textContent=grp.label;
-    if(grp.baseColor&&grp.id!=='all') btn.style.borderColor=grp.baseColor;
-    btn.onclick=()=>{
-      ctrl.querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      lines.attr('opacity',d=>grp.id==='all'||d.groupId===grp.id?.7:.04)
-           .attr('stroke-width',d=>grp.id==='all'||d.groupId===grp.id?1.6:1);
-    };
-    ctrl.appendChild(btn);
-  });
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// V2 — RIDGE PLOT
-// ─────────────────────────────────────────────────────────────────────────────
-function buildV2(byGroup){
-  const pW=310,pH=220,M={top:36,right:16,bottom:28,left:44};
-  const w=pW-M.left-M.right, h=pH-M.top-M.bottom;
-  const totalW=GROUPS.length*pW;
-  const svg=d3.select('#v2-container').append('svg').attr('width',totalW).attr('height',pH);
-  const thresh=d3.range(0,1.01,0.01);
-  const kern=epan(0.08);
-  GROUPS.forEach((grp,gi)=>{
-    const cases=byGroup[grp.id]; if(!cases||!cases.length) return;
-    const g=svg.append('g').attr('transform',`translate(${gi*pW+M.left},${M.top})`);
-    const dens=cases.map(c=>kde(kern,thresh,c.normTime));
-    const maxD=d3.max(dens.flat(),d=>d[1])||1;
-    const xSc=d3.scaleLinear().domain([0,1]).range([0,w]);
-    const ySc=d3.scaleLinear().domain([0,maxD]).range([h,0]);
-    const area=d3.area().x(d=>xSc(d[0])).y0(h).y1(d=>ySc(d[1])).curve(d3.curveBasis);
-    const line=d3.line().x(d=>xSc(d[0])).y(d=>ySc(d[1])).curve(d3.curveBasis);
-    dens.forEach((den,ci)=>{
-      const c=cases[ci];
-      g.append('path').datum(den).attr('d',area).attr('fill',c.color).attr('fill-opacity',.18);
-      g.append('path').datum(den).attr('d',line).attr('fill','none')
-        .attr('stroke',c.color).attr('stroke-width',1.8).attr('opacity',.85)
-        .on('mouseover',evt=>showTip(`<b>${c.label}</b><br>${grp.label} · ${Math.round(c.durationDays)}d`,evt))
-        .on('mousemove',moveTip).on('mouseout',hideTip);
-    });
-    g.append('g').attr('transform',`translate(0,${h})`)
-      .call(d3.axisBottom(xSc).ticks(4).tickFormat(d3.format('.0%')))
-      .selectAll('text').attr('fill','#8b949e').attr('font-size','9px');
-    g.selectAll('.domain,.tick line').attr('stroke','#30363d');
-    // Accent bar + label
-    g.append('rect').attr('x',-M.left).attr('y',-M.top).attr('width',pW).attr('height',3)
-      .attr('fill',grp.baseColor).attr('rx',1);
-    g.append('text').attr('x',0).attr('y',-18).attr('fill',grp.baseColor)
-      .attr('font-size','11px').attr('font-weight','700').text(grp.label);
-    // Mini legend
-    cases.slice().reverse().forEach((c,ci)=>{
-      const y=ci*12+4;
-      g.append('line').attr('x1',w-40).attr('y1',y).attr('x2',w-28).attr('y2',y)
-        .attr('stroke',c.color).attr('stroke-width',2);
-      g.append('text').attr('x',w-26).attr('y',y+3).attr('fill',c.color).attr('font-size','8px').text(c.short);
-    });
-  });
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -668,372 +482,6 @@ function buildV3(allCases, byGroup, groupEditorSets){
       .on('mousemove',moveTip).on('mouseout',hideTip);
     wG.append('text').attr('text-anchor','middle').attr('y',5)
       .attr('fill',grp.baseColor).attr('font-size','9px').attr('font-weight','700').text(grp.label);
-  });
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// V4 — 24-HOUR RINGS
-// ─────────────────────────────────────────────────────────────────────────────
-function buildV4(byGroup){
-  const R=42, P=10;
-  const container=document.getElementById('v4-container');
-  GROUPS.forEach(grp=>{
-    const cases=byGroup[grp.id]; if(!cases||!cases.length) return;
-    const sec=document.createElement('div'); sec.className='group-ring-section';
-    const hdr=document.createElement('div'); hdr.className='group-section-hdr';
-    hdr.style.cssText=`color:${grp.baseColor};border-left-color:${grp.baseColor}`;
-    hdr.textContent=grp.label; sec.appendChild(hdr);
-    const row=document.createElement('div'); row.className='ring-row';
-    cases.forEach(c=>{
-      const cW=R*2+P, cH=R*2+24+P;
-      const svg=d3.create('svg').attr('width',cW).attr('height',cH);
-      const g=svg.append('g').attr('transform',`translate(${cW/2},${R+P/2+2})`);
-      const maxH=d3.max(c.hours)||1;
-      const rSc=d3.scaleLinear().domain([0,maxH]).range([7,R-3]);
-      const step=2*Math.PI/24;
-      c.hours.forEach((cnt,h)=>{
-        const angle=h*step-Math.PI/2, r0=7, r1=rSc(cnt);
-        g.append('line').attr('x1',Math.cos(angle)*r0).attr('y1',Math.sin(angle)*r0)
-          .attr('x2',Math.cos(angle)*r1).attr('y2',Math.sin(angle)*r1)
-          .attr('stroke',c.color).attr('stroke-width',3.2).attr('stroke-linecap','round')
-          .attr('opacity',.5+.5*(cnt/maxH));
-      });
-      g.append('circle').attr('r',5).attr('fill','var(--surface)').attr('stroke',c.color).attr('stroke-width',1.2);
-      svg.append('text').attr('x',cW/2).attr('y',cH-4).attr('text-anchor','middle')
-        .attr('fill',c.color).attr('font-size','8px').text(c.short);
-      svg.append('rect').attr('width',cW).attr('height',cH).attr('fill','transparent')
-        .on('mouseover',evt=>showTip(`<b>${c.label}</b><br>Peak: ${c.hours.indexOf(maxH)}:00 UTC · ${maxH} edits`,evt))
-        .on('mousemove',moveTip).on('mouseout',hideTip);
-      row.appendChild(svg.node());
-    });
-    sec.appendChild(row); container.appendChild(sec);
-  });
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// V5 — STREAMGRAPH
-// ─────────────────────────────────────────────────────────────────────────────
-function buildV5(allCases){
-  const W=1260,H=380,M={top:32,right:24,bottom:44,left:50};
-  const w=W-M.left-M.right, h=H-M.top-M.bottom;
-
-  const allDates=allCases.flatMap(c=>Object.keys(c.dailySeries).map(k=>new Date(k)));
-  if(!allDates.length) return;
-  const minD=d3.min(allDates), maxD=d3.max(allDates);
-  const weeks=d3.timeWeeks(d3.timeWeek.floor(minD), d3.timeWeek.ceil(maxD));
-
-  const ordered=GROUPS.flatMap(g=>
-    allCases.filter(c=>c.groupId===g.id).sort((a,b)=>a.t0-b.t0)
-  );
-  const bySlug={}; ordered.forEach(c=>{bySlug[c.slug]=c;});
-
-  const stackData=weeks.map(week=>{
-    const nw=d3.timeWeek.offset(week,1);
-    const row={date:week};
-    ordered.forEach(c=>{
-      let s=0;
-      Object.entries(c.dailySeries).forEach(([k,v])=>{const d=new Date(k);if(d>=week&&d<nw)s+=v;});
-      row[c.slug]=s;
-    });
-    return row;
-  });
-
-  const stack=d3.stack().keys(ordered.map(c=>c.slug))
-    .offset(d3.stackOffsetWiggle).order(d3.stackOrderInsideOut);
-  const series=stack(stackData);
-
-  const xSc=d3.scaleTime().domain([minD,maxD]).range([0,w]);
-  const yExt=[d3.min(series,s=>d3.min(s,d=>d[0])),d3.max(series,s=>d3.max(s,d=>d[1]))];
-  const ySc=d3.scaleLinear().domain(yExt).range([h,0]);
-  const area=d3.area().x((_,i)=>xSc(weeks[i])).y0(d=>ySc(d[0])).y1(d=>ySc(d[1])).curve(d3.curveBasis);
-
-  const svg=d3.select('#v5-container').append('svg').attr('width',W).attr('height',H);
-  const g=svg.append('g').attr('transform',`translate(${M.left},${M.top})`);
-
-  g.selectAll('.stream').data(series).join('path').attr('class','stream')
-    .attr('d',area)
-    .attr('fill',d=>bySlug[d.key]?.color||'#444').attr('fill-opacity',.78)
-    .attr('stroke',d=>bySlug[d.key]?.color||'#444').attr('stroke-width',.4)
-    .on('mouseover',function(evt,d){
-      d3.select(this).attr('fill-opacity',1);
-      const c=bySlug[d.key];
-      showTip(`<b>${c?.label||d.key}</b><br><span style="color:${c?.groupColor}">${c?.groupLabel}</span>`,evt);
-    }).on('mousemove',moveTip)
-    .on('mouseout',function(){d3.select(this).attr('fill-opacity',.78);hideTip();});
-
-  g.append('g').attr('transform',`translate(0,${h})`)
-    .call(d3.axisBottom(xSc).ticks(d3.timeYear.every(2)).tickFormat(d3.timeFormat('%Y')))
-    .selectAll('text').attr('fill','#8b949e').attr('font-size','10px');
-  g.selectAll('.domain,.tick line').attr('stroke','#30363d');
-
-  // Group color callouts
-  GROUPS.forEach(grp=>{
-    const cases=allCases.filter(c=>c.groupId===grp.id);
-    if(!cases.length) return;
-    const midDate=new Date(d3.mean(cases,c=>(c.t0.getTime()+c.t1.getTime())/2));
-    if(midDate<minD||midDate>maxD) return;
-    g.append('text').attr('x',xSc(midDate)).attr('y',h+36)
-      .attr('text-anchor','middle').attr('fill',grp.baseColor).attr('font-size','10px').attr('font-weight','600')
-      .text(grp.label);
-  });
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// V6 — DEPARTURE WHEELS
-// ─────────────────────────────────────────────────────────────────────────────
-function buildV6(byGroup){
-  const R=58, cW=R*2+20, cH=R*2+28;
-  const container=document.getElementById('v6-container');
-  GROUPS.forEach(grp=>{
-    const cases=byGroup[grp.id]; if(!cases||!cases.length) return;
-    const sec=document.createElement('div'); sec.style.cssText='margin-bottom:32px';
-    const hdr=document.createElement('div'); hdr.className='group-section-hdr';
-    hdr.style.cssText=`color:${grp.baseColor};border-left-color:${grp.baseColor}`;
-    hdr.textContent=grp.label; sec.appendChild(hdr);
-    const row=document.createElement('div'); row.className='ring-row';
-    cases.forEach(c=>{
-      const svg=d3.create('svg').attr('width',cW).attr('height',cH);
-      const g=svg.append('g').attr('transform',`translate(${cW/2},${R+6})`);
-      const nodes=c.nodes.filter(n=>n.total_edits>0);
-      const maxE=d3.max(nodes,n=>n.total_edits)||1;
-      const rSc=d3.scaleLinear().domain([0,maxE]).range([4,R-3]);
-      nodes.forEach(n=>{
-        const dPct=n.days_active!=null&&c.durationDays>0
-          ?Math.min(n.days_active/c.durationDays,1):.5;
-        const angle=dPct*2*Math.PI-Math.PI/2;
-        const r=rSc(n.total_edits);
-        g.append('line').attr('x1',0).attr('y1',0)
-          .attr('x2',Math.cos(angle)*r).attr('y2',Math.sin(angle)*r)
-          .attr('stroke',c.color).attr('stroke-width',n.departed?1:2)
-          .attr('opacity',n.departed?.38:.88).attr('stroke-linecap','round')
-          .on('mouseover',evt=>showTip(`<b>${n.username}</b><br>${n.total_edits} edits${n.departed?'<br><i>departed</i>':''}`,evt))
-          .on('mousemove',moveTip).on('mouseout',hideTip);
-      });
-      g.append('circle').attr('r',3).attr('fill',c.color).attr('opacity',.7);
-      svg.append('text').attr('x',cW/2).attr('y',cH-3).attr('text-anchor','middle')
-        .attr('fill',c.color).attr('font-size','8px').text(c.short);
-      row.appendChild(svg.node());
-    });
-    sec.appendChild(row); container.appendChild(sec);
-  });
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// V7 — BUBBLE PACK
-// ─────────────────────────────────────────────────────────────────────────────
-function buildV7(byGroup){
-  const W=1260,H=640;
-  const svg=d3.select('#v7-container').append('svg').attr('width',W).attr('height',H);
-  const hier={name:'root',children:GROUPS.map(grp=>({
-    name:grp.id, label:grp.label, color:grp.baseColor,
-    children:(byGroup[grp.id]||[]).map(c=>({
-      name:c.slug, label:c.label, short:c.short, color:c.color, groupColor:grp.baseColor,
-      children:Object.entries(c.ptCounts||{}).map(([pt,cnt])=>({
-        name:pt, color:PAGE_COLOR[pt]||'#555', value:cnt
-      }))
-    }))
-  }))};
-  const root=d3.hierarchy(hier).sum(d=>d.value||0).sort((a,b)=>b.value-a.value);
-  d3.pack().size([W,H]).padding(5)(root);
-  const node=svg.selectAll('g').data(root.descendants().filter(d=>d.depth>0)).join('g')
-    .attr('transform',d=>`translate(${d.x},${d.y})`);
-  node.append('circle').attr('r',d=>d.r)
-    .attr('fill',d=>d.data.color||'#333')
-    .attr('fill-opacity',d=>d.depth===1?.07:d.depth===2?.5:.35)
-    .attr('stroke',d=>d.data.color||'#333')
-    .attr('stroke-width',d=>d.depth===1?1.5:.4)
-    .attr('stroke-opacity',d=>d.depth===1?.5:.25)
-    .on('mouseover',function(evt,d){
-      if(d.depth===2) showTip(`<b>${d.data.label}</b><br>${d.value} events`,evt);
-    }).on('mousemove',moveTip).on('mouseout',hideTip);
-  node.filter(d=>d.depth===1&&d.r>28).append('text').attr('text-anchor','middle').attr('dy','-.2em')
-    .attr('fill',d=>d.data.color).attr('font-size','11px').attr('font-weight','700').text(d=>d.data.label);
-  node.filter(d=>d.depth===2&&d.r>14).append('text').attr('text-anchor','middle').attr('dy','.35em')
-    .attr('fill','rgba(255,255,255,.9)').attr('font-size',d=>Math.min(d.r/4,9)+'px')
-    .text(d=>d.data.short);
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// V8 — DAY × HOUR HEATMAPS
-// ─────────────────────────────────────────────────────────────────────────────
-function buildV8(byGroup){
-  const cell=13, DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  const M={top:38,right:10,bottom:18,left:34};
-  const hW=24*cell+M.left+M.right, hH=7*cell+M.top+M.bottom;
-  GROUPS.forEach(grp=>{
-    const cases=byGroup[grp.id]; if(!cases||!cases.length) return;
-    const agg=Array.from({length:7},()=>new Array(24).fill(0));
-    cases.forEach(c=>c.dayHour.forEach((row,di)=>row.forEach((v,hi)=>{agg[di][hi]+=v;})));
-    const maxV=d3.max(agg.flat())||1;
-    const div=document.createElement('div');
-    const svg=d3.create('svg').attr('width',hW).attr('height',hH);
-    const g=svg.append('g').attr('transform',`translate(${M.left},${M.top})`);
-    const cSc=d3.scaleSequential().domain([0,maxV]).interpolator(d3.interpolate('#161b22',grp.baseColor));
-    agg.forEach((row,di)=>{
-      row.forEach((v,hi)=>{
-        g.append('rect').attr('x',hi*cell).attr('y',di*cell)
-          .attr('width',cell-1).attr('height',cell-1).attr('rx',1).attr('fill',cSc(v))
-          .on('mouseover',evt=>showTip(`${DAYS[di]} ${hi}:00 UTC<br>${v} edits (${grp.label} agg.)`,evt))
-          .on('mousemove',moveTip).on('mouseout',hideTip);
-      });
-    });
-    DAYS.forEach((d,i)=>{
-      g.append('text').attr('x',-4).attr('y',i*cell+cell/2+3).attr('text-anchor','end')
-        .attr('fill','#8b949e').attr('font-size','8px').text(d);
-    });
-    [0,6,12,18,23].forEach(h=>{
-      g.append('text').attr('x',h*cell+cell/2).attr('y',-8).attr('text-anchor','middle')
-        .attr('fill','#8b949e').attr('font-size','8px').text(h+'h');
-    });
-    svg.append('rect').attr('x',M.left-2).attr('y',2).attr('width',6).attr('height',26)
-      .attr('fill',grp.baseColor).attr('rx',2);
-    svg.append('text').attr('x',M.left+10).attr('y',20)
-      .attr('fill',grp.baseColor).attr('font-size','11px').attr('font-weight','700').text(grp.label);
-    div.appendChild(svg.node());
-    document.getElementById('v8-container').appendChild(div);
-  });
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// V9 — EDITOR NETWORK
-// ─────────────────────────────────────────────────────────────────────────────
-function buildV9(allCases, byGroup, groupEditorSets){
-  const W=1200,H=620;
-  const edGroupMap={};
-  GROUPS.forEach(g=>{
-    groupEditorSets[g.id].forEach(ed=>{
-      if(!edGroupMap[ed]) edGroupMap[ed]={groups:new Set(),baseColor:g.baseColor,groupId:g.id};
-      edGroupMap[ed].groups.add(g.id);
-    });
-  });
-  const cross=Object.entries(edGroupMap)
-    .filter(([,v])=>v.groups.size>=2)
-    .map(([name,v])=>({
-      id:name, groups:[...v.groups],
-      color:GROUPS.find(g=>v.groups.has(g.id))?.baseColor||'#666'
-    }));
-  if(!cross.length){
-    d3.select('#v9-container').append('p').attr('style','color:#8b949e;padding:24px')
-      .text('No cross-group editors found.'); return;
-  }
-  const topEditors=cross.sort((a,b)=>b.groups.length-a.groups.length||a.id.localeCompare(b.id)).slice(0,100);
-  const topNames=new Set(topEditors.map(e=>e.id));
-  const linkSet=new Set(), links=[];
-  allCases.forEach(c=>{
-    const eds=c.nodes.map(n=>n.username).filter(e=>topNames.has(e));
-    for(let i=0;i<eds.length;i++) for(let j=i+1;j<eds.length;j++){
-      const key=[eds[i],eds[j]].sort().join('|');
-      if(!linkSet.has(key)){ linkSet.add(key); links.push({source:eds[i],target:eds[j]}); }
-    }
-  });
-  const svg=d3.select('#v9-container').append('svg').attr('width',W).attr('height',H);
-  const sim=d3.forceSimulation(topEditors)
-    .force('link',d3.forceLink(links).id(d=>d.id).distance(46).strength(.3))
-    .force('charge',d3.forceManyBody().strength(-70))
-    .force('center',d3.forceCenter(W/2,H/2))
-    .force('collide',d3.forceCollide(10));
-  const linkEl=svg.append('g').selectAll('line').data(links).join('line')
-    .attr('stroke','#30363d').attr('stroke-opacity',.5).attr('stroke-width',.7);
-  const nodeEl=svg.append('g').selectAll('circle').data(topEditors).join('circle')
-    .attr('r',d=>4+d.groups.length*2)
-    .attr('fill',d=>d.color).attr('fill-opacity',.82)
-    .attr('stroke','#0d1117').attr('stroke-width',.8)
-    .call(d3.drag()
-      .on('start',(ev,d)=>{if(!ev.active)sim.alphaTarget(.3).restart();d.fx=d.x;d.fy=d.y;})
-      .on('drag',(ev,d)=>{d.fx=ev.x;d.fy=ev.y;})
-      .on('end',(ev,d)=>{if(!ev.active)sim.alphaTarget(0);d.fx=null;d.fy=null;}))
-    .on('mouseover',function(evt,d){
-      d3.select(this).attr('r',10+d.groups.length*2).attr('fill-opacity',1);
-      const gl=d.groups.map(gid=>GROUPS.find(g=>g.id===gid)?.label).join(', ');
-      showTip(`<b>${d.id}</b><br>${gl}`,evt);
-    }).on('mousemove',moveTip)
-    .on('mouseout',function(evt,d){d3.select(this).attr('r',4+d.groups.length*2).attr('fill-opacity',.82);hideTip();});
-  const leg=svg.append('g').attr('transform','translate(20,20)');
-  GROUPS.forEach((g,i)=>{
-    leg.append('circle').attr('cx',0).attr('cy',i*18).attr('r',5).attr('fill',g.baseColor);
-    leg.append('text').attr('x',12).attr('y',i*18+4).attr('fill',g.baseColor).attr('font-size','10px').text(g.label);
-  });
-  leg.append('text').attr('y',-12).attr('fill','#8b949e').attr('font-size','10px')
-    .text(`${topEditors.length} cross-group editors`);
-  sim.on('tick',()=>{
-    linkEl.attr('x1',d=>d.source.x).attr('y1',d=>d.source.y)
-          .attr('x2',d=>d.target.x).attr('y2',d=>d.target.y);
-    nodeEl.attr('cx',d=>d.x).attr('cy',d=>d.y);
-  });
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// V10 — PHASE RACE
-// ─────────────────────────────────────────────────────────────────────────────
-function buildV10(byGroup){
-  const W=1200,H=380,M={top:32,right:140,bottom:44,left:60};
-  const w=W-M.left-M.right, h=H-M.top-M.bottom;
-  const svg=d3.select('#v10-container').append('svg').attr('width',W).attr('height',H);
-  const g=svg.append('g').attr('transform',`translate(${M.left},${M.top})`);
-  const sel=document.getElementById('race-group-select');
-  GROUPS.forEach(grp=>{
-    const opt=document.createElement('option'); opt.value=grp.id; opt.textContent=grp.label; sel.appendChild(opt);
-  });
-  const STEPS=100;
-  let timer=null, frame=STEPS, curGroup=GROUPS[0].id;
-
-  function draw(groupId, f){
-    const cases=byGroup[groupId]||[];
-    g.selectAll('*').remove();
-    if(!cases.length) return;
-    const cumData=cases.map(c=>{
-      const sorted=c.events.map(e=>(new Date(e.timestamp)-c.t0)/Math.max(c.durationDays*86400000,1));
-      return {case:c, cum:d3.range(0,STEPS+1).map(i=>{
-        const t=i/STEPS; return {t,count:sorted.filter(s=>s<=t).length};
-      })};
-    });
-    const maxC=d3.max(cumData,d=>d3.max(d.cum,p=>p.count));
-    const xSc=d3.scaleLinear().domain([0,1]).range([0,w]);
-    const ySc=d3.scaleLinear().domain([0,maxC]).range([h,0]);
-    const line=d3.line().x(d=>xSc(d.t)).y(d=>ySc(d.count)).curve(d3.curveBasis);
-    const t=Math.min(f/STEPS,1);
-    // Ghost
-    cumData.forEach(({case:c,cum})=>{
-      g.append('path').datum(cum).attr('d',line).attr('fill','none')
-        .attr('stroke',c.color).attr('stroke-width',.8).attr('opacity',.14);
-    });
-    // Animated
-    cumData.forEach(({case:c,cum})=>{
-      const vis=cum.filter(p=>p.t<=t); if(vis.length<2) return;
-      g.append('path').datum(vis).attr('d',line).attr('fill','none')
-        .attr('stroke',c.color).attr('stroke-width',2.5).attr('opacity',.9);
-      const last=vis[vis.length-1];
-      g.append('circle').attr('cx',xSc(last.t)).attr('cy',ySc(last.count))
-        .attr('r',4).attr('fill',c.color);
-      if(t>=.98){
-        g.append('text').attr('x',w+6).attr('y',ySc(last.count)+4)
-          .attr('fill',c.color).attr('font-size','9px').text(c.short);
-      }
-    });
-    if(t<1){
-      g.append('line').attr('x1',xSc(t)).attr('y1',0).attr('x2',xSc(t)).attr('y2',h)
-        .attr('stroke','#58a6ff').attr('stroke-width',.8).attr('stroke-dasharray','3,3').attr('opacity',.5);
-    }
-    g.append('g').attr('transform',`translate(0,${h})`)
-      .call(d3.axisBottom(xSc).ticks(5).tickFormat(d3.format('.0%')))
-      .selectAll('text').attr('fill','#8b949e').attr('font-size','10px');
-    g.append('g').call(d3.axisLeft(ySc).ticks(5))
-      .selectAll('text').attr('fill','#8b949e').attr('font-size','10px');
-    g.selectAll('.domain,.tick line').attr('stroke','#30363d');
-    g.append('text').attr('x',w/2).attr('y',-14).attr('text-anchor','middle')
-      .attr('fill','#e6edf3').attr('font-size','12px').attr('font-weight','600')
-      .text(`${GROUPS.find(gg=>gg.id===groupId)?.label} — Cumulative Events Over Lifetime`);
-  }
-
-  draw(curGroup, STEPS);
-  sel.addEventListener('change',()=>{ curGroup=sel.value; frame=STEPS; draw(curGroup,STEPS); });
-  document.getElementById('race-play-btn').addEventListener('click',()=>{
-    if(timer){ clearInterval(timer); timer=null; document.getElementById('race-play-btn').textContent='▶ Play'; return; }
-    frame=0; document.getElementById('race-play-btn').textContent='⏸ Pause';
-    timer=setInterval(()=>{
-      frame++; draw(curGroup,frame);
-      if(frame>=STEPS){ clearInterval(timer); timer=null; document.getElementById('race-play-btn').textContent='▶ Replay'; }
-    },40);
   });
 }
 
