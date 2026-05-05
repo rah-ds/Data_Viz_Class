@@ -176,7 +176,11 @@ a{color:inherit}
       </div>
       <div class="fp-guide-item">
         <div class="fp-guide-label">Duration pill <span style="color:#fb923c">●</span></div>
-        <div class="fp-guide-desc"><b style="color:#fb923c">Orange</b> = resolved quickly relative to its group norm. <span style="color:rgba(139,148,158,.7)">Gray</span> = ran the full expected length. Hover for a detailed note.</div>
+        <div class="fp-guide-desc"><b style="color:#fb923c">Orange ⏱</b> = ran significantly longer than others in its group. <span style="color:rgba(139,148,158,.7)">Gray</span> = typical length. The <b style="color:rgba(251,146,60,.7)">amber-shaded region</b> on the bar shows time past the group median — hover the pill to see the explanation.</div>
+      </div>
+      <div class="fp-guide-item">
+        <div class="fp-guide-label">Case label <span style="opacity:.5">›</span></div>
+        <div class="fp-guide-desc">Click any case name to reveal the one-sentence ArbCom decision summary inline. Click again to collapse.</div>
       </div>
     </div>
   </div>
@@ -213,6 +217,14 @@ a{color:inherit}
 .fp-arr{background:#3fb950;width:100%;position:absolute;bottom:50%;left:0;right:0;opacity:.85}
 .fp-dep{background:#f85149;width:100%;position:absolute;top:50%;left:0;right:0;opacity:.75}
 .fp-spark-center{position:absolute;top:50%;left:0;right:0;height:1px;background:rgba(139,148,158,.2)}
+/* Click-to-reveal decision text */
+.fp-name-btn{cursor:pointer;display:flex;align-items:center;gap:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fp-name-btn:hover{opacity:.7}
+.fp-caret{display:inline-block;font-size:10px;opacity:.4;transition:transform .2s ease;flex-shrink:0;margin-left:1px}
+.fp-dec{max-height:0;overflow:hidden;transition:max-height .3s ease,opacity .25s ease;opacity:0}
+.fp-dec.open{max-height:120px;opacity:1}
+/* Long case badge */
+.fp-long-badge{font-size:8px;color:#fb923c;flex-shrink:0}
 /* How-to-read guide */
 .fp-guide{background:rgba(22,27,34,.85);border:1px solid rgba(48,54,61,.8);border-radius:16px;
   padding:24px 28px;margin:0 0 40px}
@@ -523,6 +535,17 @@ async function loadAll(){
     byGroup[g.id].forEach((c,i)=>{ c.color=g.colors[Math.min(i,g.colors.length-1)]; });
   });
 
+  // Mark long cases (> 1.5× group median duration)
+  GROUPS.forEach(g => {
+    const active = byGroup[g.id].filter(c => c.durationDays > 0);
+    const sorted = [...active].sort((a,b) => a.durationDays - b.durationDays);
+    const median = sorted[Math.floor(sorted.length / 2)]?.durationDays || 0;
+    byGroup[g.id].forEach(c => {
+      c.groupMedian = median;
+      c.isLong = median > 0 && c.durationDays > median * 1.5;
+    });
+  });
+
   // Hero stats
   const allEditorNames = new Set(allCases.flatMap(c=>c.nodes.map(n=>n.username)));
   document.getElementById('stat-cases').textContent   = allCases.length;
@@ -617,17 +640,29 @@ function buildV11(byGroup){
       const durLabel = durDays >= 365 ? (durDays/365).toFixed(1)+'y' : durDays+'d';
 
       const row = document.createElement('div'); row.className = 'fp-row';
+      if (c.isLong) row.style.boxShadow = 'inset 3px 0 0 0 rgba(251,146,60,.45)';
 
       const lbl = document.createElement('div'); lbl.className = 'fp-label';
-      lbl.style.cssText = `color:${c.color};display:flex;flex-direction:column;gap:2px;cursor:default`;
+      lbl.style.cssText = `color:${c.color};display:flex;flex-direction:column;gap:2px`;
 
-      const lblName = document.createElement('div');
-      lblName.textContent = c.short;
+      const lblName = document.createElement('div'); lblName.className = 'fp-name-btn';
+      lblName.appendChild(document.createTextNode(c.short));
+      if (c.isLong) {
+        const badge = document.createElement('span'); badge.className = 'fp-long-badge';
+        badge.textContent = ' ⏱'; lblName.appendChild(badge);
+      }
+      const caret = document.createElement('span'); caret.className = 'fp-caret';
+      caret.textContent = '›'; lblName.appendChild(caret);
 
-      const lblDec = document.createElement('div');
-      lblDec.style.cssText = 'font-size:9px;color:rgba(139,148,158,.75);white-space:normal;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-style:italic;max-width:160px;line-height:1.4';
+      const lblDec = document.createElement('div'); lblDec.className = 'fp-dec';
+      lblDec.style.cssText = 'font-size:9px;color:rgba(139,148,158,.8);font-style:italic;line-height:1.4;padding-top:3px;max-width:160px;white-space:normal';
       lblDec.textContent = c.decision || '';
-      lblDec.title = c.decision || '';
+
+      lblName.addEventListener('click', () => {
+        const open = lblDec.classList.toggle('open');
+        caret.style.transform = open ? 'rotate(90deg)' : '';
+        row.style.alignItems = open ? 'flex-start' : 'center';
+      });
 
       lbl.appendChild(lblName);
       lbl.appendChild(lblDec);
@@ -685,9 +720,9 @@ function buildV11(byGroup){
 
       // Duration pill
       const dur = document.createElement('div'); dur.className = 'fp-dur';
-      dur.textContent = durLabel;
-      dur.style.color = earlyEnd ? '#fb923c' : 'rgba(139,148,158,.55)';
-      dur.style.cursor = 'default';
+      dur.textContent = (c.isLong ? '⏱ ' : '') + durLabel;
+      dur.style.color = (earlyEnd || c.isLong) ? '#fb923c' : 'rgba(139,148,158,.55)';
+      if (c.isLong) dur.style.fontWeight = '600';
 
       const noteHtml = c.note
         ? `<div style="margin-top:5px;font-size:10px;line-height:1.45;max-width:220px;color:rgba(230,237,243,.8)">${c.note}</div>`
@@ -695,13 +730,29 @@ function buildV11(byGroup){
       const earlyNote = earlyEnd
         ? `<span style="color:#fb923c">Activity stops at segment ${lastActive+1}/60</span>`
         : `Active for all ${durDays} days`;
+      const longNote = c.isLong && c.groupMedian
+        ? `<div style="margin-top:4px;font-size:10px;color:rgba(251,146,60,.9)">⏱ Group median: ~${Math.round(c.groupMedian)} days — the amber region shows time past the typical endpoint</div>`
+        : '';
 
       dur.addEventListener('mouseenter', evt =>
-        showTip(`<b>${c.label}</b><br><span style="color:rgba(139,148,158,.8)">${durDays} days · ${c.totalEvents} events</span><br>${earlyNote}${noteHtml}`, evt));
+        showTip(`<b>${c.label}</b><br><span style="color:rgba(139,148,158,.8)">${durDays} days · ${c.totalEvents} events</span><br>${earlyNote}${longNote}${noteHtml}`, evt));
       dur.addEventListener('mousemove', moveTip);
       dur.addEventListener('mouseleave', hideTip);
 
-      col.appendChild(bar);
+      // Wrap bar with median marker overlay for long cases
+      const barWrap = document.createElement('div');
+      barWrap.style.cssText = 'position:relative;display:flex;width:100%';
+      barWrap.appendChild(bar);
+      if (c.isLong && c.groupMedian > 0) {
+        const medBucket = Math.round(c.groupMedian / c.durationDays * BUCKETS);
+        if (medBucket > 2 && medBucket < BUCKETS - 2) {
+          const ext = document.createElement('div');
+          const pct = (medBucket / BUCKETS * 100).toFixed(1);
+          ext.style.cssText = `position:absolute;top:0;height:16px;left:${pct}%;right:0;background:rgba(251,146,60,.08);pointer-events:none;z-index:2;border-left:1.5px dashed rgba(251,146,60,.6)`;
+          barWrap.appendChild(ext);
+        }
+      }
+      col.appendChild(barWrap);
       row.appendChild(lbl); row.appendChild(col); row.appendChild(dur);
       sec.appendChild(row);
     });
