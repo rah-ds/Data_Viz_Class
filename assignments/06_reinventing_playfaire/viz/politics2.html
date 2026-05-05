@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Political Conflict · Vol. II — Deeper Cuts</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --border: #30363d;
+  --text: #e6edf3;
+  --muted: #7d8590;
+  --faint: #3d444d;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'Georgia', serif; }
+
+#hero { padding: 60px 48px 40px; max-width: 900px; margin: 0 auto; }
+#hero h1 { font-size: clamp(1.6rem,3.5vw,2.6rem); font-weight:700; letter-spacing:-0.02em; line-height:1.15; margin-bottom:12px; }
+#hero .sub { font-size:1rem; color:var(--muted); font-style:italic; }
+#hero .vol { font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--faint); margin-bottom:10px; }
+#hero .back { font-size:0.8rem; color:var(--muted); margin-top:18px; display:inline-block; }
+#hero .back:hover { color:var(--text); }
+
+nav#toc { border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:0 48px; overflow-x:auto; white-space:nowrap; position:sticky; top:0; background:rgba(13,17,23,0.95); backdrop-filter:blur(6px); z-index:100; }
+nav#toc ul { list-style:none; display:inline-flex; }
+nav#toc li a { display:inline-block; padding:11px 14px; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.07em; color:var(--muted); border-bottom:2px solid transparent; transition:color .15s,border-color .15s; }
+nav#toc li a:hover, nav#toc li a.active { color:var(--text); border-bottom-color:#58a6ff; text-decoration:none; }
+
+.viz-section { max-width:1100px; margin:0 auto; padding:60px 48px; border-bottom:1px solid var(--border); }
+.viz-section:last-child { border-bottom:none; }
+.section-label { font-size:0.65rem; text-transform:uppercase; letter-spacing:0.12em; color:var(--muted); margin-bottom:5px; }
+.section-num { color:var(--faint); margin-right:4px; }
+.viz-title { font-size:clamp(1.2rem,2.2vw,1.8rem); font-weight:700; margin-bottom:8px; line-height:1.2; }
+.viz-desc { font-size:0.88rem; color:var(--muted); max-width:580px; margin-bottom:32px; font-style:italic; }
+.chart-host { width:100%; overflow:hidden; }
+.chart-host svg { display:block; width:100%; }
+
+/* Parallel coords */
+.pc-axis text { fill:var(--muted); font-size:10px; }
+.pc-axis path, .pc-axis line { stroke:var(--border); }
+
+/* Chord */
+.chord-group path { stroke-width:0.5; }
+
+/* Departure wheel grid */
+.wheel-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+.wheel-cell { text-align:center; }
+.wheel-cell .wlbl { font-size:0.72rem; color:var(--muted); margin-top:6px; display:block; }
+
+/* Bubble pack */
+#v7-host svg { overflow:visible; }
+
+/* Heatmap grid */
+.hm-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+.hm-cell { }
+.hm-cell .hm-title { font-size:0.7rem; color:var(--muted); margin-bottom:6px; }
+
+/* Force network */
+.force-link { stroke:var(--border); stroke-width:1; }
+.force-node-case { cursor:default; }
+.force-node-editor { cursor:pointer; }
+
+/* Ridge */
+.ridge-path { }
+
+/* Tooltip */
+#tip { position:fixed; pointer-events:none; background:rgba(22,27,34,0.97); border:1px solid var(--border); border-radius:8px; padding:10px 14px; font-size:0.81rem; max-width:240px; line-height:1.45; z-index:999; opacity:0; transition:opacity .1s; }
+#tip.on { opacity:1; }
+#tip strong { color:var(--text); display:block; margin-bottom:2px; }
+#tip span { color:var(--muted); }
+
+footer { text-align:center; padding:36px 48px; font-size:0.75rem; color:var(--faint); border-top:1px solid var(--border); }
+footer a { color:var(--muted); }
+
+/* case legend bar */
+#legend { display:flex; flex-wrap:wrap; gap:10px 18px; padding:16px 48px; max-width:1100px; margin:0 auto; }
+.li { display:flex; align-items:center; gap:6px; font-size:0.76rem; cursor:default; }
+.ls { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+</style>
+</head>
+<body>
+
+<div id="hero">
+  <div class="vol">Vol. II — Deeper Cuts</div>
+  <h1>Political Conflict on Wikipedia<br/>Ten More Ways to See It</h1>
+  <p class="sub">Cross-case networks, radial rhythms, parallel coordinates, and the editors who show up again and again — 20 years of political conflict viewed through a wider lens.</p>
+  <a class="back" href="politics.html">← Vol. I</a>
+</div>
+
+<nav id="toc"><ul>
+  <li><a href="#v1">Parallel Coords</a></li>
+  <li><a href="#v2">Ridge Plot</a></li>
+  <li><a href="#v3">Chord Network</a></li>
+  <li><a href="#v4">Hour Rings</a></li>
+  <li><a href="#v5">Streamgraph</a></li>
+  <li><a href="#v6">Departure Wheels</a></li>
+  <li><a href="#v7">Bubble Pack</a></li>
+  <li><a href="#v8">Day×Hour Maps</a></li>
+  <li><a href="#v9">Editor Network</a></li>
+  <li><a href="#v10">Phase Race</a></li>
+</ul></nav>
+
+<div id="legend"></div>
+
+<section class="viz-section" id="v1">
+  <div class="section-label"><span class="section-num">11 /</span> Parallel Coordinates</div>
+  <h2 class="viz-title">Seven Dimensions of Conflict</h2>
+  <p class="viz-desc">Each line traces one case across seven axes — duration, editors, events, departure rate, evidence share, workshop share, and reverts. Cases that cross paths are structurally similar; cases that don't are anomalies.</p>
+  <div class="chart-host" id="v1-host"></div>
+</section>
+
+<section class="viz-section" id="v2">
+  <div class="section-label"><span class="section-num">12 /</span> Ridge Plot</div>
+  <h2 class="viz-title">The Shape of Each Conflict</h2>
+  <p class="viz-desc">Edit density over normalized case time (0–100%), estimated by kernel density. Cases with sharp peaks had concentrated bursts; broad ridges indicate sustained engagement. Each ridge is one case, stacked chronologically.</p>
+  <div class="chart-host" id="v2-host"></div>
+</section>
+
+<section class="viz-section" id="v3">
+  <div class="section-label"><span class="section-num">13 /</span> Cross-Case Chord Diagram</div>
+  <h2 class="viz-title">The Editors Who Keep Showing Up</h2>
+  <p class="viz-desc">Arcs represent cases; chords connect cases that share editors. The thicker the chord, the more editors appeared in both cases. British Politics BLP and Canadian Politics share nine editors — the densest overlap in this data.</p>
+  <div class="chart-host" id="v3-host" style="max-width:600px;margin:0 auto;"></div>
+</section>
+
+<section class="viz-section" id="v4">
+  <div class="section-label"><span class="section-num">14 /</span> 24-Hour Activity Rings</div>
+  <h2 class="viz-title">What Hour Do Wikipedia Editors Fight?</h2>
+  <p class="viz-desc">Each ring divides a day into 24 hours (UTC). Bar length = number of edits in that hour. The brightest spike is the peak editing hour. Politics, it turns out, happens at all hours — and different politics happens at different times.</p>
+  <div class="wheel-grid" id="v4-host"></div>
+</section>
+
+<section class="viz-section" id="v5">
+  <div class="section-label"><span class="section-num">15 /</span> Absolute Streamgraph</div>
+  <h2 class="viz-title">Political Controversy Across Twenty Years</h2>
+  <p class="viz-desc">Each colored stream is one case, placed at its actual date on a 2004–2024 calendar. Stream height encodes daily edit volume. The long silences between cases are real — years passed between major political arbitrations.</p>
+  <div class="chart-host" id="v5-host"></div>
+</section>
+
+<section class="viz-section" id="v6">
+  <div class="section-label"><span class="section-num">16 /</span> Departure Wheels</div>
+  <h2 class="viz-title">When Did Editors Leave?</h2>
+  <p class="viz-desc">Each spoke is one editor. The angle shows when they departed (12 o'clock = start, clockwise = time passing). Spoke length = how many edits they made before leaving. Editors at the outer rim fought longer and harder before walking away.</p>
+  <div class="wheel-grid" id="v6-host"></div>
+</section>
+
+<section class="viz-section" id="v7">
+  <div class="section-label"><span class="section-num">17 /</span> Bubble Pack</div>
+  <h2 class="viz-title">Where Did the Editing Energy Go?</h2>
+  <p class="viz-desc">Cases as outer circles, phases as inner bubbles. Size encodes edit count. Some cases concentrated nearly all effort in a single phase; others spread work across all four. The British Politics BLP case is the clearest example of balance.</p>
+  <div class="chart-host" id="v7-host"></div>
+</section>
+
+<section class="viz-section" id="v8">
+  <div class="section-label"><span class="section-num">18 /</span> Day × Hour Heatmaps</div>
+  <h2 class="viz-title">The Exact Moment of Political Debate</h2>
+  <p class="viz-desc">Each cell is one hour of one weekday. Brighter = more edits. These 9 small multiples reveal each case's signature "fighting schedule" — when editors were most active, and how that pattern differs across cultures and eras.</p>
+  <div class="hm-grid" id="v8-host"></div>
+</section>
+
+<section class="viz-section" id="v9">
+  <div class="section-label"><span class="section-num">19 /</span> Recurring Editor Network</div>
+  <h2 class="viz-title">The Persistent Few</h2>
+  <p class="viz-desc">Editors who participated in more than one politics arbitration case. Case nodes are arranged in a circle; editor nodes float between the cases they appeared in. Some editors are central to the entire political conflict ecosystem on Wikipedia.</p>
+  <div class="chart-host" id="v9-host"></div>
+</section>
+
+<section class="viz-section" id="v10">
+  <div class="section-label"><span class="section-num">20 /</span> Phase Race</div>
+  <h2 class="viz-title">Which Phase Led at Each Moment?</h2>
+  <p class="viz-desc">A "race" chart: at each point in normalized case time, which phase had accumulated the most edits? The vertical stacking shows how evidence, workshop, and proposed decision jockeyed for dominance. Hover to explore individual cases.</p>
+  <div class="chart-host" id="v10-host"></div>
+</section>
+
+<footer>
+  <p>Data from <a href="https://en.wikipedia.org/wiki/Wikipedia:Arbitration/Requests" target="_blank">Wikipedia Arbitration Requests</a> &nbsp;·&nbsp; SARC 5400 &nbsp;·&nbsp; UVA</p>
+  <p style="margin-top:5px"><a href="politics.html">← Vol. I</a> &nbsp;·&nbsp; <a href="dashboard.html">Main Dashboard</a></p>
+</footer>
+
+<div id="tip"></div>
+
+<script>
+'use strict';
+
+// ── Constants ──────────────────────────────────────────────────────────────
+const CASES_META = [
+  { slug:'user:polishpoliticians',                  label:'Polish Politicians',   short:'Polish 2004',   year:2004, color:'#a78bfa' },
+  { slug:'election',                                label:'Election',             short:'Election 2006', year:2006, color:'#818cf8' },
+  { slug:'race_and_politics',                       label:'Race & Politics',      short:'Race 2013',     year:2013, color:'#fb7185' },
+  { slug:'american_politics',                       label:'American Politics',    short:'AmPol 2014',    year:2014, color:'#f87171' },
+  { slug:'american_politics_2',                     label:'American Politics 2',  short:'AmPol2 2015',   year:2015, color:'#fb923c' },
+  { slug:'blp_issues_on_british_politics_articles', label:'British Politics BLP', short:'BritBLP 2018',  year:2018, color:'#facc15' },
+  { slug:'canadian_politics',                       label:'Canadian Politics',    short:'Canada 2019',   year:2019, color:'#4ade80' },
+  { slug:'iranian_politics',                        label:'Iranian Politics',     short:'Iran 2021',     year:2021, color:'#22d3ee' },
+  { slug:'venezuelan_politics',                     label:'Venezuelan Politics',  short:'Venezuela 2024',year:2024, color:'#60a5fa' },
+];
+
+const PHASE_COLOR = {
+  main:'#595959', evidence:'#E97500', workshop:'#54A823',
+  proposed_decision:'#B60000', article:'#3366CC', outcome:'#72777D',
+};
+const ROLE_COLOR = {
+  arbitrator:'#f87171', arbitrator_candidate:'#fb923c',
+  participant:'#60a5fa', observer:'#4ade80',
+};
+const DOW = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+// ── Tooltip ────────────────────────────────────────────────────────────────
+const TT = document.getElementById('tip');
+function tip(html, e) {
+  TT.innerHTML = html; TT.classList.add('on');
+  let x = e.clientX + 14, y = e.clientY - 14;
+  if (x + 250 > innerWidth) x = e.clientX - 260;
+  TT.style.cssText += `;left:${x}px;top:${y}px`;
+}
+function moveTip(e) {
+  let x = e.clientX+14, y = e.clientY-14;
+  if (x+250>innerWidth) x=e.clientX-260;
+  TT.style.left=x+'px'; TT.style.top=y+'px';
+}
+const hideTip = () => TT.classList.remove('on');
+
+// ── Legend ─────────────────────────────────────────────────────────────────
+const legWrap = document.getElementById('legend');
+CASES_META.forEach(m => {
+  const d = document.createElement('div'); d.className='li';
+  d.innerHTML=`<span class="ls" style="background:${m.color}"></span><span>${m.short}</span>`;
+  legWrap.appendChild(d);
+});
+
+// ── Nav active ─────────────────────────────────────────────────────────────
+(function(){
+  const links=[...document.querySelectorAll('#toc a')];
+  const secs=links.map(a=>document.querySelector(a.getAttribute('href')));
+  new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        const i=secs.indexOf(e.target);
+        links.forEach((l,j)=>l.classList.toggle('active',j===i));
+      }
+    });
+  },{rootMargin:'-40% 0px -55% 0px'}).observe && secs.forEach(s=>s&&new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){const i=secs.indexOf(e.target);links.forEach((l,j)=>l.classList.toggle('active',j===i));}});},{rootMargin:'-40% 0px -55% 0px'}).observe(s));
+})();
+
+// ── Enrich ─────────────────────────────────────────────────────────────────
+function enrich(raw, meta) {
+  const ev = raw.events || [], nodes = raw.nodes || [], m = raw.meta || {};
+  const start = new Date(m.case_start), end = new Date(m.case_end);
+  const dur = end - start;
+  const clamp = v => Math.max(0, Math.min(1, v));
+
+  // phase counts
+  const pc = {};
+  for (const e of ev) { const p=e.page_type||'main'; pc[p]=(pc[p]||0)+1; }
+
+  // role counts
+  const rc = {};
+  for (const n of nodes) { const r=n.role||'observer'; rc[r]=(rc[r]||0)+1; }
+
+  // reverts
+  const reverts = ev.filter(e => e.type==='revert').length;
+
+  // departure
+  const departed = nodes.filter(n=>n.departed).length;
+  const depRate = nodes.length ? departed/nodes.length : 0;
+
+  // normalized event times
+  const normTimes = ev.map(e => clamp((new Date(e.timestamp)-start)/dur));
+
+  // hour of day counts (UTC)
+  const hours = Array(24).fill(0);
+  for (const e of ev) { hours[new Date(e.timestamp).getUTCHours()]++; }
+
+  // day × hour matrix [dow][hour]
+  const dayHour = Array.from({length:7}, ()=>Array(24).fill(0));
+  for (const e of ev) {
+    const d = new Date(e.timestamp);
+    const dow = (d.getUTCDay()+6)%7; // Mon=0
+    dayHour[dow][d.getUTCHours()]++;
+  }
+
+  // absolute daily edit series (for streamgraph)
+  const dailySeries = {};
+  for (const e of ev) {
+    const k = e.timestamp.slice(0,10);
+    dailySeries[k] = (dailySeries[k]||0)+1;
+  }
+
+  // editor data
+  const editorData = nodes.map(n => ({
+    name: n.username,
+    role: n.role||'observer',
+    edits: n.total_edits||0,
+    departed: n.departed,
+    depFrac: n.last_active ? clamp((new Date(n.last_active)-start)/dur) : 1,
+    entryFrac: n.first_active ? clamp((new Date(n.first_active)-start)/dur) : 0,
+  }));
+
+  return { ...meta, raw:m, events:ev, nodes, phaseCounts:pc, roleCounts:rc,
+           reverts, departed, depRate, normTimes, hours, dayHour, dailySeries,
+           editorData, start, end, dur };
+}
+
+// ── Load ───────────────────────────────────────────────────────────────────
+Promise.all(CASES_META.map(m =>
+  fetch(`../data/processed/d3/${m.slug}.json`)
+    .then(r=>r.json())
+    .then(d=>enrich(d,m))
+)).then(cases=>{
+  // cross-case shared editors matrix
+  const N = cases.length;
+  const matrix = Array.from({length:N},()=>Array(N).fill(0));
+  const editorIdx = {}; // editor → set of case indices
+  cases.forEach((c,i) => c.nodes.forEach(n => {
+    if (!editorIdx[n.username]) editorIdx[n.username]=new Set();
+    editorIdx[n.username].add(i);
+  }));
+  Object.values(editorIdx).forEach(idxSet=>{
+    const arr=[...idxSet];
+    for(let a=0;a<arr.length;a++) for(let b=0;b<arr.length;b++) {
+      if(a!==b) matrix[arr[a]][arr[b]]++;
+    }
+  });
+  const recurringEditors = Object.entries(editorIdx)
+    .filter(([,s])=>s.size>1)
+    .map(([name,s])=>({ name, cases:[...s] }));
+
+  init(cases, matrix, recurringEditors);
+}).catch(err=>{
+  document.querySelectorAll('.chart-host,.wheel-grid,.hm-grid,[id$="-host"]').forEach(el=>{
+    el.innerHTML=`<p style="color:#f87171;padding:20px">Error: ${err.message}</p>`;
+  });
+});
+
+function init(cases, matrix, recurringEditors) {
+  buildV1(cases);
+  buildV2(cases);
+  buildV3(cases, matrix);
+  buildV4(cases);
+  buildV5(cases);
+  buildV6(cases);
+  buildV7(cases);
+  buildV8(cases);
+  buildV9(cases, recurringEditors);
+  buildV10(cases);
+}
+
+// ── V1: Parallel Coordinates ───────────────────────────────────────────────
+function buildV1(cases) {
+  const host = document.getElementById('v1-host');
+  const W = host.clientWidth||900, H=340, ML=60, MR=24, MT=50, MB=30;
+  const pW=W-ML-MR, pH=H-MT-MB;
+
+  const dims = [
+    { key:'dur',    label:'Duration (days)',  val: c=>c.raw.case_duration_days },
+    { key:'eds',    label:'Editors',          val: c=>c.raw.total_editors },
+    { key:'events', label:'Total Edits',      val: c=>c.raw.total_events },
+    { key:'dep',    label:'Departure %',      val: c=>Math.round(c.depRate*100) },
+    { key:'ev',     label:'Evidence %',       val: c=>Math.round((c.phaseCounts.evidence||0)/c.raw.total_events*100) },
+    { key:'ws',     label:'Workshop %',       val: c=>Math.round((c.phaseCounts.workshop||0)/c.raw.total_events*100) },
+    { key:'rev',    label:'Reverts',          val: c=>c.reverts },
+  ];
+
+  const scales = dims.map(d => {
+    const vals = cases.map(d.val);
+    return d3.scaleLinear().domain(d3.extent(vals)).range([pH,0]).nice();
+  });
+
+  const xScale = d3.scalePoint().domain(dims.map(d=>d.key)).range([0,pW]);
+
+  const line = d3.line()
+    .x((_,i)=>xScale(dims[i].key))
+    .y((v,i)=>scales[i](v))
+    .curve(d3.curveCatmullRom);
+
+  const svg = d3.select(host).append('svg').attr('viewBox',`0 0 ${W} ${H}`).attr('height',H);
+  const g = svg.append('g').attr('transform',`translate(${ML},${MT})`);
+
+  // Background lines (faint)
+  cases.forEach(c => {
+    const vals = dims.map(d=>d.val(c));
+    g.append('path').datum(vals).attr('d',line)
+      .attr('fill','none').attr('stroke',c.color).attr('stroke-width',0.8).attr('opacity',0.25);
+  });
+
+  // Foreground lines on hover
+  cases.forEach(c => {
+    const vals = dims.map(d=>d.val(c));
+    const path = g.append('path').datum(vals).attr('d',line)
+      .attr('fill','none').attr('stroke',c.color).attr('stroke-width',1.5).attr('opacity',0)
+      .style('cursor','pointer');
+
+    // Hit area
+    g.append('path').datum(vals).attr('d',line)
+      .attr('fill','none').attr('stroke','transparent').attr('stroke-width',10)
+      .style('cursor','pointer')
+      .on('mouseover',evt=>{
+        path.attr('opacity',1);
+        const tipLines = dims.map((d,i)=>`<span>${d.label}: ${vals[i]}</span>`).join('<br/>');
+        tip(`<strong>${c.label}</strong>${tipLines}`, evt);
+      })
+      .on('mousemove',moveTip)
+      .on('mouseout',()=>{ path.attr('opacity',0); hideTip(); });
+  });
+
+  // Axes
+  dims.forEach((d,i) => {
+    const ax = g.append('g').attr('transform',`translate(${xScale(d.key)},0)`);
+    ax.call(d3.axisLeft(scales[i]).ticks(4).tickSize(3))
+      .call(a=>a.select('.domain').attr('stroke','#30363d'))
+      .call(a=>a.selectAll('text').attr('fill','#7d8590').attr('font-size',9));
+    ax.append('text').attr('y',-14).attr('text-anchor','middle')
+      .attr('fill','#7d8590').attr('font-size',9).attr('font-style','italic')
+      .text(d.label);
+  });
+}
+
+// ── V2: Ridge / Joy Plot ───────────────────────────────────────────────────
+function buildV2(cases) {
+  const host = document.getElementById('v2-host');
+  const W = host.clientWidth||900, H=420, ML=130, MR=30, MT=20, MB=36;
+  const pW = W-ML-MR, pH = H-MT-MB;
+  const RIDGE_H = 48, OVERLAP = 0.45;
+  const STEP = pH / cases.length;
+
+  // KDE
+  function kde(kernel, thresholds, data) {
+    return thresholds.map(x => [x, d3.mean(data, d=>kernel(x-d))||0]);
+  }
+  function epanechnikov(bw) {
+    return x => Math.abs(x/=bw)<=1 ? 0.75*(1-x*x)/bw : 0;
+  }
+  const thresholds = d3.range(0, 1.01, 0.01);
+  const allDensities = cases.map(c => kde(epanechnikov(0.1), thresholds, c.normTimes));
+
+  const maxDens = d3.max(allDensities.flat(), d=>d[1]);
+  const x = d3.scaleLinear().domain([0,1]).range([0,pW]);
+  const yDens = d3.scaleLinear().domain([0,maxDens]).range([0, RIDGE_H*(1+OVERLAP)]);
+
+  const svg = d3.select(host).append('svg').attr('viewBox',`0 0 ${W} ${H}`).attr('height',H);
+  const g = svg.append('g').attr('transform',`translate(${ML},${MT})`);
+
+  // x axis
+  g.append('g').attr('transform',`translate(0,${pH})`)
+    .call(d3.axisBottom(x).ticks(5).tickFormat(d=>`${Math.round(d*100)}%`))
+    .call(a=>a.select('.domain').attr('stroke','#30363d'))
+    .call(a=>a.selectAll('text').attr('fill','#7d8590').attr('font-size',10));
+  g.append('text').attr('x',pW/2).attr('y',pH+28).attr('text-anchor','middle')
+    .attr('fill','#7d8590').attr('font-size',10).text('Case progress (normalized)');
+
+  // Ridges (from bottom to top = chronological order)
+  [...cases].reverse().forEach((c,ri) => {
+    const dens = allDensities[cases.length-1-ri];
+    const baseY = pH - ri * STEP - 8;
+
+    const area = d3.area()
+      .x(d=>x(d[0])).y0(0).y1(d=>-yDens(d[1]))
+      .curve(d3.curveBasis);
+    const lineGen = d3.line()
+      .x(d=>x(d[0])).y(d=>-yDens(d[1]))
+      .curve(d3.curveBasis);
+
+    const rg = g.append('g').attr('transform',`translate(0,${baseY})`);
+    rg.append('path').datum(dens).attr('d',area)
+      .attr('fill',c.color).attr('opacity',0.25);
+    rg.append('path').datum(dens).attr('d',lineGen)
+      .attr('fill','none').attr('stroke',c.color).attr('stroke-width',1.5).attr('opacity',0.85);
+
+    // baseline
+    rg.append('line').attr('x1',0).attr('y1',0).attr('x2',pW).attr('y2',0)
+      .attr('stroke','#21262d').attr('stroke-width',0.5);
+
+    // label
+    g.append('text').attr('x',-8).attr('y',baseY-4)
+      .attr('text-anchor','end').attr('dominant-baseline','middle')
+      .attr('fill',c.color).attr('font-size',9).text(c.short);
+  });
+}
+
+// ── V3: Chord Diagram ──────────────────────────────────────────────────────
+function buildV3(cases, matrix) {
+  const host = document.getElementById('v3-host');
+  const S = Math.min(host.clientWidth||600, 600);
+  const R = S/2 - 60, IR = R - 22;
+
+  const chord = d3.chord().padAngle(0.04).sortSubgroups(d3.descending)(matrix);
+  const arc   = d3.arc().innerRadius(IR).outerRadius(R);
+  const ribbon = d3.ribbon().radius(IR - 2);
+
+  const svg = d3.select(host).append('svg')
+    .attr('viewBox',`0 0 ${S} ${S}`).attr('height',S);
+  const g = svg.append('g').attr('transform',`translate(${S/2},${S/2})`);
+
+  // Chords
+  g.selectAll('.chord').data(chord).join('path')
+    .attr('class','chord')
+    .attr('d', ribbon)
+    .attr('fill', d => cases[d.source.index].color)
+    .attr('opacity', 0.3)
+    .style('cursor','pointer')
+    .on('mouseover', function(evt, d) {
+      d3.select(this).attr('opacity',0.7);
+      const n = matrix[d.source.index][d.target.index];
+      tip(`<strong>${cases[d.source.index].short} ↔ ${cases[d.target.index].short}</strong>
+           <span>${n} shared editor${n>1?'s':''}</span>`, evt);
+    })
+    .on('mousemove',moveTip)
+    .on('mouseout', function(){ d3.select(this).attr('opacity',0.3); hideTip(); });
+
+  // Groups (arcs)
+  const groups = g.selectAll('.group').data(chord.groups).join('g').attr('class','group');
+
+  groups.append('path')
+    .attr('d', arc)
+    .attr('fill', d=>cases[d.index].color)
+    .attr('opacity',0.8)
+    .style('cursor','pointer')
+    .on('mouseover', (evt,d) => {
+      const total = d3.sum(matrix[d.index]);
+      tip(`<strong>${cases[d.index].label}</strong>
+           <span>Shares editors with ${matrix[d.index].filter(n=>n>0).length} other cases</span><br/>
+           <span>${total} total shared editor connections</span>`, evt);
+    })
+    .on('mousemove',moveTip)
+    .on('mouseout',hideTip);
+
+  // Labels
+  groups.append('text')
+    .each(d=>{ d.angle = (d.startAngle+d.endAngle)/2; })
+    .attr('dy','0.35em')
+    .attr('transform', d=>`
+      rotate(${(d.angle*180/Math.PI-90)})
+      translate(${R+8})
+      ${d.angle > Math.PI ? 'rotate(180)' : ''}
+    `)
+    .attr('text-anchor', d=>d.angle>Math.PI ? 'end' : 'start')
+    .attr('fill', d=>cases[d.index].color)
+    .attr('font-size', 9)
+    .text(d=>cases[d.index].short);
+}
+
+// ── V4: 24-Hour Rings ──────────────────────────────────────────────────────
+function buildV4(cases) {
+  const host = document.getElementById('v4-host');
+  const S = 150;
+  const R = 54, IR = 22;
+
+  cases.forEach(c => {
+    const cell = document.createElement('div');
+    cell.className = 'wheel-cell';
+
+    const maxH = d3.max(c.hours);
+    const svg = d3.create('svg').attr('viewBox',`0 0 ${S} ${S}`).attr('width',S).attr('height',S);
+    const g = svg.append('g').attr('transform',`translate(${S/2},${S/2})`);
+
+    // Inner ring
+    g.append('circle').attr('r',IR).attr('fill','none')
+      .attr('stroke','#21262d').attr('stroke-width',0.5);
+
+    // Hour bars
+    c.hours.forEach((n,h) => {
+      const startAngle = (h/24)*2*Math.PI - Math.PI/2;
+      const endAngle   = ((h+1)/24)*2*Math.PI - Math.PI/2;
+      const barLen     = IR + (R-IR) * (maxH>0?n/maxH:0);
+      const arc2 = d3.arc()
+        .innerRadius(IR+1).outerRadius(barLen)
+        .startAngle(startAngle).endAngle(endAngle-0.01);
+
+      g.append('path').attr('d',arc2())
+        .attr('fill',c.color)
+        .attr('opacity', 0.3 + 0.65*(maxH>0?n/maxH:0))
+        .style('cursor','pointer')
+        .on('mouseover',evt=>tip(`<strong>${c.short}</strong><span>${h}:00 UTC — ${n} edits</span>`,evt))
+        .on('mousemove',moveTip)
+        .on('mouseout',hideTip);
+    });
+
+    // Center year
+    g.append('text').attr('text-anchor','middle').attr('dy','0.35em')
+      .attr('fill',c.color).attr('font-size',11).attr('font-weight',700)
+      .text(c.year);
+
+    cell.appendChild(svg.node());
+    const lbl = document.createElement('span');
+    lbl.className='wlbl';
+    lbl.style.color=c.color;
+    lbl.textContent=c.short;
+    cell.appendChild(lbl);
+    host.appendChild(cell);
+  });
+}
+
+// ── V5: Absolute Streamgraph ───────────────────────────────────────────────
+function buildV5(cases) {
+  const host = document.getElementById('v5-host');
+  const W = host.clientWidth||900, H=260, ML=40, MR=20, MT=20, MB=36;
+  const pW=W-ML-MR, pH=H-MT-MB;
+
+  // Build date range and per-day series per case
+  const t0 = new Date('2003-07-01'), t1 = new Date('2025-01-01');
+  const allDays = [];
+  for (let d=new Date(t0); d<t1; d.setDate(d.getDate()+1)) {
+    allDays.push(d.toISOString().slice(0,10));
+  }
+
+  const seriesData = allDays.map(day => {
+    const row = { day: new Date(day) };
+    cases.forEach(c => { row[c.slug] = c.dailySeries[day]||0; });
+    return row;
+  });
+
+  const stack = d3.stack()
+    .keys(cases.map(c=>c.slug))
+    .offset(d3.stackOffsetWiggle)
+    .order(d3.stackOrderInsideOut);
+
+  const stacked = stack(seriesData);
+
+  const x = d3.scaleTime().domain([t0,t1]).range([0,pW]);
+  const maxY = d3.max(stacked, layer => d3.max(layer, d => d[1]));
+  const minY = d3.min(stacked, layer => d3.min(layer, d => d[0]));
+  const y = d3.scaleLinear().domain([minY,maxY]).range([pH,0]);
+
+  const area = d3.area()
+    .x(d=>x(d.data.day))
+    .y0(d=>y(d[0]))
+    .y1(d=>y(d[1]))
+    .curve(d3.curveBasis);
+
+  const svg = d3.select(host).append('svg').attr('viewBox',`0 0 ${W} ${H}`).attr('height',H);
+  const g = svg.append('g').attr('transform',`translate(${ML},${MT})`);
+
+  stacked.forEach(layer => {
+    const c = cases.find(c=>c.slug===layer.key);
+    g.append('path').datum(layer).attr('d',area)
+      .attr('fill',c.color).attr('opacity',0.75)
+      .style('cursor','pointer')
+      .on('mouseover',evt=>{
+        tip(`<strong>${c.label}</strong><span>${c.year} · ${c.raw.case_duration_days} days · ${c.raw.total_events} edits</span>`,evt);
+      })
+      .on('mousemove',moveTip)
+      .on('mouseout',hideTip);
+  });
+
+  // x axis (years)
+  g.append('g').attr('transform',`translate(0,${pH})`)
+    .call(d3.axisBottom(x).ticks(d3.timeYear.every(2)).tickFormat(d3.timeFormat('%Y')))
+    .call(a=>a.select('.domain').attr('stroke','#30363d'))
+    .call(a=>a.selectAll('text').attr('fill','#7d8590').attr('font-size',10))
+    .call(a=>a.selectAll('.tick line').attr('stroke','#30363d'));
+}
+
+// ── V6: Departure Wheels ───────────────────────────────────────────────────
+function buildV6(cases) {
+  const host = document.getElementById('v6-host');
+  const S = 150, R = 60, IR = 20;
+
+  cases.forEach(c => {
+    const cell = document.createElement('div');
+    cell.className = 'wheel-cell';
+
+    const maxEdits = d3.max(c.editorData, e=>e.edits) || 1;
+    const svg = d3.create('svg').attr('viewBox',`0 0 ${S} ${S}`).attr('width',S).attr('height',S);
+    const g = svg.append('g').attr('transform',`translate(${S/2},${S/2})`);
+
+    // Guide circles
+    [IR, (IR+R)/2, R].forEach(r => {
+      g.append('circle').attr('r',r).attr('fill','none').attr('stroke','#21262d').attr('stroke-width',0.5);
+    });
+
+    // Spokes: one per editor
+    c.editorData.forEach((ed,i) => {
+      const angle = ed.depFrac * 2*Math.PI - Math.PI/2;
+      const len   = IR + (R-IR) * Math.min(1, ed.edits/maxEdits);
+      const x2 = Math.cos(angle)*len, y2 = Math.sin(angle)*len;
+      const roleCol = ROLE_COLOR[ed.role]||'#60a5fa';
+
+      g.append('line').attr('x1',0).attr('y1',0).attr('x2',x2).attr('y2',y2)
+        .attr('stroke',roleCol).attr('stroke-width',1.2).attr('opacity',0.7)
+        .style('cursor','pointer')
+        .on('mouseover',evt=>tip(`<strong>${ed.name}</strong>
+          <span>${ed.role?.replace(/_/g,' ')}</span><br/>
+          <span>Left at ${Math.round(ed.depFrac*100)}% of case</span><br/>
+          <span>${ed.edits} edits</span>`,evt))
+        .on('mousemove',moveTip)
+        .on('mouseout',hideTip);
+
+      g.append('circle').attr('cx',x2).attr('cy',y2).attr('r',2)
+        .attr('fill',roleCol).attr('opacity',0.8);
+    });
+
+    // 12-o'clock tick
+    g.append('line').attr('x1',0).attr('y1',-IR-2).attr('x2',0).attr('y2',-R-4)
+      .attr('stroke','#3d444d').attr('stroke-width',1);
+    g.append('text').attr('y',-R-8).attr('text-anchor','middle').attr('fill','#3d444d')
+      .attr('font-size',7).text('start');
+    g.append('text').attr('y',R+12).attr('text-anchor','middle').attr('fill','#3d444d')
+      .attr('font-size',7).text('end');
+
+    cell.appendChild(svg.node());
+    const lbl = document.createElement('span');
+    lbl.className='wlbl'; lbl.style.color=c.color;
+    lbl.textContent=c.short;
+    cell.appendChild(lbl);
+    host.appendChild(cell);
+  });
+}
+
+// ── V7: Bubble Pack ────────────────────────────────────────────────────────
+function buildV7(cases) {
+  const host = document.getElementById('v7-host');
+  const W = host.clientWidth||900, H=500;
+  const phases = ['evidence','workshop','proposed_decision','main','article'];
+
+  const hierarchy = {
+    name:'root',
+    children: cases.map(c => ({
+      name: c.label, color: c.color, slug: c.slug,
+      children: phases
+        .filter(p=>c.phaseCounts[p])
+        .map(p=>({ name:p, value:c.phaseCounts[p]||0, color:PHASE_COLOR[p], caseColor:c.color }))
+    }))
+  };
+
+  const root = d3.hierarchy(hierarchy)
+    .sum(d => d.value||0)
+    .sort((a,b) => b.value-a.value);
+
+  d3.pack().size([W,H]).padding(4)(root);
+
+  const svg = d3.select(host).append('svg').attr('viewBox',`0 0 ${W} ${H}`).attr('height',H);
+
+  // Case circles (depth=1)
+  svg.selectAll('.case-bubble')
+    .data(root.descendants().filter(d=>d.depth===1))
+    .join('circle')
+    .attr('cx',d=>d.x).attr('cy',d=>d.y).attr('r',d=>d.r)
+    .attr('fill','none')
+    .attr('stroke',d=>d.data.color).attr('stroke-width',1.5).attr('opacity',0.4);
+
+  // Case year labels
+  svg.selectAll('.case-lbl')
+    .data(root.descendants().filter(d=>d.depth===1))
+    .join('text')
+    .attr('x',d=>d.x).attr('y',d=>d.y-d.r+14)
+    .attr('text-anchor','middle').attr('fill',d=>d.data.color)
+    .attr('font-size',d=>Math.min(d.r*0.28,13)).attr('font-weight',700)
+    .text(d=>d.data.color ? cases.find(c=>c.slug===d.data.slug)?.short||'' : '');
+
+  // Phase circles (depth=2)
+  const leaf = svg.selectAll('.phase-bubble')
+    .data(root.descendants().filter(d=>d.depth===2))
+    .join('g').attr('class','phase-bubble');
+
+  leaf.append('circle')
+    .attr('cx',d=>d.x).attr('cy',d=>d.y).attr('r',d=>Math.max(d.r-1,1))
+    .attr('fill',d=>d.data.color).attr('opacity',0.6)
+    .style('cursor','pointer')
+    .on('mouseover',(evt,d)=>{
+      const c=cases.find(c=>c.label===d.parent.data.name);
+      tip(`<strong>${c?.short}</strong><span>${d.data.name.replace(/_/g,' ')}: ${d.data.value} edits</span>`,evt);
+    })
+    .on('mousemove',moveTip)
+    .on('mouseout',hideTip);
+
+  leaf.filter(d=>d.r>12).append('text')
+    .attr('x',d=>d.x).attr('y',d=>d.y)
+    .attr('text-anchor','middle').attr('dominant-baseline','middle')
+    .attr('fill','#0d1117').attr('font-size',d=>Math.min(d.r*0.4,10))
+    .text(d=>d.data.name==='proposed_decision'?'prop.dec':d.data.name);
+}
+
+// ── V8: Day × Hour Heatmaps ────────────────────────────────────────────────
+function buildV8(cases) {
+  const host = document.getElementById('v8-host');
+
+  cases.forEach(c => {
+    const cell = document.createElement('div');
+    cell.className = 'hm-cell';
+    const title = document.createElement('div');
+    title.className='hm-title';
+    title.style.color=c.color;
+    title.textContent=c.short;
+    cell.appendChild(title);
+
+    const COLS=24, ROWS=7;
+    const CW=Math.floor(((host.clientWidth||900)/3-12)/COLS)-1;
+    const CH=14;
+    const W2=CW*COLS+1, H2=CH*ROWS+1;
+
+    const maxVal = d3.max(c.dayHour.flat());
+
+    const svg=d3.create('svg').attr('width',W2).attr('height',H2)
+      .attr('viewBox',`0 0 ${W2} ${H2}`);
+
+    DOW.forEach((day,di)=>{
+      c.dayHour[di].forEach((n,hi)=>{
+        const opacity=maxVal>0?0.07+0.88*(n/maxVal):0.07;
+        const rect=svg.append('rect')
+          .attr('x',hi*CW).attr('y',di*CH)
+          .attr('width',CW-1).attr('height',CH-1)
+          .attr('rx',1)
+          .attr('fill',c.color).attr('opacity',opacity)
+          .style('cursor',n>0?'pointer':'default');
+        if(n>0){
+          rect.on('mouseover',evt=>tip(`<strong>${c.short}</strong><span>${day} ${hi}:00 UTC — ${n} edits</span>`,evt))
+            .on('mousemove',moveTip).on('mouseout',hideTip);
+        }
+      });
+      // row label (just first 2 letters)
+      svg.append('text').attr('x',-2).attr('y',di*CH+CH/2)
+        .attr('text-anchor','end').attr('dominant-baseline','middle')
+        .attr('fill','#7d8590').attr('font-size',7).text(day.slice(0,2));
+    });
+
+    // hour ticks (every 6h)
+    [0,6,12,18].forEach(h=>{
+      svg.append('text').attr('x',h*CW).attr('y',H2+8)
+        .attr('text-anchor','middle').attr('fill','#7d8590').attr('font-size',7)
+        .text(`${h}h`);
+    });
+
+    cell.appendChild(svg.node());
+    host.appendChild(cell);
+  });
+}
+
+// ── V9: Recurring Editor Network ───────────────────────────────────────────
+function buildV9(cases, recurringEditors) {
+  const host = document.getElementById('v9-host');
+  const W = host.clientWidth||900, H=480;
+
+  // Case nodes arranged in a circle
+  const R_CIRCLE = Math.min(W,H)*0.32;
+  const caseNodes = cases.map((c,i) => {
+    const angle = (i/cases.length)*2*Math.PI - Math.PI/2;
+    return { id:`case:${c.slug}`, case:c, x:W/2+R_CIRCLE*Math.cos(angle), y:H/2+R_CIRCLE*Math.sin(angle), fixed:true };
+  });
+
+  // Editor nodes (recurring editors only)
+  const editorNodes = recurringEditors.map((ed,i) => ({
+    id:`ed:${ed.name}`, editor:ed,
+    x: W/2 + (Math.random()-0.5)*R_CIRCLE*0.8,
+    y: H/2 + (Math.random()-0.5)*R_CIRCLE*0.8,
+  }));
+
+  const links = [];
+  recurringEditors.forEach((ed,i) => {
+    ed.cases.forEach(ci => {
+      links.push({ source:`ed:${ed.name}`, target:`case:${cases[ci].slug}`, caseColor:cases[ci].color });
+    });
+  });
+
+  const allNodes = [...caseNodes, ...editorNodes];
+
+  const sim = d3.forceSimulation(allNodes)
+    .force('link', d3.forceLink(links).id(d=>d.id).distance(60).strength(0.4))
+    .force('charge', d3.forceManyBody().strength(-30))
+    .force('center', d3.forceCenter(W/2, H/2).strength(0.05))
+    .force('collide', d3.forceCollide(12));
+
+  // Fix case nodes
+  caseNodes.forEach(n=>{ n.fx=n.x; n.fy=n.y; });
+
+  const svg = d3.select(host).append('svg').attr('viewBox',`0 0 ${W} ${H}`).attr('height',H);
+  const gLinks = svg.append('g');
+  const gNodes = svg.append('g');
+
+  const linkSel = gLinks.selectAll('line').data(links).join('line')
+    .attr('class','force-link').attr('stroke', d=>d.caseColor).attr('opacity',0.3);
+
+  const nodeSel = gNodes.selectAll('g').data(allNodes).join('g');
+
+  nodeSel.each(function(d) {
+    const g2 = d3.select(this);
+    if (d.case) {
+      // Case node
+      g2.append('circle').attr('r',22).attr('fill',d.case.color).attr('opacity',0.15);
+      g2.append('circle').attr('r',22).attr('fill','none')
+        .attr('stroke',d.case.color).attr('stroke-width',1.5);
+      g2.append('text').attr('text-anchor','middle').attr('dy','0.35em')
+        .attr('fill',d.case.color).attr('font-size',8).attr('font-weight',700)
+        .text(d.case.year.toString());
+    } else {
+      // Editor node
+      const nCases = d.editor.cases.length;
+      g2.append('circle').attr('r', 4+nCases*1.5)
+        .attr('fill','#e6edf3').attr('opacity', 0.5+nCases*0.1);
+      g2.on('mouseover',(evt)=>{
+          const caseLabels = d.editor.cases.map(i=>cases[i].short).join(', ');
+          tip(`<strong>${d.editor.name}</strong><span>${nCases} cases: ${caseLabels}</span>`,evt);
+        })
+        .on('mousemove',moveTip)
+        .on('mouseout',hideTip)
+        .style('cursor','pointer');
+    }
+  });
+
+  // Case labels outside the circle
+  caseNodes.forEach(n => {
+    const angle = Math.atan2(n.y - H/2, n.x - W/2);
+    const lx = W/2 + (R_CIRCLE+34)*Math.cos(angle);
+    const ly = H/2 + (R_CIRCLE+34)*Math.sin(angle);
+    svg.append('text').attr('x',lx).attr('y',ly)
+      .attr('text-anchor', lx < W/2 ? 'end' : lx > W/2 ? 'start' : 'middle')
+      .attr('dominant-baseline','middle')
+      .attr('fill',n.case.color).attr('font-size',9)
+      .text(n.case.short);
+  });
+
+  sim.on('tick', () => {
+    linkSel
+      .attr('x1',d=>d.source.x).attr('y1',d=>d.source.y)
+      .attr('x2',d=>d.target.x).attr('y2',d=>d.target.y);
+    nodeSel.attr('transform',d=>`translate(${d.x},${d.y})`);
+  });
+}
+
+// ── V10: Phase Race ────────────────────────────────────────────────────────
+function buildV10(cases) {
+  const host = document.getElementById('v10-host');
+  const W = host.clientWidth||900, H=340, ML=44, MR=140, MT=24, MB=40;
+  const pW=W-ML-MR, pH=H-MT-MB;
+
+  // Pick a "representative" case to display by default: American Politics (most balanced)
+  // Show all cases in a small selector
+  const PHASES = ['evidence','workshop','proposed_decision','main'];
+
+  let activeCase = cases.find(c=>c.slug==='american_politics');
+
+  const x = d3.scaleLinear().domain([0,1]).range([0,pW]);
+  const y = d3.scaleLinear().domain([0,1]).range([pH,0]);
+
+  const svg = d3.select(host).append('svg').attr('viewBox',`0 0 ${W} ${H}`).attr('height',H);
+  const g = svg.append('g').attr('transform',`translate(${ML},${MT})`);
+
+  function buildCurve(c) {
+    const sorted=[...c.events].sort((a,b)=>new Date(a.timestamp)-new Date(b.timestamp));
+    const total=sorted.length;
+    const cum={};
+    PHASES.forEach(p=>cum[p]=0);
+    const result=sorted.map((e,i)=>{
+      const pt=e.page_type||'main';
+      if(cum[pt]!==undefined) cum[pt]++;
+      return { t:(i+0.5)/total, ...Object.fromEntries(PHASES.map(p=>[p,cum[p]])) };
+    });
+    return result;
+  }
+
+  function drawCase(c) {
+    g.selectAll('*').remove();
+
+    // Axes
+    g.append('g').attr('transform',`translate(0,${pH})`)
+      .call(d3.axisBottom(x).ticks(5).tickFormat(d=>`${Math.round(d*100)}%`))
+      .call(a=>a.select('.domain').attr('stroke','#30363d'))
+      .call(a=>a.selectAll('text').attr('fill','#7d8590').attr('font-size',10));
+    g.append('g')
+      .call(d3.axisLeft(y).ticks(4).tickFormat(d=>`${Math.round(d*100)}%`))
+      .call(a=>a.select('.domain').attr('stroke','#30363d'))
+      .call(a=>a.selectAll('text').attr('fill','#7d8590').attr('font-size',10))
+      .call(a=>a.selectAll('.tick line').attr('stroke','#21262d').attr('x2',pW));
+
+    g.append('text').attr('x',pW/2).attr('y',pH+30).attr('text-anchor','middle')
+      .attr('fill','#7d8590').attr('font-size',10).text('Case progress');
+    g.append('text').attr('transform','rotate(-90)').attr('x',-pH/2).attr('y',-32)
+      .attr('text-anchor','middle').attr('fill','#7d8590').attr('font-size',10)
+      .text('Cumulative edits %');
+
+    const curve = buildCurve(c);
+    const maxEdits = d3.max(PHASES, p => d3.max(curve, d=>d[p]));
+
+    const lineGen = phase => d3.line()
+      .x(d=>x(d.t)).y(d=>y(d[phase]/(maxEdits||1))).curve(d3.curveBasis);
+
+    PHASES.forEach(p => {
+      g.append('path').datum(curve).attr('d',lineGen(p))
+        .attr('fill','none').attr('stroke',PHASE_COLOR[p]||'#555')
+        .attr('stroke-width',2).attr('opacity',0.85);
+
+      // End label
+      const lastPt = curve[curve.length-1];
+      g.append('text')
+        .attr('x',x(1)+6).attr('y',y(lastPt[p]/(maxEdits||1)))
+        .attr('dominant-baseline','middle')
+        .attr('fill',PHASE_COLOR[p]||'#555').attr('font-size',9)
+        .text(p==='proposed_decision'?'prop.dec':p);
+    });
+
+    // title
+    g.append('text').attr('x',pW/2).attr('y',-10)
+      .attr('text-anchor','middle').attr('fill',c.color)
+      .attr('font-size',11).attr('font-weight','700')
+      .text(c.label);
+  }
+
+  drawCase(activeCase);
+
+  // Case selector buttons (right side)
+  const btnX = pW + 16;
+  cases.forEach((c,i) => {
+    const btn = svg.append('g')
+      .attr('transform',`translate(${ML+btnX},${MT+i*28})`)
+      .style('cursor','pointer')
+      .on('click',()=>{ activeCase=c; drawCase(c); });
+
+    btn.append('rect').attr('width',120).attr('height',22).attr('rx',4)
+      .attr('fill',c.color).attr('opacity',0.1);
+    btn.append('rect').attr('width',120).attr('height',22).attr('rx',4)
+      .attr('fill','none').attr('stroke',c.color).attr('stroke-width',1).attr('opacity',0.5);
+    btn.append('text').attr('x',8).attr('y',11).attr('dominant-baseline','middle')
+      .attr('fill',c.color).attr('font-size',9).text(c.short);
+  });
+}
+</script>
+</body>
+</html>
