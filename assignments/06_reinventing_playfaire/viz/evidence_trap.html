@@ -97,14 +97,10 @@ body{
 .grp-name{font-size:11.5px;font-weight:700;text-transform:uppercase;
   letter-spacing:.08em;width:88px;flex-shrink:0}
 .grp-nc{font-size:10.5px;color:var(--muted);width:52px;flex-shrink:0}
-.mini-spark-wrap{flex:0 0 120px}
-.grp-badge{
-  font-size:9.5px;padding:2px 9px;border-radius:20px;border:1px solid;
-  white-space:nowrap;font-weight:600;letter-spacing:.02em;flex-shrink:0;
+.grp-desc{
+  font-size:11.5px;color:rgba(200,209,219,.55);line-height:1.6;
+  padding:0 0 10px 168px;font-style:italic;max-width:860px;
 }
-.grp-badge.trapped{background:rgba(233,117,0,.09);color:rgba(233,117,0,.85);border-color:rgba(233,117,0,.28)}
-.grp-badge.mid{background:rgba(139,148,158,.07);color:rgba(139,148,158,.65);border-color:rgba(139,148,158,.2)}
-.grp-badge.clear{background:rgba(83,168,35,.08);color:rgba(83,168,35,.75);border-color:rgba(83,168,35,.22)}
 .grp-chevron{
   font-size:14px;color:var(--muted);margin-left:auto;padding-right:4px;
   transition:transform .2s;line-height:1;
@@ -138,6 +134,19 @@ body{
   padding-left:168px;padding-top:5px;margin-bottom:4px;
   font-size:9.5px;color:rgba(139,148,158,.35);font-style:italic;
 }
+.recur-section{
+  padding:12px 0 4px 168px;border-top:1px solid rgba(48,54,61,.25);margin-top:10px;
+}
+.recur-head{
+  font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+  color:rgba(139,148,158,.35);margin-bottom:8px;
+}
+.recur-item{
+  font-size:11px;color:rgba(200,209,219,.45);line-height:1.7;
+  padding-left:10px;border-left:2px solid rgba(48,54,61,.5);
+  margin-bottom:7px;max-width:680px;
+}
+.recur-item b{color:rgba(200,209,219,.65);font-weight:600}
 
 /* FOOTER */
 .page-footer{
@@ -187,6 +196,9 @@ body{
 </div>
 
 <div class="phase-legend" id="phase-legend"></div>
+<div style="padding:8px 52px 16px;max-width:1420px;margin:0 auto;font-size:11px;color:rgba(139,148,158,.42);font-style:italic;border-bottom:1px solid rgba(48,54,61,.3)">
+  A <span style="color:rgba(182,0,0,.6);font-style:normal;font-weight:600">proposed decision</span> is the committee's draft ruling — it remains open to community comment and formal appeals for weeks before it can be ratified and become binding, which is why cases often linger in this phase long after the debate appears settled.
+</div>
 
 <div class="section-wrap">
   <div id="groups-root" class="groups-section"></div>
@@ -223,7 +235,12 @@ const PLABELS = {
 const ESCAPE = 0.14;
 
 const GROUPS = [
-  {id:'politics',   label:'Politics',    baseColor:'#CC3333', cases:[
+  {id:'politics', label:'Politics', baseColor:'#CC3333',
+   desc:'Disputes over political figures, elections, and partisan articles — editor allegiances here often mirror real-world party divides more than Wikipedia sourcing standards.',
+   recurNotes:[
+     {title:'American Politics (2014 + 2015)', note:'The 2015 case reopened within months because the prior sanctions were insufficient to stop battleground editing ahead of U.S. elections. The committee had to tighten restrictions twice in a single election cycle.'},
+   ],
+   cases:[
     {slug:'user:polishpoliticians',      short:'Polish 2004'},
     {slug:'election',                    short:'Election 2006'},
     {slug:'article_titles_and_capitalisation', short:'Titles 2012'},
@@ -237,7 +254,12 @@ const GROUPS = [
     {slug:'venezuelan_politics',         short:'Venezuela 2024'},
     {slug:'indian_military_history',     short:'IndMilitary 2025'},
   ]},
-  {id:'religion',   label:'Religion',    baseColor:'#9966CC', cases:[
+  {id:'religion', label:'Religion', baseColor:'#9966CC',
+   desc:'Conflicts over doctrine, sacred figures, and religious institutions — editors frequently treat their faith tradition as an authority that Wikipedia\'s neutrality policy cannot override.',
+   recurNotes:[
+     {title:'Ebionites (2007 + 2013)', note:'A small, persistent group of editors with fringe theological views returned six years after the first case with the same sourcing disputes largely intact. The original remedies expired without resolving the underlying belief conflict.'},
+   ],
+   cases:[
     {slug:'st_christopher',              short:'StChris 2006'},
     {slug:'ebionites',                   short:'Ebionites 2007'},
     {slug:'international_churches_of_christ', short:'ICC 2008'},
@@ -246,7 +268,13 @@ const GROUPS = [
     {slug:'christianity_and_sexuality',  short:'C&S 2015'},
     {slug:'world_war_ii_and_the_history_of_jews_in_poland', short:'WWII Jews 2023'},
   ]},
-  {id:'science',    label:'Science',     baseColor:'#14866D', cases:[
+  {id:'science', label:'Science', baseColor:'#14866D',
+   desc:'Edit wars over empirically contested claims — climate change, alternative medicine, pseudoscience — where minority viewpoints seek equal footing with scientific consensus on the grounds of editorial fairness.',
+   recurNotes:[
+     {title:'Climate Change (2005, 2005, 2010)', note:'Three separate arbitration cases in five years tracked successive waves of skeptic editors. The first two cases in 2005 named different editors for the same dispute; the 2010 case reopened in the wake of the Climategate controversy, which briefly gave fringe editors new ammunition.'},
+     {title:'Theresa Knott / Mr-Natural-Health (both 2004)', note:'Two cases filed the same year about the same underlying dispute — one named the editor, one named the article topic. The committee split the proceedings to handle conduct and content separately, which is why both appear as distinct cases.'},
+   ],
+   cases:[
     {slug:'theresa_knott_vs._mr-natural-health', short:'Theresa 2004'},
     {slug:'mr-natural-health',           short:'MrNatural 2004'},
     {slug:'climate_change_dispute',      short:'Climate 2005'},
@@ -256,7 +284,10 @@ const GROUPS = [
     {slug:'climate_change',              short:'Climate 2010'},
     {slug:'skepticism_and_coordinated_editing', short:'Skepticism 2022'},
   ]},
-  {id:'social',     label:'Social',      baseColor:'#339966', cases:[
+  {id:'social', label:'Social', baseColor:'#339966',
+   desc:'Cases involving identity, demographics, and social policy — contested cultural definitions make neutral framing structurally difficult, and the battlegrounds shift as terminology evolves.',
+   recurNotes:[],
+   cases:[
     {slug:'transnistria',                short:'Transnistria 2007'},
     {slug:'abortion',                    short:'Abortion 2011'},
     {slug:'manipulation_of_blps',        short:'BLPs 2011'},
@@ -265,7 +296,13 @@ const GROUPS = [
     {slug:'civility_in_infobox_discussions', short:'Infobox 2018'},
     {slug:'transgender_healthcare_and_people', short:'TransHealth 2025'},
   ]},
-  {id:'geopolitics',label:'Geopolitics', baseColor:'#FF9900', cases:[
+  {id:'geopolitics', label:'Geopolitics', baseColor:'#FF9900',
+   desc:'Territorial and ethnic disputes — especially in the Middle East and the former Soviet Union — where competing national narratives about history are irreconcilable and real-world events keep reopening old wounds.',
+   recurNotes:[
+     {title:'Palestine–Israel (2015, 2019, 2024)', note:'Three cases across nine years. Each resolved the immediate editor conduct but could not settle the underlying historical narrative. New rounds of real-world conflict — 2014 Gaza war, 2021 escalation, October 2023 — brought fresh waves of editors with the same framing disputes, requiring the committee to intervene again each time.'},
+     {title:'Armenia–Azerbaijan (2007, 2023)', note:'Sixteen years separated the two cases. The 2023 case followed the 2020 and 2023 Nagorno-Karabakh wars and introduced an entirely new cohort of nationalist editors, many with no prior Wikipedia history, relitigating the same territorial framing disputes as the 2007 case.'},
+   ],
+   cases:[
     {slug:'israeli_apartheid',           short:'IsrApart 2006'},
     {slug:'israel-lebanon',              short:'IsrLebanon 2006'},
     {slug:'kosovo',                      short:'Kosovo 2006'},
@@ -278,7 +315,12 @@ const GROUPS = [
     {slug:'armenia-azerbaijan_3',        short:'ArmAze 2023'},
     {slug:'palestine-israel_articles_5', short:'PalIsrael5 2024'},
   ]},
-  {id:'policy',     label:'Policy',      baseColor:'#3366CC', cases:[
+  {id:'policy', label:'Policy', baseColor:'#3366CC',
+   desc:'Disputes about Wikipedia\'s own enforcement rules and banning procedures — cases where the community turned its dispute-resolution apparatus on itself to debate how arbitration should work.',
+   recurNotes:[
+     {title:'Arbitration Enforcement (2011, 2015, 2015)', note:'Three cases over four years as the community kept finding its enforcement procedures insufficient. Each case tightened the rules, but the new rules created new ambiguities that required their own arbitration. The second and third cases in 2015 ran nearly simultaneously, reflecting how quickly the policy was being stress-tested.'},
+   ],
+   cases:[
     {slug:'civility_enforcement',        short:'Civility 2011'},
     {slug:'arbitration_enforcement_sanction_handling', short:'ArbSanctions 2011'},
     {slug:'banning_policy',              short:'Banning 2014'},
@@ -337,8 +379,7 @@ function buildLegend() {
 }
 
 // GROUP ROW (avg always visible; individual cases expand on click)
-function buildGroupRow(root, grp, cases, avgEv, isTrapped, isMid) {
-  const evEnd = (avgEv[BUCKETS-1]*100).toFixed(0);
+function buildGroupRow(root, grp, cases, avgEv, isTrapped, isMid) {  const evEnd = (avgEv[BUCKETS-1]*100).toFixed(0);
 
   const block = document.createElement('div');
   block.className = 'grp-block';
@@ -353,6 +394,12 @@ function buildGroupRow(root, grp, cases, avgEv, isTrapped, isMid) {
     <div class="grp-nc">${cases.length} cases</div>
     <div class="grp-chevron">›</div>`;
   block.appendChild(toggle);
+
+  // One-sentence group description — always visible
+  const descEl = document.createElement('div');
+  descEl.className = 'grp-desc';
+  descEl.textContent = grp.desc;
+  block.appendChild(descEl);
 
   // Group avg fingerprint row — ALWAYS visible
   const avgRow = document.createElement('div');
@@ -426,6 +473,24 @@ function buildGroupRow(root, grp, cases, avgEv, isTrapped, isMid) {
       ? `Evidence fades to ${evEnd}% at close. Slow but eventual exit from the gathering phase.`
       : `Evidence drops to ${evEnd}% at close. The committee acts once it has what it needs.`;
   detail.appendChild(foot);
+
+  // Recurring case notes
+  if (grp.recurNotes && grp.recurNotes.length) {
+    const sec = document.createElement('div');
+    sec.className = 'recur-section';
+    const hd = document.createElement('div');
+    hd.className = 'recur-head';
+    hd.textContent = 'Why these cases came back';
+    sec.appendChild(hd);
+    grp.recurNotes.forEach(({title, note}) => {
+      const item = document.createElement('div');
+      item.className = 'recur-item';
+      item.innerHTML = `<b>${title}:</b> ${note}`;
+      sec.appendChild(item);
+    });
+    detail.appendChild(sec);
+  }
+
   block.appendChild(detail);
 
   toggle.addEventListener('click', () => {
