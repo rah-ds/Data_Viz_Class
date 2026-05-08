@@ -870,8 +870,8 @@ function renderCards(){
       ondragend="cardDragEnd(event,'${c.slug}')"
       ondragover="cardDragOver(event,'${c.slug}')"
       ondrop="cardDrop(event,'${c.slug}')">
-      <div class="card-head" onclick="toggleCardExpand('${c.slug}',event)">
-        <div class="drag-handle" title="Drag to reorder" ondragstart="event.stopPropagation()">&#8942;</div>
+      <div class="card-head" onclick="clickCaseSlug('${c.slug}')">
+        <div class="drag-handle" title="Drag to reorder" ondragstart="event.stopPropagation();event.preventDefault()">&#8942;</div>
         <div class="card-topic-row">
           <div class="card-topic-badge" style="color:${td.color}">${td.icon} ${td.desc}</div>
           ${eraLabel}
