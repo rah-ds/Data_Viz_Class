@@ -111,6 +111,7 @@ tbody tr:hover:not(.no-data) .case-name{color:var(--link);}
 .kpi-l{font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
 
 .sum-body{flex:1;overflow-y:auto;padding:18px 22px;display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.sum-panel-wide{grid-column:1/-1;}
 .sum-panel{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:14px 16px;}
 .sum-panel h3{font-size:.63rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;
   color:var(--muted);margin-bottom:10px;}
@@ -592,6 +593,7 @@ function goSummary(){
   if(!currentRec) return;
   showPane('summary');
   setNav([{label:currentRec.case_name}]);
+  buildSummary(currentRec);
   document.getElementById('nav-analysis-btn').classList.remove('active');
 }
 function goBack(){
@@ -1256,7 +1258,9 @@ function renderCompareStats(recs, container){
 // ═════════════════════════════════════════════════════════
 function clickCase(rec){
   currentRec=rec;
-  openViz('timeline');
+  showPane('summary');
+  setNav([{label:rec.case_name}]);
+  buildSummary(rec);
   document.getElementById('nav-analysis-btn').classList.remove('active');
 }
 
@@ -1299,11 +1303,14 @@ function buildSummary(rec){
   `;
 
   // KPIs
+  const depRate=rec.departure_rate!=null?Math.round(rec.departure_rate*100)+'%':'—';
+  const ret=rec.starters>0?Math.round((rec.retention_rate||0)*100)+'%':'—';
   const kpis=[
     {v:rec.total_editors, l:'Editors'},
-    {v:rec.total_events??'—', l:'Edits'},
-    {v:rec.departed_count??'—', l:'Departed'},
-    {v:rec.starters>0?Math.round((rec.retention_rate||0)*100)+'%':'—', l:'Starter retention'},
+    {v:rec.total_events??'—', l:'Total edits'},
+    {v:dur, l:'Duration'},
+    {v:depRate, l:'Departure rate'},
+    {v:ret, l:'Starter retention'},
     {v:rec.sanctioned_count||0, l:'Sanctioned'},
   ];
   document.getElementById('sum-kpi').innerHTML=kpis.map(k=>
@@ -1311,6 +1318,10 @@ function buildSummary(rec){
 
   // Body panels — will be filled from D3 json if loaded, else from manifest
   document.getElementById('sum-body').innerHTML=`
+    <div class="sum-panel sum-panel-wide">
+      <h3>Activity over time</h3>
+      <div id="sum-spark" style="height:90px"></div>
+    </div>
     <div class="sum-panel">
       <h3>Activity by phase</h3>
       <div class="phase-bar-wrap" id="sum-phase"></div>
@@ -1326,12 +1337,15 @@ function buildSummary(rec){
   // Sync compare button
   setTimeout(()=>updateSumCmpBtn(document.getElementById('sum-cmp-btn')),0);
 
-  // Load full D3 data for editor list
+  // Load full D3 data for editor list + activity sparkline
   loadD3(rec.slug).then(data=>{
     buildSummaryEditors(data.nodes);
+    renderAreaChart(data.events, data.meta, color, document.getElementById('sum-spark'), 90);
   }).catch(()=>{
     document.getElementById('sum-editors').innerHTML=
       `<div style="font-size:.7rem;color:var(--muted);padding:8px">Could not load editor detail</div>`;
+    const sp=document.getElementById('sum-spark');
+    if(sp) sp.innerHTML='';
   });
 }
 
